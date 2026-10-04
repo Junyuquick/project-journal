@@ -5,9 +5,9 @@ events:
   # ---------- Sunday 4 October: the redesign (reconstructed) ----------
   - at: "2026-10-04T19:33:21+08:00"
     who: you
-    title: Put the old website under version control
-    why: So every later change could be tracked, compared and undone, and so Claude could work on a copy safely.
-    how: Created a git repository for the existing hand-written HTML site and made the first commit.
+    title: Created the project's git repository
+    why: Every later change is recorded against this starting point.
+    how: The first commit, made under your git name, holds only editor and Claude Code settings files. The old site's files themselves were never committed; they stayed in a legacy/ folder on disk.
     evidence: reconstructed
     source: { type: commit, ref: "6511327" }
     chapter: the-big-picture
@@ -18,16 +18,6 @@ events:
     title: Audited the old site and wrote the redesign spec
     why: To find what was actually wrong before changing anything, and agree the plan in writing.
     how: "Measured the old site: 316MB of unoptimised photos, an 18MB hero video, 25 copy-pasted pages, an off-brand orange and font, and right-click blocking. Wrote a design spec covering brand tokens, pages, the Astro framework choice, SEO and risks, with six open questions for you."
-    evidence: reconstructed
-    source: { type: spec, ref: "docs/superpowers/specs/2026-10-04-website-redesign-design.md" }
-    chapter: auditing-the-old-site
-
-  - at: "2026-10-04T21:00:00+08:00"
-    approx: true
-    who: you
-    title: Answered the spec's open questions
-    why: Some decisions only the owner can make, such as fonts that cost money, analytics and the phone number.
-    how: "Wrote answers into the spec: remove right-click blocking, use Figtree since there is no Noah web licence, no vector logo exists, testimonials are real, analytics wanted, contact number +65 8533 7311."
     evidence: reconstructed
     source: { type: spec, ref: "docs/superpowers/specs/2026-10-04-website-redesign-design.md" }
     chapter: auditing-the-old-site
@@ -176,7 +166,17 @@ events:
     source: { type: commit, ref: "6fe4985" }
     chapter: keeping-google-happy
 
-  - at: "2026-10-04T22:10:00+08:00"
+  - at: "2026-10-04T22:08:00+08:00"
+    approx: true
+    who: you
+    title: Answered the spec's open questions
+    why: Some decisions only the owner can make, such as fonts that cost money, analytics and the phone number.
+    how: "Wrote answers to most of them into the spec (they first appear in the 22:16 commit): remove right-click blocking, use Figtree since there is no Noah web licence, no vector logo exists, testimonials are real, analytics wanted, contact number +65 8533 7311."
+    evidence: reconstructed
+    source: { type: spec, ref: "docs/superpowers/specs/2026-10-04-website-redesign-design.md" }
+    chapter: auditing-the-old-site
+
+  - at: "2026-10-04T22:12:00+08:00"
     approx: true
     who: you
     title: Curated what goes on the home page
@@ -237,8 +237,8 @@ events:
     approx: true
     who: you
     title: Asked for a textured background
-    why: The flat background felt sterile.
-    how: Requested a texture like the Brand Guide's paper.
+    why: The commit records only that you asked for one.
+    how: Asked for a textured background.
     evidence: reconstructed
     source: { type: commit, ref: "eaea59e" }
     chapter: the-design-system
@@ -247,16 +247,16 @@ events:
     who: claude
     title: Added the bone paper texture
     why: To answer your request with something light enough not to slow the page.
-    how: Generated a seamless 8KB paper tile from the Brand Guide's page stock and used it as the page background.
+    how: Replaced the near-invisible 3% grain overlay (which also sat over photos) with a seamless 8KB paper tile generated from the Brand Guide's page stock, on the page and menu backgrounds.
     evidence: reconstructed
     source: { type: commit, ref: "eaea59e" }
     chapter: the-design-system
 
   - at: "2026-10-04T23:20:21+08:00"
     who: claude
-    title: Stopped tracking the legacy site in git
-    why: The old files were large and no longer needed in history going forward.
-    how: Added legacy/ to .gitignore and kept a copy of the old sitemap so checks still work.
+    title: Told git to ignore the legacy folder
+    why: The old site's files sit in legacy/ on disk but were never meant to enter the repository.
+    how: Added legacy/ to .gitignore and copied the old sitemap into scripts/, so a fresh copy of the repository without legacy/ can still check every old address.
     evidence: reconstructed
     source: { type: commit, ref: "8052b1d" }
     chapter: testing-and-verification
@@ -461,7 +461,8 @@ events:
     source: { type: conversation }
     chapter: sign-in
 
-  - at: "2026-10-05T01:53:06+08:00"
+  - at: "2026-10-05T01:54:00+08:00"
+    approx: true
     who: claude
     title: Verified the staging site
     why: To prove the robot works before you test the admin.

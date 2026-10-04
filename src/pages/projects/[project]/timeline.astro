@@ -22,7 +22,7 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
 <Base title={`Timeline: ${data.title}`} description={`Who did what, and when, while building ${data.title}.`}>
   <div class="wrap tl" style={`--lanes:${lanes.length}`}>
     <header class="tl__head">
-      <h1><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code}</span> Who did what</h1>
+      <h1 class="has-pill"><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code}</span><span>Who did what</span></h1>
       <p class="tl__lede">Every step of building the <a href={`/projects/${slug}`}>{data.title}</a>, in time order. Each contributor runs as a line; a station on a line is something they did. An interchange across lines is something done together.</p>
 
       <div class="tl__legend">
@@ -39,7 +39,7 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
     <p class="tl__empty" data-all-off hidden>Every line is switched off. Turn a line back on to see its stations.</p>
 
     <div class="tl__body">
-    <div class="tl__rail">
+    <div class="tl__rail" data-rail hidden>
       <p class="tl__rail-label" id="filters-label">Show or hide lines</p>
       <div class="tl__filters" role="group" aria-labelledby="filters-label">
         {filters.map((f) => (
@@ -100,6 +100,8 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
   const list = document.querySelector<HTMLElement>('[data-events]');
   const allOff = document.querySelector<HTMLElement>('[data-all-off]');
   const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  // The filters need JavaScript, so they only appear once it is running.
+  document.querySelector<HTMLElement>('[data-rail]')?.removeAttribute('hidden');
   const apply = () => {
     const on = new Set(buttons.filter((b) => b.getAttribute('aria-pressed') === 'true').map((b) => b.dataset.filter));
     for (const ev of list?.querySelectorAll<HTMLElement>('.ev') ?? []) ev.hidden = !on.has(ev.dataset.who);
@@ -126,6 +128,7 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
   .key--hub { height: 1.1rem; width: 2.25rem; background: var(--station-fill); border: 3px solid var(--ink); border-radius: var(--radius-pill); }
   /* Filters stay in reach: a sticky bar on phones, a sticky rail beside the timeline on wide screens */
   .tl__body { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .tl__rail[hidden] { display: none; }
   .tl__rail { position: sticky; top: 0; z-index: 3; background: var(--ground); padding-block: var(--s-3); border-bottom: 1px solid var(--rule); }
   .tl__rail-label { font-family: var(--font-sign); font-weight: 750; font-size: var(--step--1); color: var(--ink-soft); margin-bottom: var(--s-2); }
   .tl__filters { display: flex; flex-wrap: wrap; gap: var(--s-2); }
@@ -134,7 +137,10 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
     .tl { --rail-h: 4.35rem; }
     /* one row of filters; it scrolls sideways inside itself if a project has many lines */
     .tl__filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
-    .filter { flex: none; font-size: var(--step--1); padding-inline: 0.8em; }
+    .tl__filters { gap: var(--s-1); }
+    .filter { flex: none; font-size: var(--step--1); padding-inline: 0.65em; gap: 0.35em; }
+    .filter__tick { width: 0.7rem; height: 0.7rem; }
+    .filter__n { display: none; }
     .tl__rail-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   }
   @media (min-width: 64rem) {

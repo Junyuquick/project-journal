@@ -52,9 +52,12 @@ The config lists the same fields as the project [schema](glossary:schema) from L
 ```yaml
 collections:
   - name: projects
-    folder: src/content/projects       # where the project files live
-    create: true                       # the client may add projects
-    delete: true                       # and delete them (made safe in LC12)
+    # where the project files live
+    folder: src/content/projects
+    # the client may add projects
+    create: true
+    # and delete them (made safe in LC12)
+    delete: true
     fields:
       - { name: title, label: Title, widget: string }
       - name: sector

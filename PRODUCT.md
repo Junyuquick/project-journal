@@ -39,7 +39,7 @@ Documentation of the owner's own projects, written from the real record (git his
 ## Evidence on Hand
 
 - Loft Concept: 43 commits, `docs/superpowers/specs/2026-10-04-website-redesign-design.md`, `docs/superpowers/specs/2026-10-04-client-project-admin-design.md`, and the matching plans in `docs/superpowers/plans/`.
-- The redesign session's conversation is not available; "You" entries for it are limited to decisions recorded in its spec (owner answers Q1-Q5, curation decisions). Do not invent others.
+- The redesign session's conversation is not available; "You" entries for it are limited to what the record attributes to the owner: answers and decisions written in its spec, commit messages that say "Owner feedback" or "Owner asked", and commits authored under the owner's name without a Claude co-author. Motives are quoted from those records, never inferred.
 
 ## Product Principles
 

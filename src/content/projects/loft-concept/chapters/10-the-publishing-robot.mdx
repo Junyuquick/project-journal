@@ -10,7 +10,7 @@ check:
   - q: Why does pushing to the redesign branch not change the live site?
     a: The workflow uploads redesign to public_html/staging (the staging site) and only main to public_html (the live site).
   - q: Why was the first upload so slow, and later ones fast?
-    a: The first upload had no record of what was on the server, so it sent all 1,775 files (about 250MB). It then leaves a tracking file, so later uploads send only the files that changed; with the image cache, a small change took about 10 seconds.
+    a: The first upload had no record of what was on the server, so it sent all 1,775 files (about 232MB). It then leaves a tracking file, so later uploads send only the files that changed; with the image cache, a small change took about 10 seconds.
 sources:
   - label: The workflow (.github/workflows/deploy.yml)
     url: https://github.com/Junyuquick/loft-concept-website/blob/main/.github/workflows/deploy.yml
@@ -29,24 +29,34 @@ The whole robot is one [YAML](glossary:yaml) file. Here is its heart, with a few
 ```yaml
 on:
   push:
-    branches: [main, redesign]        # run whenever either branch changes
+    # run whenever either branch changes
+    branches: [main, redesign]
 
 concurrency:
   group: deploy-${{ github.ref_name }}
-  cancel-in-progress: false           # queue publishes, never run two at once
+  # queue publishes, never run two at once
+  cancel-in-progress: false
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest            # a fresh Linux machine, lent by GitHub
+    # a fresh Linux machine, lent by GitHub
+    runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v7     # 1. download the repository
-      - run: npm ci                   # 2. install the exact tools
-      - run: npx astro sync           # 3. generate the schema the tests read
-      - run: npm test                 # 4. run every test
-      - run: npm run build            # 5. build the site
-      - run: npm run verify:build     # 6. check every built page
-      - name: Upload to Vodien        # 7. only if all of the above passed
+      # 1. download the repository
+      - uses: actions/checkout@v7
+      # 2. install the exact tools
+      - run: npm ci
+      # 3. generate the schema the tests read
+      - run: npx astro sync
+      # 4. run every test
+      - run: npm test
+      # 5. build the site
+      - run: npm run build
+      # 6. check every built page
+      - run: npm run verify:build
+      # 7. only if all of the above passed
+      - name: Upload to Vodien
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.VODIEN_FTP_HOST }}

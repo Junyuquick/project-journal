@@ -14,14 +14,14 @@ const evidenceNote = { witnessed: '', reconstructed: 'Rebuilt from the record', 
 <Base title={data.title} description={data.summary}>
   <div class="wrap line" style={`--line:${data.color}`}>
     <header class="line__head">
-      <h1><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code}</span> {data.title}</h1>
+      <h1 class="has-pill"><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code}</span><span>{data.title}</span></h1>
       <p class="line__summary">{data.summary}</p>
       <p class="line__facts">
         {chapters.length} {chapters.length === 1 ? 'station' : 'stations'}, {formatDate(data.startedAt)} to {formatDate(data.endedAt)}
         {data.repo && <><br /><a href={data.repo}>The real code on GitHub</a></>}
       </p>
       <p class="line__actions">
-        <a class="go" href={`/projects/${slug}/${chapters[0]?.slug ?? ''}`} data-continue={slug}>Start at {data.code}01</a>
+        {chapters.length > 0 && <a class="go" href={`/projects/${slug}/${chapters[0].slug}`} data-continue={slug}>Start at {data.code}01</a>}
         <a class="go go--quiet" href={`/projects/${slug}/timeline`}>Who did what: the timeline</a>
       </p>
     </header>
@@ -60,6 +60,7 @@ const evidenceNote = { witnessed: '', reconstructed: 'Rebuilt from the record', 
   if (link && station) {
     const stop = document.querySelector<HTMLElement>(`.stop[data-station="${station}"]`);
     stop?.classList.add('is-here');
+    stop?.querySelector('a')?.insertAdjacentHTML('beforeend', '<span class="visually-hidden"> (you are here)</span>');
     const a = stop?.querySelector('a');
     const code = stop?.querySelector('.stop__code')?.textContent;
     if (a && code) {

@@ -28,6 +28,7 @@ for (const file of pages) {
   for (const [, href] of html.matchAll(/<a\b[^>]*\shref="(\/[^"]*)"/g)) {
     if (!resolves(href)) fail(`${name}: broken internal link ${href}`);
   }
+  if (/href="glossary:/.test(html)) fail(`${name}: a glossary link was not turned into a term (reference-style link?)`);
   for (const [, id] of html.matchAll(/data-term="([^"]+)"/g)) {
     if (!html.includes(`"${id}":{`)) fail(`${name}: term ${id} has no definition on the page`);
   }

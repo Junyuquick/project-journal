@@ -25,7 +25,7 @@ const projects = await loadProjects();
           <p class="project__summary">{p.data.summary}</p>
           <p class="project__facts">{p.chapters.length} {p.chapters.length === 1 ? 'station' : 'stations'}, {formatDate(p.data.startedAt)} to {formatDate(p.data.endedAt)}</p>
           <p class="project__go">
-            <a class="go" href={`/projects/${p.slug}/${p.chapters[0]?.slug ?? ''}`} data-continue={p.slug}>Start at {p.data.code}01</a>
+            {p.chapters.length > 0 && <a class="go" href={`/projects/${p.slug}/${p.chapters[0].slug}`} data-continue={p.slug}>Start at {p.data.code}01</a>}
             <a class="go go--quiet" href={`/projects/${p.slug}/timeline`}>Timeline</a>
           </p>
         </div>
@@ -42,6 +42,7 @@ const projects = await loadProjects();
     if (!station) continue;
     const stop = document.querySelector<HTMLElement>(`[data-line="${slug}"] [data-station="${station}"]`);
     stop?.classList.add('is-here');
+    stop?.querySelector('a')?.insertAdjacentHTML('beforeend', '<span class="visually-hidden"> (you are here)</span>');
     const href = stop?.querySelector('a')?.getAttribute('href');
     const code = stop?.querySelector('.net__code')?.textContent;
     if (href && code) {

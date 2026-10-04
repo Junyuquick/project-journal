@@ -74,12 +74,18 @@ Every project file is checked against a [schema](glossary:schema), a description
 
 ```ts
 z.object({
-  title: z.string(),                                  // text, required
-  sector: z.enum(['residential', 'commercial']),      // one of two values
-  summary: z.string().min(20),                        // at least 20 characters
-  cover: image(),                                     // a real image file
-  gallery: z.array(image()).default([]),              // a list of images, may be empty
-  order: z.number().int(),                            // a whole number
+  // text, required
+  title: z.string(),
+  // one of two values
+  sector: z.enum(['residential', 'commercial']),
+  // at least 20 characters
+  summary: z.string().min(20),
+  // a real image file
+  cover: image(),
+  // a list of images, may be empty
+  gallery: z.array(image()).default([]),
+  // a whole number
+  order: z.number().int(),
 })
 ```
 

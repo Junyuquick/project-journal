@@ -38,7 +38,7 @@ const evidenceText = {
 
   <article class="wrap chapter" style={`--line:${data.color}`} data-project={project.slug} data-station={chapter.data.station}>
     <header class="chapter__head">
-      <h1><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{code}</span> {chapter.data.title}</h1>
+      <h1 class="has-pill"><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{code}</span><span>{chapter.data.title}</span></h1>
       <p class="chapter__summary">{chapter.data.summary}</p>
       <p class="chapter__meta">{chapter.data.minutes} min read</p>
       {evidenceText[chapter.data.evidence] && (

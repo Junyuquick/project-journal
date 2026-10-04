@@ -10,7 +10,7 @@ check:
   - q: What was the rollback plan?
     a: The zip backup of public_html you downloaded from cPanel before the merge. Re-uploading it restores the old site's files.
   - q: Why merge at 2:33am?
-    a: The first full upload took about 45 minutes, during which the live site was a mix of old and new files. A quiet time meant few visitors would see that.
+    a: The first live publish took about 45 minutes in all (a 15-minute build, then a 31-minute upload), and during the upload the live site was a mix of old and new files. A quiet time meant few visitors would see that.
 sources:
   - label: "Pull request #1: Launch redesigned site with client admin"
     url: https://github.com/Junyuquick/loft-concept-website/pull/1
@@ -33,7 +33,7 @@ That changed the meaning of "deploy". The first deploy of `main` would not just 
 
 ## The merge
 
-The launch itself was one action: a [pull request](glossary:pull-request) from `redesign` into `main`, then a [merge](glossary:merge). Claude did this at 2:33am Singapore time, chosen because the first live upload would take about 45 minutes, and during that time the live folder would hold a mix of old and new files. A quiet hour meant few visitors would notice.
+The launch itself was one action: a [pull request](glossary:pull-request) from `redesign` into `main`, then a [merge](glossary:merge). Claude did this at 2:33am Singapore time, chosen because the first live publish would take the best part of an hour, and while it uploaded, the live folder would hold a mix of old and new files. A quiet hour meant few visitors would notice.
 
 The robot did the rest: it built the site (15 minutes, without a cache on `main` yet) and uploaded all of it (31 minutes).
 

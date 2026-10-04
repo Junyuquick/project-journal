@@ -188,7 +188,7 @@
   analogy: An architect's brief, signed off before construction starts.
 - id: staging
   term: Staging
-  definition: A private copy of the website used to test changes before they go live.
+  definition: A separate copy of the website, at its own address, used to test changes before they go live. Search engines are told to skip it.
   analogy: A dress rehearsal before opening night.
 - id: static-site
   term: Static site

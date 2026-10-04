@@ -72,9 +72,28 @@ try {
   check(!(await page.locator('.term-pop').count()), 'popover closes with Escape');
   check(await term.evaluate((el) => el === document.activeElement), 'focus returns to the term');
 
+  // Keyboard users who Tab out of the popover must not leave it open behind them.
+  await term.focus();
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Tab');
+  check(!(await page.locator('.term-pop').count()), 'tabbing out of the popover closes it');
+
+  // A very long word or URL in prose or a heading must wrap, never widen the page.
+  await page.evaluate(() => {
+    const word = 'https://github.com/Junyuquick/loft-concept-website/blob/main/.github/workflows/' + 'x'.repeat(60);
+    document.querySelector('.prose')?.insertAdjacentHTML('afterbegin', `<p>${word}</p>`);
+    document.querySelector('h1 span:last-child')?.append(' ' + 'Supercalifragilistic'.repeat(4));
+  });
+  const stretch = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  check(stretch <= 0, `long words wrap instead of widening the page (overflow ${stretch}px)`);
+
   // Timeline filters: hide a line, then all lines.
   await page.goto(BASE + '/projects/loft-concept/timeline/', { waitUntil: 'networkidle' });
   const visible = (who) => page.locator(`.ev[data-who="${who}"]:visible`).count();
+  const chips = await page.locator('.tl__filters').evaluate((e) => e.scrollWidth - e.clientWidth);
+  check(chips <= 0, `all filter chips fit on a phone (${chips}px hidden)`);
   const claudeBefore = await visible('claude');
   await page.click('[data-filter="claude"]');
   check(claudeBefore > 0 && (await visible('claude')) === 0, `hiding Claude hides its ${claudeBefore} stations`);
@@ -89,6 +108,7 @@ try {
   await nojs.goto(BASE + '/projects/loft-concept/timeline/');
   const total = await nojs.locator('.ev').count();
   check(total > 0 && (await nojs.locator('.ev:visible').count()) === total, `without JavaScript all ${total} stations show`);
+  check(!(await nojs.locator('.tl__rail').isVisible()), 'without JavaScript the filter buttons (which need it) are hidden');
   await ctx.close();
   await browser.close();
 } finally {

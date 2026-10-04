@@ -8,10 +8,12 @@ let active: { button: HTMLButtonElement; panel: HTMLElement } | null = null;
 
 function close(returnFocus = true) {
   if (!active) return;
-  active.panel.remove();
-  active.button.setAttribute('aria-expanded', 'false');
-  if (returnFocus) active.button.focus();
+  // Clear state first: removing the panel fires its focusout handler, which calls close again.
+  const { panel, button } = active;
   active = null;
+  panel.remove();
+  button.setAttribute('aria-expanded', 'false');
+  if (returnFocus) button.focus();
 }
 
 function show(button: HTMLButtonElement) {
@@ -31,6 +33,11 @@ function show(button: HTMLButtonElement) {
   panel.querySelector('.term-pop__def')!.textContent = t.definition;
   if (t.analogy) panel.querySelector('.term-pop__analogy')!.textContent = `Think of it as: ${asContinuation(t.analogy)}`;
   panel.querySelector('.term-pop__close')!.addEventListener('click', () => close());
+  // Tabbing out of the panel closes it, so it never lingers behind the reader's focus.
+  panel.addEventListener('focusout', (e) => {
+    const next = e.relatedTarget as Node | null;
+    if (!next || !panel.contains(next)) close(false);
+  });
   document.body.append(panel);
   const r = button.getBoundingClientRect();
   const w = panel.offsetWidth;

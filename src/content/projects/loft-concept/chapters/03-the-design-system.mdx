@@ -8,7 +8,7 @@ check:
   - q: What is a design token, and why use one instead of typing the colour each time?
     a: A named value such as --umber that stores a design decision once. Every place uses the name, so changing the colour means editing one line instead of hunting through every file.
   - q: What does the contrast test protect against?
-    a: Someone picking a text colour that is too pale on its background. It calculates the WCAG contrast ratio and fails the build if body text drops below 4.5 to 1.
+    a: Someone picking a text colour that is too pale on its background. It calculates the WCAG contrast ratio for each real text and background pair (for example umber on bone must reach at least 7 to 1) and fails if any pair falls short.
   - q: What did your feedback change about the project cards?
     a: They were mixed sizes on desktop and the sector links looked like more cards, so the cards became an even two-column 3:2 grid and the sectors got their own distinct panels.
 sources:
@@ -28,10 +28,14 @@ The Brand Guide names four colours. In code they became [design tokens](glossary
 
 ```css
 :root {
-  --white: #FFFFFF;  /* surfaces, form fields */
-  --bone:  #F5F0E6;  /* the page background */
-  --stone: #B6A591;  /* hairlines, secondary text on dark */
-  --umber: #564739;  /* text, buttons, dark sections */
+  /* surfaces, form fields */
+  --white: #FFFFFF;
+  #F5F0E6;  /* the page background */
+  --bone:
+  /* hairlines, secondary text on dark */
+  --stone: #B6A591;
+  /* text, buttons, dark sections */
+  --umber: #564739;
 }
 ```
 
@@ -43,7 +47,7 @@ The old orange had no place in the Brand Guide, so it was removed. The guide has
 
 Pale text on a pale background is hard to read, especially for people with weaker eyesight. The web has a standard for this, [WCAG contrast](glossary:wcag-contrast): normal text needs a contrast ratio of at least 4.5 to 1 against its background.
 
-Instead of trusting our eyes, the redesign added a [test](glossary:test) that calculates the ratio from the actual colour codes:
+Instead of trusting our eyes, the redesign added a [test](glossary:test) that calculates the ratio for each real pair of colours the site uses:
 
 ```ts
 // How bright a colour is, as the eye perceives it (0 = black, 1 = white)
@@ -56,7 +60,7 @@ export function contrastRatio(fg: string, bg: string): number {
 }
 ```
 
-The test reads the colours straight out of the tokens file, so if anyone later picks a paler brown, the build fails before it reaches a visitor.
+The test then checks each pair against its own minimum: umber body text on bone must reach at least 7 to 1, white on umber buttons at least 7 to 1, and stone on umber is allowed only for large text (at least 3 to 1). It also checks that the colour list it uses matches the CSS tokens file exactly. If anyone later picks a paler brown, the test fails; and since the publishing robot added in LC10 runs every test before uploading, a failing test now stops a publish.
 
 ## Type, space and motion
 
@@ -71,6 +75,6 @@ A design system is only right when it looks right on the real site. After seeing
 
 1. **Cards and sector panels.** On desktop the project cards were mixed sizes, and the Residential and Commercial links read as more project cards. Fix: an even two-column 3:2 grid, and sector panels with their own heading and text over the image.
 2. **Testimonials and the contact form.** The testimonials looked poorly laid out and the form's boxes and type looked poor. Fix: testimonials as aligned rows with one highlighted line each (a test makes sure the highlight is word-for-word from the real quote), and a lighter form with hairline fields.
-3. **A textured background.** The flat background felt sterile. Fix: a seamless 8KB paper texture generated from the Brand Guide's own page stock.
+3. **A textured background.** You asked for one. The page had a nearly invisible grain overlay that also sat over the photos. Fix: a seamless 8KB paper texture, generated from the Brand Guide's own page stock, on the page background only.
 
 This is a normal and healthy loop: build, look, react, adjust. The tokens and the tests make each adjustment safe, because a fix in one place cannot quietly break another.
