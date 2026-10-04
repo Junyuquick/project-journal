@@ -8,7 +8,7 @@ const projects = await loadProjects();
 <Base title="Project Journal" description="How each of my coding projects was built, explained from the ground up, one station at a time.">
   <section class="wrap intro">
     <h1>Project Journal</h1>
-    <p>How each of my coding projects was built, explained from the ground up. Every project is a line, every chapter a station. Ride a line in order, or open its timeline to see what Claude did, what I did, and what we did together.</p>
+    <p>How each of my projects was built, explained from the ground up. Every project is a line and every chapter a station.</p>
   </section>
 
   <section class="wrap network" aria-label="Network map">
@@ -52,8 +52,9 @@ const projects = await loadProjects();
 </script>
 
 <style>
-  .intro { padding-block: var(--s-7) var(--s-5); display: grid; gap: var(--s-4); }
-  .intro p { max-width: 60ch; font-size: var(--step-1); line-height: 1.5; color: var(--ink-soft); }
+  .intro { padding-block: var(--s-6) 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2) var(--s-5); }
+  .intro h1 { font-size: var(--step-3); }
+  .intro p { max-width: 48ch; font-size: var(--step-0); line-height: 1.5; color: var(--ink-soft); }
   .network { display: grid; gap: var(--s-8); padding-bottom: var(--s-8); }
   .project { display: grid; gap: var(--s-5); }
   .project__meta { display: grid; gap: var(--s-3); max-width: 62ch; padding-left: 3.25rem; }

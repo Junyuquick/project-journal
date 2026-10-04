@@ -14,8 +14,7 @@ const evidenceNote = { witnessed: '', reconstructed: 'Rebuilt from the record', 
 <Base title={data.title} description={data.summary}>
   <div class="wrap line" style={`--line:${data.color}`}>
     <header class="line__head">
-      <span class="line__code" style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code} line</span>
-      <h1>{data.title}</h1>
+      <h1><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code}</span> {data.title}</h1>
       <p class="line__summary">{data.summary}</p>
       <p class="line__facts">
         {chapters.length} {chapters.length === 1 ? 'station' : 'stations'}, {formatDate(data.startedAt)} to {formatDate(data.endedAt)}
@@ -37,7 +36,7 @@ const evidenceNote = { witnessed: '', reconstructed: 'Rebuilt from the record', 
             <div class="stop__body">
               <h2>
                 <a href={`/projects/${slug}/${c.slug}`}>
-                  <span class="stop__code">{stationCode(data.code, c.data.station)}</span>
+                  <span class="stop__code" style={`background:${data.color};color:${inkOn(data.ink)}`}>{stationCode(data.code, c.data.station)}</span>
                   <span>{c.data.title}</span>
                 </a>
               </h2>
@@ -73,7 +72,6 @@ const evidenceNote = { witnessed: '', reconstructed: 'Rebuilt from the record', 
 <style>
   .line { padding-block: var(--s-7) var(--s-8); }
   .line__head { display: grid; gap: var(--s-4); max-width: 62ch; margin-bottom: var(--s-7); }
-  .line__code { justify-self: start; font-family: var(--font-sign); font-weight: 800; padding: 0.35em 0.7em 0.25em; border-radius: var(--radius-pill); }
   .line__summary { font-size: var(--step-1); line-height: 1.5; }
   .line__facts { color: var(--ink-soft); font-family: var(--font-sign); font-weight: 650; }
   .line__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); }
@@ -90,9 +88,9 @@ const evidenceNote = { witnessed: '', reconstructed: 'Rebuilt from the record', 
   .stop.is-here .stop__dot { border-color: var(--ink); background: var(--line); box-shadow: 0 0 0 4px var(--ground), 0 0 0 7px var(--ink); }
   .stop__body { display: grid; gap: var(--s-2); }
   h2 { font-size: var(--step-1); }
-  h2 a { text-decoration: none; display: inline-flex; gap: var(--s-3); align-items: baseline; }
+  h2 a { text-decoration: none; display: inline-flex; gap: var(--s-3); align-items: center; }
   h2 a:hover span:last-child { text-decoration: underline; text-decoration-thickness: 2px; }
-  .stop__code { color: var(--ink-soft); font-size: 0.85em; min-width: 2.6rem; }
+  .stop__code { font-size: 0.8em; padding: 0.25em 0.55em 0.15em; border-radius: var(--radius-pill); align-self: center; flex: none; }
   .stop__meta { display: flex; flex-wrap: wrap; gap: var(--s-3); color: var(--ink-soft); font-family: var(--font-sign); font-size: var(--step--1); font-weight: 650; }
   .stop__evidence { border: 1.5px dashed var(--ink-soft); border-radius: var(--radius-pill); padding: 0 0.6em; }
 </style>

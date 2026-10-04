@@ -22,11 +22,8 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
 <Base title={`Timeline: ${data.title}`} description={`Who did what, and when, while building ${data.title}.`}>
   <div class="wrap tl" style={`--lanes:${lanes.length}`}>
     <header class="tl__head">
-      <a class="tl__project" href={`/projects/${slug}`}>
-        <span style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code}</span>{data.title}
-      </a>
-      <h1>Who did what</h1>
-      <p class="tl__lede">Every step of the build in time order. Each contributor runs as a line; a station on a line is something they did. An interchange across lines is something done together.</p>
+      <h1><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code}</span> Who did what</h1>
+      <p class="tl__lede">Every step of building the <a href={`/projects/${slug}`}>{data.title}</a>, in time order. Each contributor runs as a line; a station on a line is something they did. An interchange across lines is something done together.</p>
 
       <div class="tl__legend">
         <ul class="tl__keys" aria-label="How to read the lines">
@@ -36,7 +33,15 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
         </ul>
       </div>
 
-      <div class="tl__filters" role="group" aria-label="Show or hide lines">
+    </header>
+
+    {events.length === 0 && <p class="tl__empty">No timeline yet for this project.</p>}
+    <p class="tl__empty" data-all-off hidden>Every line is switched off. Turn a line back on to see its stations.</p>
+
+    <div class="tl__body">
+    <div class="tl__rail">
+      <p class="tl__rail-label" id="filters-label">Show or hide lines</p>
+      <div class="tl__filters" role="group" aria-labelledby="filters-label">
         {filters.map((f) => (
           <button type="button" class:list={['badge', 'filter', `badge--${f}`]} data-filter={f} aria-pressed="true">
             <span class="filter__tick" aria-hidden="true"></span>
@@ -44,11 +49,7 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
           </button>
         ))}
       </div>
-    </header>
-
-    {events.length === 0 && <p class="tl__empty">No timeline yet for this project.</p>}
-    <p class="tl__empty" data-all-off hidden>Every line is switched off. Turn a line back on to see its stations.</p>
-
+    </div>
     <div class="tl__days" data-events>
       {days.map((d) => (
         <section class="day" aria-labelledby={`day-${d.day}`}>
@@ -68,11 +69,12 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
                       <span class={`stop stop--${e.who}`} style={`--at:${span[0]}`}></span>
                     )}
                   </div>
+                  <p class="ev__when">
+                    {e.approx && <span class="ev__about">about</span>}
+                    <time datetime={e.at} title={e.approx ? 'Approximate: inferred from the records around it' : undefined}>{timeFmt.format(new Date(e.at))}</time>
+                    <span class={`ev__who ev__who--${e.who}`}>{e.who === 'together' ? (e.with ?? []).map((w) => names[w]).join(' + ') : names[e.who]}</span>
+                  </p>
                   <div class="ev__body">
-                    <p class="ev__meta">
-                      <time datetime={e.at} title={e.approx ? 'Approximate: inferred from the records around it' : undefined}>{e.approx ? 'about ' : ''}{timeFmt.format(new Date(e.at))}</time>
-                      <span class={`ev__who ev__who--${e.who}`}>{e.who === 'together' ? (e.with ?? []).map((w) => names[w]).join(' + ') : names[e.who]}</span>
-                    </p>
                     <h3>{e.title}</h3>
                     <dl>
                       <dt>What it was for</dt><dd>{e.why}</dd>
@@ -89,6 +91,7 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
           </ol>
         </section>
       ))}
+    </div>
     </div>
   </div>
 </Base>
@@ -115,15 +118,31 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
 <style>
   .tl { padding-block: var(--s-7) var(--s-8); --lane: 1.75rem; }
   .tl__head { display: grid; gap: var(--s-4); max-width: 64ch; margin-bottom: var(--s-6); }
-  .tl__project { justify-self: start; display: inline-flex; align-items: center; gap: var(--s-2); font-family: var(--font-sign); font-weight: 750; text-decoration: none; }
-  .tl__project span { padding: 0.3em 0.6em 0.2em; border-radius: var(--radius-pill); font-size: var(--step--1); }
   .tl__lede { font-size: var(--step-1); line-height: 1.5; color: var(--ink-soft); }
   .tl__keys { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); font-size: var(--step--1); }
   .tl__keys li { display: flex; align-items: center; gap: var(--s-3); }
   .key { flex: none; width: 2.25rem; height: var(--line-width); background: var(--ink); border-radius: 3px; }
   .key--dashed { background: repeating-linear-gradient(90deg, var(--ink) 0 8px, transparent 8px 14px); }
   .key--hub { height: 1.1rem; width: 2.25rem; background: var(--station-fill); border: 3px solid var(--ink); border-radius: var(--radius-pill); }
+  /* Filters stay in reach: a sticky bar on phones, a sticky rail beside the timeline on wide screens */
+  .tl__body { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .tl__rail { position: sticky; top: 0; z-index: 3; background: var(--ground); padding-block: var(--s-3); border-bottom: 1px solid var(--rule); }
+  .tl__rail-label { font-family: var(--font-sign); font-weight: 750; font-size: var(--step--1); color: var(--ink-soft); margin-bottom: var(--s-2); }
   .tl__filters { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .day h2 { top: var(--rail-h, 0); }
+  @media (max-width: 63.99rem) {
+    .tl { --rail-h: 4.35rem; }
+    /* one row of filters; it scrolls sideways inside itself if a project has many lines */
+    .tl__filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .filter { flex: none; font-size: var(--step--1); padding-inline: 0.8em; }
+    .tl__rail-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  }
+  @media (min-width: 64rem) {
+    .tl__body { grid-template-columns: minmax(0, 1fr) 15rem; gap: var(--s-7); align-items: start; }
+    .tl__rail { grid-column: 2; grid-row: 1; top: var(--s-5); border: 0; padding: 0; }
+    .tl__filters { flex-direction: column; align-items: stretch; }
+    .tl__days { grid-column: 1; grid-row: 1; }
+  }
   .filter { border: 0; cursor: pointer; min-height: 44px; font-size: var(--step-0); padding-inline: 0.9em; transition: opacity 0.2s, transform 0.15s var(--ease-out); }
   .filter:active { transform: scale(0.97); }
   .badge--together { --badge: var(--station-fill); color: var(--ink); box-shadow: inset 0 0 0 3px var(--ink); }
@@ -134,9 +153,13 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
   .tl__empty { padding: var(--s-5); border: 2px dashed var(--track); border-radius: 10px; max-width: 64ch; }
 
   .day + .day { margin-top: var(--s-6); }
-  .day h2 { font-size: var(--step-1); padding-block: var(--s-3); position: sticky; top: 0; background: var(--ground); z-index: 2; border-bottom: 1px solid var(--rule); }
+  .day h2 { font-size: var(--step-1); padding-block: var(--s-3); position: sticky; background: var(--ground); z-index: 2; border-bottom: 1px solid var(--rule); }
   .events { list-style: none; margin: 0; padding: 0; }
-  .ev { display: grid; grid-template-columns: calc(var(--lanes) * var(--lane)) minmax(0, 1fr); gap: var(--s-4); }
+  .ev { display: grid; grid-template-columns: calc(var(--lanes) * var(--lane)) 4.5rem minmax(0, 1fr); gap: var(--s-4); }
+  /* Timetable column: the time and who, level with the station marker */
+  .ev__when { display: flex; flex-direction: column; padding-top: 1.05rem; font-family: var(--font-sign); font-weight: 750; line-height: 1.25; font-size: var(--step--1); }
+  .ev__about { font-weight: 650; color: var(--ink-soft); font-size: 0.85em; }
+  .ev__when time { font-size: 1.15em; color: var(--ink); }
   .ev[hidden] { display: none; }
 
   /* The lines: one column per contributor, continuous from row to row */
@@ -156,8 +179,7 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
   .hub { left: calc(var(--from) * var(--lane) + var(--lane) / 2 - 0.8rem); width: calc((var(--to) - var(--from)) * var(--lane) + 1.6rem); height: 1.6rem; top: 1.05rem; border-radius: var(--radius-pill); background: var(--station-fill); border: 4px solid var(--ink); }
 
   .ev__body { padding-block: var(--s-4) var(--s-5); display: grid; gap: var(--s-2); max-width: 64ch; border-bottom: 1px solid var(--rule); }
-  .ev__meta { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: baseline; font-family: var(--font-sign); font-weight: 700; font-size: var(--step--1); }
-  time { font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+  time { font-variant-numeric: tabular-nums; }
   .ev__who--claude { color: var(--line-claude); }
   .ev__who--you { color: var(--line-you); }
   .ev__who--others { color: var(--line-others); }
@@ -170,7 +192,8 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
 
   @media (max-width: 40rem) {
     .tl { --lane: 1.2rem; }
-    .ev { gap: var(--s-3); }
+    .ev { gap: var(--s-2); grid-template-columns: calc(var(--lanes) * var(--lane)) 3.6rem minmax(0, 1fr); }
+    .ev__when { font-size: 0.8rem; }
     dl { grid-template-columns: 1fr; }
     dd + dt { margin-top: var(--s-2); }
     .stop { width: 1.1rem; height: 1.1rem; left: calc(var(--at) * var(--lane) + var(--lane) / 2 - 0.55rem); border-width: 3px; }

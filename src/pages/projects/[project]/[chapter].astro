@@ -38,8 +38,7 @@ const evidenceText = {
 
   <article class="wrap chapter" style={`--line:${data.color}`} data-project={project.slug} data-station={chapter.data.station}>
     <header class="chapter__head">
-      <p class="chapter__code"><span style={`background:${data.color};color:${inkOn(data.ink)}`}>{code}</span></p>
-      <h1>{chapter.data.title}</h1>
+      <h1><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{code}</span> {chapter.data.title}</h1>
       <p class="chapter__summary">{chapter.data.summary}</p>
       <p class="chapter__meta">{chapter.data.minutes} min read</p>
       {evidenceText[chapter.data.evidence] && (
@@ -78,7 +77,6 @@ const evidenceText = {
   .chapter { padding-block: var(--s-7) var(--s-8); }
   .chapter__head, .prose, .sources, .chapter :global(.check), .chapter :global(.next) { max-width: var(--measure); }
   .chapter__head { display: grid; gap: var(--s-3); margin-bottom: var(--s-7); }
-  .chapter__code span { font-family: var(--font-sign); font-weight: 800; padding: 0.35em 0.7em 0.25em; border-radius: var(--radius-pill); }
   .chapter__summary { font-size: var(--step-1); line-height: 1.5; color: var(--ink-soft); }
   .chapter__meta { font-family: var(--font-sign); font-weight: 650; color: var(--ink-soft); }
   .chapter__evidence { padding: var(--s-3) var(--s-4); border: 2px dashed var(--track); border-radius: 10px; font-size: var(--step--1); }

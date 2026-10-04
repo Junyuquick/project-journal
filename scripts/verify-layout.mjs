@@ -44,6 +44,20 @@ try {
     await page.close();
   }
 
+  // "You are here": with a stored reading position, home and line pages ring that station.
+  for (const [vp, width, height] of VIEWPORTS) {
+    const here = await browser.newPage({ viewport: { width, height }, reducedMotion: 'reduce' });
+    await here.goto(BASE + '/', { waitUntil: 'networkidle' });
+    await here.evaluate(() => localStorage.setItem('pj-pos-loft-concept', '4'));
+    for (const [name, path, sel] of [['home', '/', '.net__stop.is-here'], ['line', '/projects/loft-concept/', '.stop.is-here']]) {
+      await here.goto(BASE + path, { waitUntil: 'networkidle' });
+      check((await here.locator(sel).getAttribute('data-station')) === '4', `${vp} ${name}: You are here rings LC04`);
+      check((await here.locator('[data-continue]').textContent())?.includes('Continue at LC04'), `${vp} ${name}: button offers Continue at LC04`);
+      await here.screenshot({ path: `${OUT}/${vp}-${name}-here.png` });
+    }
+    await here.close();
+  }
+
   // Glossary popover: keyboard opens it, Escape closes it, focus returns to the term.
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   await page.goto(BASE + '/projects/loft-concept/the-publishing-robot/', { waitUntil: 'networkidle' });
