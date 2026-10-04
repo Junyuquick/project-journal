@@ -87,3 +87,14 @@ export function sourceLink(source: TimelineEvent['source'], repo: string | undef
   if (source.type === 'commit') return { href: `${repo}/commit/${source.ref}`, label };
   return { href: `${repo}/blob/main/${source.ref}`, label };
 }
+
+/** Index letter for a glossary term: ".htaccess" files under H, "301 redirect" under #. */
+export function indexLetter(term: string): string {
+  const first = term.replace(/^[^A-Za-z0-9]+/, '')[0] ?? '#';
+  return /[A-Za-z]/.test(first) ? first.toUpperCase() : '#';
+}
+
+/** "A notice..." reads naturally after "Think of it as:" as "a notice...". */
+export function asContinuation(sentence: string): string {
+  return sentence.replace(/^(A|An|The) /, (w) => w.toLowerCase());
+}

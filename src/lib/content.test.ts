@@ -68,3 +68,17 @@ describe('sourceLink', () => {
     expect(sourceLink({ type: 'commit', ref: 'x', url: 'https://e.com' }, undefined).href).toBe('https://e.com');
   });
 });
+
+describe('glossary helpers', () => {
+  it('files terms that start with punctuation or a number sensibly', async () => {
+    const { indexLetter } = await import('./content');
+    expect(indexLetter('.htaccess')).toBe('H');
+    expect(indexLetter('301 redirect')).toBe('#');
+    expect(indexLetter('git')).toBe('G');
+  });
+  it('lowercases a leading article so the analogy reads on from "Think of it as:"', async () => {
+    const { asContinuation } = await import('./content');
+    expect(asContinuation('A notice pinned inside')).toBe('a notice pinned inside');
+    expect(asContinuation('Lego bricks')).toBe('Lego bricks');
+  });
+});

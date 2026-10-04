@@ -2,7 +2,7 @@
 # evidence: witnessed = seen in the build conversation; reconstructed = from the redesign spec, plan and commits.
 # approx: true = the time is inferred from the records around it, not logged.
 events:
-  # ---------- Saturday 4 October: the redesign (reconstructed) ----------
+  # ---------- Sunday 4 October: the redesign (reconstructed) ----------
   - at: "2026-10-04T19:33:21+08:00"
     who: you
     title: Put the old website under version control
@@ -270,7 +270,7 @@ events:
     source: { type: commit, ref: "a75041c" }
     chapter: testing-and-verification
 
-  # ---------- Saturday night: the client admin (witnessed) ----------
+  # ---------- Sunday night: the client admin (witnessed) ----------
   - at: "2026-10-04T23:31:00+08:00"
     approx: true
     who: you

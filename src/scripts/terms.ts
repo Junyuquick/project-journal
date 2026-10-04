@@ -1,3 +1,4 @@
+import { asContinuation } from '../lib/content';
 // Glossary popovers: a term button opens a small definition panel under it.
 interface Term { id: string; term: string; definition: string; analogy?: string }
 
@@ -28,7 +29,7 @@ function show(button: HTMLButtonElement) {
     <div class="term-pop__foot"><a href="/glossary#${t.id}">Open in glossary</a><button type="button" class="term-pop__close">Close</button></div>`;
   panel.querySelector('.term-pop__name')!.textContent = t.term;
   panel.querySelector('.term-pop__def')!.textContent = t.definition;
-  if (t.analogy) panel.querySelector('.term-pop__analogy')!.textContent = `Think of it as: ${t.analogy}`;
+  if (t.analogy) panel.querySelector('.term-pop__analogy')!.textContent = `Think of it as: ${asContinuation(t.analogy)}`;
   panel.querySelector('.term-pop__close')!.addEventListener('click', () => close());
   document.body.append(panel);
   const r = button.getBoundingClientRect();

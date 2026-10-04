@@ -26,9 +26,10 @@ const { slug, code, color, ink, title, stops, current } = Astro.props;
 
 <script>
   for (const strip of document.querySelectorAll<HTMLElement>('[data-strip]')) {
-    const here = strip.querySelector<HTMLElement>('[aria-current="step"]');
+    // Centre the current station; measure the list item, whose offsetParent is the scrolling list.
+    const here = strip.querySelector<HTMLElement>('[aria-current="step"]')?.closest('li');
     const list = strip.querySelector<HTMLElement>('.strip__stops');
-    if (here && list) list.scrollLeft = here.offsetLeft - list.clientWidth / 2 + here.clientWidth / 2;
+    if (here && list) list.scrollLeft = here.offsetLeft - list.clientWidth / 2 + here.offsetWidth / 2;
   }
 </script>
 
