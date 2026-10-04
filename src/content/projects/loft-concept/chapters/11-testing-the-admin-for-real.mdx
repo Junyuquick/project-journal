@@ -1,0 +1,67 @@
+---
+title: Testing the admin for real
+station: 11
+summary: Two kinds of real-world test, a browser robot driving the admin in a sandbox and you using it on staging, and what each one proved.
+minutes: 8
+evidence: witnessed
+check:
+  - q: Why test the admin in a sandbox before you used it on staging?
+    a: To find problems without anyone's GitHub login and without touching the real repository. The sandbox caught two config problems and proved the photo paths were right before any real save.
+  - q: What did the Bedok Road edit test prove?
+    a: That editing an existing project in the admin changes only the field you edited; all nine photo paths stayed exactly the same.
+  - q: Why was the test data removed afterwards?
+    a: So nothing from testing could reach the live site at launch. The content was restored to exactly the state before the test, and the test page then returned 404 on staging.
+sources:
+  - label: "Commit 5a53a09: your test project"
+    url: https://github.com/Junyuquick/loft-concept-website/commit/5a53a09
+  - label: "Commit bf32090: your Bedok Road edit"
+    url: https://github.com/Junyuquick/loft-concept-website/commit/bf32090
+  - label: "Commit 7f4be1f: removing the test data"
+    url: https://github.com/Junyuquick/loft-concept-website/commit/7f4be1f
+---
+
+Tests of small pieces (LC07) cannot tell you whether the whole admin works for a real person. For that you have to use it. This was done twice, in two different ways.
+
+## Test 1: a robot in a sandbox
+
+Before you ever signed in, Claude needed to know what the admin actually writes when someone clicks Save. Reading Sveltia's documentation is not proof. So a [Playwright](glossary:playwright) script drove the real admin in a headless browser.
+
+Sveltia has a "Work with Local Repository" mode that edits a folder on your computer instead of GitHub. Normally it asks you to pick a folder. The script handed it a private, in-browser file system instead (browsers have one built in), filled with copies of the project files. That meant:
+
+- no GitHub login needed,
+- nothing real could be changed,
+- and afterwards every file the admin wrote could be read and checked.
+
+The script then clicked through the admin like a person would:
+
+| What it did | What it proved |
+|---|---|
+| Added a project with a real 2.4MB, 3264 by 2448 phone photo | The photo was saved as a 446KB, 2400 by 1800 WebP, with the path written the way Astro needs |
+| Built the site with that project | Astro accepted it and made its optimised AVIF and WebP sizes |
+| Edited Bedok Road's summary | Every photo path stayed identical |
+| Uploaded a second photo with the same file name | It became `phone-1.webp`; nothing was overwritten |
+| Deleted a project (later, for LC12) | Only the text file was removed; photos stayed |
+
+It also found things: the form only builds lower fields as you scroll down (so a test has to scroll), and before that, the two config problems described in LC08.
+
+## Test 2: you, on staging
+
+Then came the real test, the way the client will use it. You signed in at `staging.loftconcept.com.sg/admin/` with GitHub and did three things:
+
+1. **Added a project** called Admin Test Project, with a summary, a cover, a main photo and gallery photos taken on your phone.
+2. **Edited Bedok Road**, changing only the end of its summary.
+3. **Checked the guard rails**: the steps asked you to try a 5-character summary and a HEIC photo, then discard the draft.
+
+Each Save became a commit on GitHub (`5a53a09` and `bf32090`), and the robot published each one to staging about a minute later.
+
+## What the checks showed
+
+Claude pulled your commits and inspected them:
+
+- **The new project's photos** were all saved in the uploads folder with the right relative paths, shrunk to at most 2400px and between 48KB and 576KB each. The page was live on staging and appeared in the portfolio grid.
+- **Bedok Road** changed in exactly two places: the summary you edited, and a `coverPosition` field filled with its default value, which makes no visible difference. All nine photo paths were identical, and staging showed your new wording.
+- **No bad save got through**: only your two saves reached GitHub, so nothing from the guard-rail check was committed.
+
+## Leaving no trace
+
+Test data must never reach the live site. Before testing, Claude noted the exact commit to return to. Afterwards it deleted the test project and its photos and restored Bedok Road's file from that commit. A comparison against the starting point came back empty, and the test page returned 404 on staging.

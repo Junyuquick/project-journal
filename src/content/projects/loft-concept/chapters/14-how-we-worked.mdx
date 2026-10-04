@@ -1,0 +1,65 @@
+---
+title: How we worked together
+station: 14
+summary: The process behind every station on this line, who decided what, and the habits worth keeping for your next project.
+minutes: 8
+evidence: witnessed
+check:
+  - q: In what order did the admin work move from idea to code?
+    a: Clarifying questions, a design presented in parts, a written spec you approved, a written implementation plan, then building task by task with tests first, then a fresh review, then launch.
+  - q: Which kinds of decisions stayed with you?
+    a: Anything about the business, money, accounts or risk, such as hosting, the publish delay, launching together, deleting, and the go-ahead to go live. Claude decided technical details and recorded them for you.
+  - q: What is a "ruling"?
+    a: A decision Claude made during building when the plan or the docs turned out to be wrong, written down with its reason and what it would cost if wrong, so you can review it later.
+sources:
+  - label: The admin implementation plan
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/docs/superpowers/plans/2026-10-05-client-project-admin.md
+---
+
+The previous stations explain **what** was built. This one is about **how**: the process, and who did which part. You can see the same split on the timeline: blue stations are Claude's, green are yours, and interchanges are things done together.
+
+## The process, start to finish
+
+<RouteDiagram
+  title="From a request to a launched feature"
+  caption="Each stage needed your approval before the next began, apart from the building itself, which ran on the approved plan."
+  stations={[
+    { id: 'ask', label: 'Request', x: 0, y: 0, labelAt: 'n', note: 'You asked for a client-editable portfolio' },
+    { id: 'q', label: 'Questions', x: 2, y: 0, labelAt: 'n', note: 'One at a time: hosting, sign-in, delay, photos' },
+    { id: 'spec', label: 'Spec', x: 4, y: 0, labelAt: 'n', note: 'Written design, approved by you' },
+    { id: 'plan', label: 'Plan', x: 6, y: 0, labelAt: 'n', note: 'Small tasks with tests' },
+    { id: 'build', label: 'Build', x: 8, y: 2, labelAt: 's', note: 'Test first, task by task' },
+    { id: 'review', label: 'Review', x: 6, y: 2, labelAt: 's', note: 'A fresh reviewer reads everything' },
+    { id: 'live', label: 'Launch', x: 4, y: 2, labelAt: 's', note: 'Staging first, then live on your word' },
+  ]}
+  lines={[{ label: 'The process', color: 'var(--line-claude)', stations: ['ask', 'q', 'spec', 'plan', 'build', 'review', 'live'] }]}
+/>
+
+1. **Clarifying questions, one at a time.** Before any design, Claude asked what mattered: where the site is hosted, how the client signs in, whether a delay is acceptable. Your follow-up questions ("why isn't it instant?", "won't GitHub's 100MB limit be a problem?") changed and confirmed the design.
+2. **A design, then a written [spec](glossary:spec).** Presented in chat first, then written down and committed once you agreed.
+3. **An [implementation plan](glossary:implementation-plan).** The spec broken into five ordered tasks, each with its files, tests and expected results.
+4. **Building, test first.** Every change began with a failing [test](glossary:test) ([test-driven development](glossary:tdd), LC07).
+5. **A fresh [code review](glossary:code-review)** of the whole change before launch (LC12).
+6. **Staging, then launch** on your explicit go-ahead (LC13).
+
+This looks slow written down. In practice the admin went from request (11:31pm) to live (3:20am) in under four hours, including a 45-minute upload.
+
+## Who decided what
+
+A pattern runs through the timeline:
+
+- **You decided** anything about the business, accounts, money or risk: Vodien as the host, a short publish delay instead of a dynamic site, launching the redesign and admin together, making deletes possible, and when to go live. You also did everything inside your own accounts: the FTP account, the GitHub password secret, the client's GitHub account, the Cloudflare Worker, the OAuth app, the staging subdomain and the backup.
+- **Claude decided** technical details within what you approved, such as where uploaded photos go, the exact checks, and how to fix each problem found. Every such decision was written down as a "ruling", with its reason and what it would cost if wrong, and listed for you at the end.
+- **Together** meant real back-and-forth: choosing the approach, fixing the Worker's settings from your screenshot, and the launch itself, which Claude carried out on your earlier go-ahead.
+
+## Habits worth keeping
+
+- **Ask before building.** The question about hosting changed the entire deploy design.
+- **Write the decision down.** Specs, plans and rulings mean nobody has to remember why.
+- **Test first, and watch it fail.** Several real bugs were caught this way before they existed on any server.
+- **Run it for real.** Reading documentation missed problems that a browser test and a real Apache server caught straight away.
+- **Measure, do not guess.** When a timestamp or a number was not in the record, it was marked approximate, or left out.
+- **Keep secrets out of chat and code.** Passwords went straight into GitHub and Cloudflare settings.
+- **Practise on staging.** Nothing reached the real site until it had worked on the copy.
+
+That is the end of the Loft Concept line. The timeline shows every one of these steps in order, with who did each.

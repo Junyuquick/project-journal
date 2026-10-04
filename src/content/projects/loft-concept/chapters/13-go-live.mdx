@@ -1,0 +1,55 @@
+---
+title: Go-live
+station: 13
+summary: The surprise that the live site was still the old one, the decision to launch everything together, and the 2:33am merge that put the new site live.
+minutes: 7
+evidence: witnessed
+check:
+  - q: Why did the first live deploy also launch the whole redesign?
+    a: The redesign had only ever existed on the redesign branch; main, which publishes to the live site, still held only the first commit, and the live site was the old one. Merging redesign into main brought everything live at once.
+  - q: What was the rollback plan?
+    a: The zip backup of public_html you downloaded from cPanel before the merge. Re-uploading it restores the old site's files.
+  - q: Why merge at 2:33am?
+    a: The first full upload took about 45 minutes, during which the live site was a mix of old and new files. A quiet time meant few visitors would see that.
+sources:
+  - label: "Pull request #1: Launch redesigned site with client admin"
+    url: https://github.com/Junyuquick/loft-concept-website/pull/1
+  - label: "Commit 91275e0: recording the go-live"
+    url: https://github.com/Junyuquick/loft-concept-website/commit/91275e0
+---
+
+## A surprise found while planning
+
+While writing the admin plan, Claude checked what the live site actually was. It was still the **old** hand-written site. The redesign had only ever lived on a [branch](glossary:branch) called `redesign`; the `main` branch, which the robot publishes to the live site, held nothing but the first commit.
+
+That changed the meaning of "deploy". The first deploy of `main` would not just add an admin; it would **replace the entire website** with the redesign. So it was put to you as a decision, with three options: launch together, launch the redesign first, or not launch yet. You chose to launch together, after testing everything on staging.
+
+## Before the switch
+
+- **The whole site on staging.** Everything was tested there first (LC10 to LC12), including the old addresses, which all redirected correctly.
+- **The admin pointed at main.** Until launch, the admin saved to the `redesign` branch so tests landed on staging. Just before launch it was switched to `main`, test first.
+- **A backup.** You downloaded a zip of the live `public_html` folder from cPanel. If anything went wrong, re-uploading it restores the old site.
+- **Your go-ahead.** Before going to sleep, you gave three ordered tasks ending with "make the first live publish", and confirmed the backup was done.
+
+## The merge
+
+The launch itself was one action: a [pull request](glossary:pull-request) from `redesign` into `main`, then a [merge](glossary:merge). Claude did this at 2:33am Singapore time, chosen because the first live upload would take about 45 minutes, and during that time the live folder would hold a mix of old and new files. A quiet hour meant few visitors would notice.
+
+The robot did the rest: it built the site (15 minutes, without a cache on `main` yet) and uploaded all of it (31 minutes).
+
+## Checking the live site
+
+"It deployed" is not the same as "it works". So the same checks used on staging ran against `loftconcept.com.sg`:
+
+- Every page returned 200, including `/admin/`.
+- All 24 old-site addresses reached a working page.
+- `http://` and `www.` both redirected to `https://loftconcept.com.sg`.
+- The upload tracking file was blocked.
+- The live `robots.txt` allowed search engines, blocking only `/staging/`.
+- All 19 projects appeared on `/portfolio`, and the live admin pointed at `main` with sign-in configured.
+
+A small follow-up commit, recording the launch in the spec, then went live in about 10 seconds of build and upload, which is what everyday publishes look like from now on.
+
+## What the client knows
+
+The client's GitHub account, `loftconcept`, was already a collaborator (you had added it and they had accepted). The one thing to tell them: a change appears on the site about two minutes after Save, and if it does not, they should tell you, because a failed publish only emails the developer.

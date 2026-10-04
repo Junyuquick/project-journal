@@ -1,0 +1,65 @@
+---
+title: Review and safety fixes
+station: 12
+summary: A fresh reviewer read the whole change before launch, and what it found led to safe deleting and a few quiet protections.
+minutes: 9
+evidence: witnessed
+check:
+  - q: Why use a separate reviewer instead of the author checking their own work?
+    a: The author shares their own blind spots and assumptions. A reviewer starting fresh, with only the code, spec and plan, notices what the author has stopped seeing.
+  - q: What made deleting an original project dangerous, and how was it fixed?
+    a: Its old address, a home-page panel and testimonial links depended on it, so a delete failed every later publish. Old addresses now go to /portfolio, the home page falls back to another project of the same sector, and testimonials only link to projects that exist.
+  - q: What does "re-grade by effect" mean?
+    a: Judge a finding by what a real user would experience if it shipped, not by how the reviewer labelled it. A "minor" duplicate-title failure was upgraded because a second "Private Residence" is quite likely.
+sources:
+  - label: "Commit 4d5e345: fixes from the review"
+    url: https://github.com/Junyuquick/loft-concept-website/commit/4d5e345
+  - label: "Commit fc029b7: safe deleting"
+    url: https://github.com/Junyuquick/loft-concept-website/commit/fc029b7
+  - label: "Commit 9e21ba7: robots and the tracking file"
+    url: https://github.com/Junyuquick/loft-concept-website/commit/9e21ba7
+---
+
+Before launch, the whole change was handed to a fresh reviewer: a separate Claude agent that had not seen the conversation, given only the code changes, the spec, the plan and the list of decisions made along the way. This is [code review](glossary:code-review), and its value comes from that fresh pair of eyes.
+
+## What the review found
+
+No critical problems. Every one of the five risk areas named in the plan was confirmed safe against real runs. But it found four important issues, all with the same shape: **the admin form allowed an action that the build would then reject, silently**.
+
+| Finding | What the client would have experienced |
+|---|---|
+| Deleting one of the 19 original projects | Every later publish fails; the project still shows; nobody tells the client |
+| A project with no gallery photos | The schema allowed it, but a build check rejected it |
+| Two projects with the same title | A build check rejected duplicate page titles |
+| A failed publish is invisible to the client | The failure email goes to the developer, not the person who clicked Save |
+
+## Grading by effect
+
+The reviewer had labelled the duplicate-title problem as minor. Claude upgraded it: a second project called "Private Residence" is quite likely, and the result (a publish that silently fails) is the same as the important ones. Findings are graded by what a real person gets if it ships.
+
+## The fixes
+
+Each fix followed the test-first rhythm: reproduce the failure with a deliberate example, watch the check fail, fix it, watch it pass.
+
+- **Empty galleries** now publish. The check was changed to "a page shows a gallery exactly when the project has gallery photos". To prove it still catches real bugs, the gallery was removed from a built page on purpose, and the check caught it.
+- **Repeated titles** now publish, with a warning instead of a failure (duplicate titles only matter a little for search).
+- **Deleting** was first switched off as a stop-gap.
+
+## You asked for safe deleting
+
+You asked why Delete was off, then chose to make deleting genuinely safe. Before changing anything, the sandbox robot (LC11) deleted a project to see what Sveltia does: it removes only the text file, never the photos, so a photo shared with another project can never vanish.
+
+Then three changes, decided while you slept and recorded for you:
+
+1. **Old addresses.** If one of the 19 originals is deleted, its old `/projects/project-x` address now redirects to `/portfolio` instead of failing the build.
+2. **The home page.** It features Lornie Road (residential) and Horse City (commercial). If either is deleted, the panel uses the first remaining project of that sector, and hides if there is none. Horse City is the only commercial project, so deleting it hides that panel.
+3. **Testimonials** link to their project only if it still exists.
+
+The proof: a build with Lornie Road, Horse City and Jalan Lana removed passed every check, with no broken links. With them restored, the site was exactly as before.
+
+## Two quiet protections
+
+You also asked for two small things the reviewer had noticed:
+
+- **The staging copy** is also reachable at `loftconcept.com.sg/staging/`, so the live `robots.txt` now tells search engines to skip `/staging/`.
+- **The upload tracking file** lists every file on the site. Nothing secret, but no reason to share it, so Apache now answers requests for it with "forbidden" (403). Both were tested on a real Apache server.

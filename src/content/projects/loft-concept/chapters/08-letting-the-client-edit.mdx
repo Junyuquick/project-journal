@@ -1,0 +1,88 @@
+---
+title: Letting the client edit
+station: 8
+summary: Why a static site needs a different kind of editor, how Sveltia CMS was chosen, and the admin config that turns a form into project files.
+minutes: 10
+evidence: witnessed
+check:
+  - q: Why can the client not just edit the live pages directly?
+    a: The live site is a static site, made of finished files. Changes have to go into the source files in GitHub and be rebuilt; the admin is a form that edits those source files.
+  - q: GitHub has a 100MB limit. Why is that not a problem for the photos?
+    a: The 100MB limit is per file. Each shrunk photo is about 0.3 to 0.6MB. The repo as a whole is comfortable up to about 1GB and was 45MB, growing about 3 to 5MB per project.
+  - q: What stops the admin form and the project schema drifting apart over time?
+    a: A drift test that reads both the admin's config.yml and the schema Astro generates, and fails if any field, required flag, option or default differs.
+sources:
+  - label: The admin config (public/admin/config.yml)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/public/admin/config.yml
+  - label: The admin spec
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/docs/superpowers/specs/2026-10-04-client-project-admin-design.md
+  - label: "Commit f1c7354: the admin page"
+    url: https://github.com/Junyuquick/loft-concept-website/commit/f1c7354
+---
+
+After the redesign, adding a project meant a developer writing a Markdown file and uploading photos. You asked for the client to be able to add new projects and change existing ones through a user interface. This chapter is how that was decided and built.
+
+## The core problem
+
+The site is a [static site](glossary:static-site): visitors receive ready-made files. There is no database and nothing on the server that could accept an edit. So "editing the website" really means editing the **source files** in GitHub, then rebuilding.
+
+That points to a git-based [CMS](glossary:cms): a form that, when you click Save, writes your changes into the [repository](glossary:repository) as a [commit](glossary:commit). The robot (LC10) then rebuilds and uploads the site.
+
+## The questions you answered
+
+Several of the most important decisions came from your questions in our conversation:
+
+- **"Is this the UI of the website itself?"** No. It is a separate private page at `/admin`, not editing on top of the public pages. Visitors never see it.
+- **"Why isn't the change instant like other websites?"** Sites like WordPress build each page from a database on every visit, so changes are instant. This site is pre-built, which makes it fast and hard to hack, but a change has to be rebuilt and uploaded first. You accepted a short delay over rebuilding the site as a dynamic one.
+- **"Where is it hosted?"** Vodien, a [cPanel](glossary:cpanel) host. So the robot uploads the built site over [FTPS](glossary:ftps).
+- **"Photos stored in GitHub and Vodien?"** Yes, two copies with different jobs: one master copy of each photo in GitHub (about 2400px), and the optimised sizes on Vodien.
+- **"GitHub has a 100MB limit, won't this be a problem?"** No: that limit is per file, and each photo is under 1MB. The repository was 45MB and grows about 3 to 5MB per project.
+
+## Choosing Sveltia CMS
+
+[Sveltia CMS](glossary:sveltia) is a git-based CMS that runs entirely in the browser. The admin page is just two files:
+
+- `public/admin/index.html` loads Sveltia's code from a [CDN](glossary:cdn), at a fixed version so an update cannot break the client's admin without warning, and is marked `noindex` so Google ignores it.
+- `public/admin/config.yml` describes the form.
+
+## The config: a form that matches the schema
+
+The config lists the same fields as the project [schema](glossary:schema) from LC04, as form inputs. Here is a slice of it, in [YAML](glossary:yaml):
+
+```yaml
+collections:
+  - name: projects
+    folder: src/content/projects       # where the project files live
+    create: true                       # the client may add projects
+    delete: true                       # and delete them (made safe in LC12)
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: sector
+        widget: select
+        options: [{ label: Residential, value: residential }, { label: Commercial, value: commercial }]
+      - { name: summary, label: Summary, widget: text, minlength: 20 }
+      - { name: cover, label: Cover photo, widget: image, accept: 'image/jpeg,image/png,image/webp' }
+      - { name: gallery, label: Gallery, widget: image, multiple: true, required: false }
+```
+
+Plain English: each line is one form field. `widget` says what kind of input (text box, dropdown, image picker); `minlength: 20` matches the schema's 20-character minimum, so the form refuses a too-short summary before it is ever saved. `accept` lists the photo types allowed, which quietly refuses iPhone HEIC photos that the build could not process.
+
+**A test keeps them in step.** If someone later adds a field to the schema but forgets the form, a drift test fails. It compares the form against the schema Astro generates: same fields, same required ones, same dropdown options, same defaults.
+
+## Photos
+
+- New uploads are shrunk in the browser to WebP of at most 2400 by 2400 pixels before they are saved, so a 10MB phone photo becomes about half a megabyte.
+- They go into one shared folder, `src/assets/projects/uploads/`. Giving each project its own folder would have meant moving all 19 existing projects, so we checked Sveltia's documentation and chose the shared folder instead.
+
+## Two problems found by actually running it
+
+Reading documentation is not the same as running the thing. A browser test of the admin page caught two real problems before anything was committed:
+
+1. **Sveltia rejected the photo-path setting** as first written ("must be an absolute path starting with /"), but the site needs paths written relative to each project file. The fix was to set the folder at the project-collection level, where Sveltia does allow a relative path.
+2. **Empty optional fields would break the build.** Sveltia saves a field left empty as an empty value, which the schema rejects for things like the property type. One setting, `omit_empty_optional_fields: true`, leaves them out instead.
+
+Then a scripted browser drove the real admin in a sandbox: it added a project with a real 2.4MB phone photo (saved as a 446KB, 2400 by 1800 WebP), edited Bedok Road (every photo path stayed identical) and uploaded two photos with the same name (the second became `phone-1.webp`, nothing overwritten). Astro built the result successfully.
+
+## One routing fix
+
+The redesign's Apache rules turn off Apache's habit of adding a slash to folder addresses (it clashed with `/portfolio`). Side effect: `/admin` would have shown an error instead of the admin. A redirect from `/admin` to `/admin/` fixed it, written test-first.

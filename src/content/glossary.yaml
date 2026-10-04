@@ -1,8 +1,236 @@
+- id: apache
+  term: Apache
+  definition: The web server program Vodien runs. It receives each visitor's request and sends back the right file, following rules in .htaccess files.
+  analogy: A receptionist who hands out documents and follows a rulebook for where to send people.
+- id: api
+  term: API
+  definition: A set of rules that lets one program ask another program to do something, such as the admin asking GitHub to save a file.
+  analogy: A restaurant menu and order slip; you do not go into the kitchen, you send a request in an agreed format.
+- id: astro
+  term: Astro
+  definition: A framework that builds websites from components and content files, producing plain HTML pages with very little JavaScript.
+  analogy: "A printing press: you set up the plates once, and it prints finished pages."
+- id: branch
+  term: Branch
+  definition: A separate line of work in a git repository. Changes on one branch do not affect another until they are merged.
+  analogy: A photocopy of a draft you can scribble on without touching the original.
+- id: build
+  term: Build
+  definition: The step that turns source files (components, Markdown, photos) into the finished files a browser can show, ready to upload.
+  analogy: "Baking: the ingredients go in, a finished cake comes out, and the cake is what you serve."
+- id: canonical-url
+  term: Canonical URL
+  definition: A tag in a page naming its one official address, so search engines do not treat other ways of reaching the same page as duplicates.
+  analogy: Your legal name, even if friends call you by nicknames.
+- id: cdn
+  term: CDN
+  definition: Content delivery network. Servers around the world that hand out copies of common files quickly; the admin loads Sveltia's code from one.
+  analogy: Convenience stores in every neighbourhood instead of one warehouse across the island.
+- id: ci
+  term: CI (continuous integration)
+  definition: Automatically testing and building the code every time it changes, so problems are caught straight away.
+  analogy: A quality inspector who checks every batch as it comes off the line.
+- id: cloudflare-worker
+  term: Cloudflare Worker
+  definition: A small program that runs on Cloudflare's servers. Here it does one job, completing the "Sign in with GitHub" step while keeping a secret key off the website.
+  analogy: A trusted doorman who holds the master key so guests never have to.
+- id: cms
+  term: CMS
+  definition: Content management system. A tool that lets people edit a website's content through forms instead of code.
+  analogy: A shop's price-tag printer; staff update prices without rebuilding the shelves.
+- id: code-review
+  term: Code review
+  definition: Having someone other than the author read a change carefully before it is accepted, looking for bugs and risks.
+  analogy: A second pair of eyes proofreading a letter before it is posted.
+- id: commit
+  term: Commit
+  definition: A saved snapshot of changes in git, with a message, an author and a time. Every commit can be inspected or undone later.
+  analogy: A dated entry in a ledger that can never be torn out.
+- id: component
+  term: Component
+  definition: A reusable piece of a page, such as a header or a project card, written once and used wherever it is needed.
+  analogy: "A Lego brick: build it once, use it in many models."
+- id: content-collection
+  term: Content collection
+  definition: A folder of content files of the same kind (such as all projects) that Astro loads, checks against a schema and makes available to pages.
+  analogy: A card index where every card has the same printed fields.
+- id: cpanel
+  term: cPanel
+  definition: The control panel Vodien provides for managing hosting, such as domains, FTP accounts and files.
+  analogy: The fuse box and meter cupboard of your web hosting.
+- id: css
+  term: CSS
+  definition: The language that controls how a web page looks, such as colours, fonts, spacing and layout.
+  analogy: The interior design of a page, separate from its walls (the HTML).
+- id: deploy
+  term: Deploy
+  definition: Putting a new version of a site where visitors can reach it, here by uploading the built files to Vodien.
+  analogy: Opening the doors after the shop has been restocked.
+- id: design-token
+  term: Design token
+  definition: A named design value such as --umber or a spacing size, stored once and used everywhere by name.
+  analogy: "A paint colour code on a tin: everyone asks for the code, so every wall matches."
+- id: dns
+  term: DNS
+  definition: The internet's address book. It turns a name like staging.loftconcept.com.sg into the numeric address of the server.
+  analogy: A phone directory that turns a name into a number.
+- id: favicon
+  term: Favicon
+  definition: The small icon a browser shows on the tab and in bookmarks for a website.
+  analogy: The tiny logo on a name tag.
+- id: ffmpeg
+  term: ffmpeg
+  definition: A free command-line tool for converting and compressing video and audio.
+  analogy: A universal video converter that you operate by typing instructions.
+- id: framework
+  term: Framework
+  definition: A ready-made structure and set of tools for building a kind of software, so you write only what is unique to your project.
+  analogy: A house frame and plumbing already in place; you choose the rooms and finishes.
 - id: ftp
   term: FTP
   definition: File Transfer Protocol, a long-standing way to copy files from one computer to a web server.
   analogy: A courier that carries boxes of files from your computer to the server's shelf.
+- id: ftps
+  term: FTPS
+  definition: FTP with encryption, so passwords and files cannot be read by anyone watching the network on the way.
+  analogy: The same courier, but with a locked box.
+- id: git
+  term: Git
+  definition: Version control software that records every change to a project as commits, so you can see history, compare versions and undo mistakes.
+  analogy: Unlimited, labelled undo for a whole folder, shared with everyone working on it.
+- id: github
+  term: GitHub
+  definition: A website that stores git repositories online, with tools for reviewing changes and running automation.
+  analogy: A shared, backed-up library for your project's history.
+- id: github-actions
+  term: GitHub Actions
+  definition: GitHub's built-in robot that runs steps you describe in a workflow file whenever something happens, such as a new commit.
+  analogy: A factory line that starts by itself whenever a new order arrives.
+- id: hosting
+  term: Hosting
+  definition: Renting space on a server that is always online so a website can be reached by visitors. Loft Concept's host is Vodien.
+  analogy: Renting a shop unit for your website.
+- id: htaccess
+  term: .htaccess
+  definition: A settings file Apache reads in a website's folder, used here for redirects and access rules.
+  analogy: A notice pinned inside the shop door telling staff how to direct customers.
+- id: html
+  term: HTML
+  definition: The language that describes a web page's structure and content, such as headings, paragraphs, links and images.
+  analogy: The walls and rooms of a page, before decoration.
+- id: image-format
+  term: Image format
+  definition: The way an image file is stored. JPEG is the classic photo format; WebP and AVIF are newer formats that are much smaller at the same quality.
+  analogy: Different ways of folding the same map so it fits a smaller pocket.
+- id: implementation-plan
+  term: Implementation plan
+  definition: A document breaking an approved spec into small ordered tasks, each with its files, tests and checks.
+  analogy: A recipe written step by step from the menu description.
+- id: lighthouse
+  term: Lighthouse
+  definition: A tool from Google that scores a page for speed, accessibility, best practices and SEO.
+  analogy: A building inspector's checklist with a score for each area.
+- id: markdown
+  term: Markdown
+  definition: A simple way of writing formatted text with plain characters, such as # for a heading or * for a list item.
+  analogy: Shorthand notes that a printer knows how to typeset.
+- id: merge
+  term: Merge
+  definition: Combining the changes from one branch into another, such as bringing the finished redesign branch into main.
+  analogy: Folding your approved edits back into the master document.
 - id: oauth
   term: OAuth
   definition: A sign-in method that lets a website act on your behalf at another service (like GitHub) without ever seeing your password.
   analogy: A hotel key card the front desk gives you, instead of handing you the master key.
+- id: playwright
+  term: Playwright
+  definition: A tool that drives a real web browser from code, to click, type, take screenshots and check pages automatically.
+  analogy: A robot that uses the website exactly like a person would, but never gets tired.
+- id: pull-request
+  term: Pull request
+  definition: A request on GitHub to merge one branch into another, where the changes can be reviewed first.
+  analogy: Submitting your edits to an editor for approval before they go to print.
+- id: redirect-301
+  term: 301 redirect
+  definition: A permanent "this page has moved" signpost. Browsers follow it instantly and search engines move the old page's ranking to the new address.
+  analogy: A change-of-address card that the post office honours forever.
+- id: repository
+  term: Repository
+  definition: A project folder tracked by git, including its full history of commits. Often shortened to repo.
+  analogy: A filing cabinet that also remembers every past version of every file.
+- id: responsive-images
+  term: Responsive images
+  definition: Offering the browser several sizes of the same image so it downloads only the smallest one that will look sharp on that screen.
+  analogy: A shop offering shirts in S, M and L instead of one size for everyone.
+- id: robots-txt
+  term: robots.txt
+  definition: A file at the top of a site telling search engines which parts they may crawl, and where the sitemap is.
+  analogy: A sign at the gate saying which rooms visitors may enter.
+- id: schema
+  term: Schema
+  definition: A description of what a piece of data must contain (which fields, of what type). Content that breaks the schema is rejected.
+  analogy: A form with required boxes; a form with a box left empty is sent back.
+- id: secret
+  term: Secret (GitHub)
+  definition: A password or key stored encrypted in GitHub's settings. Workflows can use it, but nobody can read it back, and it never appears in the code.
+  analogy: A sealed envelope the robot can use but never open in public.
+- id: seo
+  term: SEO
+  definition: Search engine optimisation. Everything that helps a site appear, and rank well, in search results.
+  analogy: Making sure your shop has a clear sign and is on every map.
+- id: sitemap
+  term: Sitemap
+  definition: A file listing every public page of a site, so search engines can find them all.
+  analogy: A floor plan handed to a visitor at the entrance.
+- id: spec
+  term: Spec
+  definition: A design specification. The written agreement about what will be built, why and how success is checked, made before any code.
+  analogy: An architect's brief, signed off before construction starts.
+- id: staging
+  term: Staging
+  definition: A private copy of the website used to test changes before they go live.
+  analogy: A dress rehearsal before opening night.
+- id: static-site
+  term: Static site
+  definition: A website made of ready-built files. The server just hands them out; nothing is generated per visitor, so it is fast and secure, but changes need a rebuild.
+  analogy: A printed brochure, as opposed to a person answering questions live.
+- id: structured-data
+  term: Structured data
+  definition: Machine-readable facts embedded in a page (in a format called JSON-LD) that tell search engines what the page is about, such as a business and its address.
+  analogy: A barcode on a product, read by machines rather than people.
+- id: subdomain
+  term: Subdomain
+  definition: A name in front of a domain, such as staging in staging.loftconcept.com.sg, that can point to a different folder or server.
+  analogy: A side entrance with its own sign, on the same building.
+- id: sveltia
+  term: Sveltia CMS
+  definition: A content management system that runs entirely in the browser and saves edits as commits to a GitHub repository.
+  analogy: A web form that files its answers straight into your project's filing cabinet.
+- id: svg
+  term: SVG
+  definition: A vector image format that describes shapes mathematically, so it stays perfectly sharp at any size.
+  analogy: A recipe for drawing the picture, rather than a photo of it.
+- id: tdd
+  term: Test-driven development
+  definition: Writing a test before the code it checks, watching it fail, then writing just enough code to make it pass.
+  analogy: Writing the exam question first, then studying until you can answer it.
+- id: test
+  term: Test
+  definition: A small program that checks another program behaves as expected, and reports pass or fail.
+  analogy: "A smoke alarm: silent when things are fine, loud the moment they are not."
+- id: vitest
+  term: Vitest
+  definition: A tool that runs a project's tests and reports which pass and which fail.
+  analogy: The examiner who marks every test paper at once.
+- id: wcag-contrast
+  term: WCAG contrast
+  definition: The web accessibility standard's rule for how different text and background colours must be. Normal text needs at least 4.5 to 1.
+  analogy: Making sure the ink is dark enough to read on the paper.
+- id: workflow
+  term: Workflow (GitHub Actions)
+  definition: A file describing the steps GitHub Actions should run and when, such as test, build and upload on every new commit.
+  analogy: The instruction sheet pinned above the factory line.
+- id: yaml
+  term: YAML
+  definition: A plain-text format for settings and data that uses indentation and colons, such as the admin's config.yml.
+  analogy: A neatly indented checklist that a computer can read.

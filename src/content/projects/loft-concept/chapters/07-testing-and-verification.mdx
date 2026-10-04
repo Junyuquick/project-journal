@@ -1,0 +1,76 @@
+---
+title: Testing and verification
+station: 7
+summary: The layers of automatic checks that let anyone, including a robot, say "this works" with evidence instead of hope.
+minutes: 8
+evidence: mixed
+check:
+  - q: Why write a test before the code it tests?
+    a: Watching it fail first proves the test can actually catch the problem. A test written afterwards may pass for the wrong reason and never catch anything.
+  - q: What is the difference between npm test and verify-build?
+    a: npm test checks small pieces of logic (a colour ratio, a redirect list, the admin config). verify-build checks the finished pages in dist/ (titles, links, one heading, noindex where needed).
+  - q: Why deliberately break the config during testing?
+    a: To prove the test notices. Four deliberate breaks in the admin config were all caught, which is evidence the test guards what it claims to guard.
+sources:
+  - label: The build checker (scripts/verify-build.mjs)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/scripts/verify-build.mjs
+  - label: The live-server checker (scripts/verify-server.mjs)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/scripts/verify-server.mjs
+  - label: The admin config drift test (src/lib/cms-config.test.ts)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/src/lib/cms-config.test.ts
+---
+
+A [test](glossary:test) is a small program that checks another program. Instead of opening the site and looking, you run one command and it tells you exactly what passes and what fails. This project has several layers of them, each catching a different kind of mistake.
+
+## The layers
+
+<RouteDiagram
+  title="From a line of code to the live site"
+  caption="Each check catches a different kind of mistake, from a wrong calculation to a broken redirect on the real server."
+  stations={[
+    { id: 'unit', label: 'Unit tests', x: 0, y: 0, labelAt: 'n', note: 'npm test: small pieces of logic' },
+    { id: 'build', label: 'verify-build', x: 3, y: 0, labelAt: 'n', note: 'Checks every finished page' },
+    { id: 'browser', label: 'Browser checks', x: 6, y: 0, labelAt: 'n', note: 'Playwright and Lighthouse' },
+    { id: 'server', label: 'verify-server', x: 9, y: 0, labelAt: 'n', note: 'Status codes and redirects on a real server' },
+  ]}
+  lines={[{ label: 'Checks, in the order they run', color: 'var(--line-claude)', stations: ['unit', 'build', 'browser', 'server'] }]}
+/>
+
+1. **Unit tests** ([Vitest](glossary:vitest), run with `npm test`) check small pieces of logic: the contrast ratio, the redirect list, form validation, that testimonial highlights are word-for-word, and later that the admin's form matches the project schema.
+2. **verify-build** opens every finished page in `dist/` and checks: one main heading, a title and description, a canonical link, no broken internal links, every old address covered.
+3. **Browser checks** use [Playwright](glossary:playwright), which drives a real browser, and [Lighthouse](glossary:lighthouse), which scores speed, accessibility and SEO.
+4. **verify-server** sends real requests to a running server, local Apache or the live site, and checks every page returns 200 and every redirect points where it should.
+
+## Test first, then code
+
+Throughout the admin phase, every change followed the same rhythm, called [test-driven development](glossary:tdd):
+
+1. Write a test describing what should happen.
+2. Run it and **watch it fail**, for the expected reason.
+3. Write the smallest code that makes it pass.
+4. Run it again and watch it pass, then run every other test too.
+
+Step 2 is the one people skip, and the important one. A test that has never failed has never proved it can catch anything.
+
+## Checks that caught real bugs
+
+These are not hypothetical. In this project, checks caught:
+
+- **Redirect loops on Apache** (LC06), found only by testing on a real Apache server.
+- **An invalid admin config.** A browser test of the admin page showed Sveltia rejecting a setting before anything was committed.
+- **A broken deploy file.** The test for the publishing workflow could not even read it: one line was invalid YAML that GitHub would have rejected.
+- **A false alarm in a check.** The sitemap check flagged `/portfolio/admin-test-project` because it contains the word "admin". It was fixed to look only for the real `/admin` page.
+
+## Testing the tests
+
+How do you know a test works? Break the thing on purpose. When the admin's config test was written, four deliberate mistakes were introduced: a wrong option, a shorter minimum length, a missing field and a removed image type. The test caught all four, and passed again once the config was restored. That is evidence, not assumption.
+
+## Checks that need a real server
+
+Some behaviour only exists on the real server: Apache's rules, HTTPS, the robots file. So the same `verify-server` script runs against local Apache, then the staging site, then the live site, by changing one setting:
+
+```bash
+BASE_URL=https://loftconcept.com.sg node scripts/verify-server.mjs
+```
+
+One practical snag: macOS would not let Apache read files inside the Documents folder, so the local check ran from a temporary copy instead. Same files, same rules, different folder.

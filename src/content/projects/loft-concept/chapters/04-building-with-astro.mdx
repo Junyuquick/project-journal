@@ -1,0 +1,90 @@
+---
+title: Building with Astro
+station: 4
+summary: How 25 copy-pasted HTML files became components, one layout, a content collection of 19 projects and a single project template.
+minutes: 9
+evidence: reconstructed
+check:
+  - q: What does "build" mean for this site?
+    a: Running Astro to turn the components, layouts and Markdown project files into finished HTML pages and optimised images in a dist/ folder, which is what gets uploaded.
+  - q: Why are projects Markdown files instead of HTML pages?
+    a: Each project is just its facts (title, sector, summary, photos). One template turns every file into a page, so a design change happens once, and a new project only needs a new file.
+  - q: What stops a project file with a missing cover photo from going live?
+    a: The schema in src/content.config.ts. Astro checks every file against it during the build and stops with an error if a required field is missing or the wrong type.
+sources:
+  - label: The content schema (src/content.config.ts)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/src/content.config.ts
+  - label: The project template (src/pages/portfolio/[slug].astro)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/src/pages/portfolio/%5Bslug%5D.astro
+  - label: A project file (bedok-road.md)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/src/content/projects/bedok-road.md
+---
+
+The old site was written by hand: every page was a complete HTML file, so the header and footer existed 25 times. Change the menu, and you had to change 25 files and hope you did not miss one. [Astro](glossary:astro) removes that problem.
+
+## What Astro does
+
+Astro is a static site generator. You write the site as reusable pieces, and when you run a [build](glossary:build), Astro assembles them into ordinary [HTML](glossary:html) files. Visitors never run Astro; they just receive the finished pages.
+
+<RouteDiagram
+  title="What happens during a build"
+  caption="Components, layouts and the Markdown project files go into the build; finished HTML pages and optimised images come out in the dist folder."
+  stations={[
+    { id: 'md', label: 'Project files', x: 0, y: 1, note: '19 Markdown files with the facts of each project' },
+    { id: 'comp', label: 'Components', x: 3, y: 3, labelAt: 'e', note: 'Header, footer, cards, photos' },
+    { id: 'build', label: 'Astro build', x: 3, y: 1, labelAt: 'n', note: 'Checks the files and assembles pages' },
+    { id: 'dist', label: 'dist/ folder', x: 6, y: 1, note: 'Finished HTML, CSS and images' },
+  ]}
+  lines={[
+    { label: 'Content', color: 'var(--line-claude)', stations: ['md', 'build', 'dist'] },
+    { label: 'Code', color: 'var(--line-you)', stations: ['comp', 'build'] },
+  ]}
+/>
+
+## Components and one layout
+
+A [component](glossary:component) is a reusable piece of a page, saved in its own `.astro` file: the header, the footer, a project card, a photo, the booking call to action. A **layout** is the frame every page shares. Each page then only contains what is unique to it.
+
+So the header now exists once, in `Header.astro`. Fixing a menu link means editing one file, and all pages get the fix at the next build.
+
+## Projects as a content collection
+
+The biggest change was the 19 project pages. Each one became a small [Markdown](glossary:markdown) file holding only the project's facts, at the top in a block called front matter:
+
+```yaml
+---
+title: "Bedok Road"
+sector: residential
+summary: "Luxury distilled into every surface. A double-height kitchen..."
+cover: "../../assets/projects/bedok-road/01-20151026-147bedokroad-110.jpg"
+gallery:
+  - "../../assets/projects/bedok-road/02-20151026-147bedokroad-116.jpg"
+featured: false
+order: 2
+---
+```
+
+Together these files form a [content collection](glossary:content-collection). One template, `src/pages/portfolio/[slug].astro`, turns each file into a page. The square brackets mean "make one page for every project", so `bedok-road.md` becomes `/portfolio/bedok-road`.
+
+This decision paid off later in a way nobody planned for at the time: because projects are just files with known fields, the client admin (LC08) could be a simple form that edits those files.
+
+## A schema guards the files
+
+Every project file is checked against a [schema](glossary:schema), a description of the fields a project must have:
+
+```ts
+z.object({
+  title: z.string(),                                  // text, required
+  sector: z.enum(['residential', 'commercial']),      // one of two values
+  summary: z.string().min(20),                        // at least 20 characters
+  cover: image(),                                     // a real image file
+  gallery: z.array(image()).default([]),              // a list of images, may be empty
+  order: z.number().int(),                            // a whole number
+})
+```
+
+Plain English: `z.string()` means "must be text", `.min(20)` means "at least 20 characters", and `image()` means "must point at an image file that exists". If a file breaks a rule, the build stops with a message naming the file and the field. A mistake cannot reach the live site.
+
+## The other pages
+
+The same approach built the rest: the home page (hero video, statement, selected work, sector panels, process, a testimonial, booking), the portfolio index with a residential/commercial filter that still works without JavaScript, about, testimonials, and a contact form with plain-language error messages. Each page is mostly a short list of components in order.

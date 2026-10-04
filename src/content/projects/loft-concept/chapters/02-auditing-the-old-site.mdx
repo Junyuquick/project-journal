@@ -1,0 +1,60 @@
+---
+title: Auditing the old site
+station: 2
+summary: Before changing anything, measure what is actually wrong, write it down, and let the owner answer the questions only they can.
+minutes: 6
+evidence: reconstructed
+check:
+  - q: Why measure the old site before designing the new one?
+    a: So every change answers a real, measured problem (316MB of photos, copy-pasted pages, off-brand colours) instead of a hunch, and so the spec can be checked against those numbers later.
+  - q: Why was the right-click blocking removed?
+    a: It frustrated normal visitors and did not actually stop anyone copying images, so it cost something and protected nothing. You agreed in the spec (Q1).
+  - q: What is a spec for?
+    a: It is the written agreement about what will be built and why, made before any code, so both people can correct misunderstandings while they are still cheap.
+sources:
+  - label: The redesign spec
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/docs/superpowers/specs/2026-10-04-website-redesign-design.md
+---
+
+The first step of the redesign was not design at all. It was an audit: look at the existing site carefully, measure it, and write down what was wrong with evidence for each claim.
+
+## What the audit found
+
+The findings were recorded in a table in the [spec](glossary:spec), each with its evidence and its consequence. In plain words:
+
+| Problem | Evidence | What it meant |
+|---|---|---|
+| Wrong colours and font | The site used orange and Barlow; the Brand Guide specifies white, bone, stone and umber with Noah and Pagella | Re-colour everything from the Brand Guide |
+| Huge photos | 316MB of original photos; one project folder alone was 94MB; the hero video was 18MB | Build an image and video pipeline |
+| Copy-pasted pages | The same navigation and footer pasted into all 25 pages | Use shared layouts and components |
+| Nineteen hand-built project pages | One HTML file per project | One content collection plus one template |
+| Right-click blocked | Two lines of JavaScript disabled right-click and image dragging | Remove it (it annoys visitors and protects nothing) |
+| Blurry logo | The logo was a 41KB JPEG | Trace it into a vector |
+
+Notice the pattern: each row is a measurement, not an opinion. "The photos are too big" is a hunch; "316MB, with 94MB in one folder" is a fact that also tells you how much work the fix needs.
+
+## The spec
+
+The audit became the first section of a design spec, a written agreement about what to build. The spec went on to cover:
+
+- **The design system**: colours, type, spacing and motion, taken from the Brand Guide (LC03).
+- **Pages and their order of content**: home, portfolio, project, about, testimonials, contact.
+- **The technical choice**: [Astro](glossary:astro), a [framework](glossary:framework) that produces a [static site](glossary:static-site), chosen because the site is content-heavy and needs almost no JavaScript. Next.js was considered and rejected as heavier than needed.
+- **Success criteria that can be checked by a machine**, for example "every old URL still works" and "mobile Lighthouse performance of 90 or more".
+- **Risks**, such as losing Google rankings when URLs change.
+
+## Your part: answering the open questions
+
+Some decisions belong to the owner, not the builder. The spec ended with six open questions, and you wrote your answers straight into it:
+
+- **Right-click blocking?** Remove it.
+- **Is there a licence for the Noah font?** No, so the free Figtree font is used in its place, set up so swapping later is a one-line change.
+- **Is there a vector logo?** No, so it was traced from the JPEG.
+- **Are the testimonials real?** Yes, and cleared for use.
+- **Analytics and contact number?** Analytics wanted; the number +65 8533 7311.
+
+Later that evening you also curated the home page: Mount Sinai Road went on the home page instead of Jalan Lana, whose photos carry a third-party watermark, and the reply promise became "within one working day". Claude recorded these in a "Decisions recorded" list in the spec so nobody had to remember them.
+
+## Why this step matters
+
+Writing the spec first feels slow, but it is the cheapest moment to be wrong. Changing a sentence in a document takes seconds; changing a built website takes hours. It also gives a fixed thing to check the result against: at the end, every success criterion in the spec can be tested.

@@ -1,0 +1,75 @@
+---
+title: Images and video
+station: 5
+summary: How 316MB of photos and an 18MB video became fast pages, in two stages, without changing how the photos look.
+minutes: 7
+evidence: reconstructed
+check:
+  - q: Why are there two stages of image processing?
+    a: The one-off script shrinks the huge originals to a sensible 2400px master copy kept in the repo; then Astro, at every build, makes several smaller AVIF and WebP versions so each device downloads only the size it needs.
+  - q: What does the browser do with srcset and sizes?
+    a: It reads the list of available widths and how wide the image will be on screen, then downloads only the smallest file that will look sharp on that device.
+  - q: Why does the hero video have a poster image and no sound?
+    a: The poster shows instantly while the video loads, and a muted background video can autoplay; removing the audio track also makes the file smaller.
+sources:
+  - label: The image script (scripts/lib/process-image.mjs)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/scripts/lib/process-image.mjs
+  - label: The Photo component (src/components/Photo.astro)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/src/components/Photo.astro
+  - label: The video script (scripts/prepare-video.sh)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/scripts/prepare-video.sh
+---
+
+An interior design site lives on its photos, and the old site served them straight from the camera: 316MB in total, one project folder alone weighing 94MB. On a phone, that means a long wait and a large data bill. The fix came in two stages.
+
+## Stage 1: shrink the originals once
+
+A camera photo is often 6000 pixels wide. No screen needs that. A one-off script went through every legacy project and saved each photo again at a long edge of at most 2400 pixels:
+
+```js
+import sharp from 'sharp';
+
+export async function processImage(input, { maxEdge = 2400, quality = 82 } = {}) {
+  return sharp(input)
+    .rotate()
+    .resize({ width: maxEdge, height: maxEdge, fit: 'inside', withoutEnlargement: true })
+    .jpeg({ quality, mozjpeg: true })
+    .toBuffer();
+}
+```
+
+Plain English: `sharp` is an image library. `.rotate()` turns photos upright using the camera's orientation tag, `fit: 'inside'` keeps the photo's shape while making it fit inside a 2400 by 2400 box, `withoutEnlargement` never makes a small photo bigger, and quality 82 is high enough that you cannot see the difference. These 2400px copies became the master photos kept in the [repository](glossary:repository): 117 photos in 39MB instead of 316MB.
+
+## Stage 2: the right size for every screen
+
+Even 2400px is too big for a phone. So at every [build](glossary:build), Astro makes several versions of each photo, in modern [image formats](glossary:image-format) (AVIF and WebP, which are much smaller than JPEG at the same quality). The Photo component asks for these widths:
+
+```js
+const widths = [480, 800, 1200, 1600, 2400].filter((w) => w <= image.width);
+```
+
+The page then lists all of them for the browser, a technique called [responsive images](glossary:responsive-images). The browser knows its own screen size and picks the smallest file that will still look sharp. A phone might download the 800px WebP; a large desktop monitor the 2400px AVIF.
+
+This is why, later, the live site on Vodien holds about 250MB of images while the repository holds 39MB: each master photo exists there in several sizes and two formats.
+
+## The hero video
+
+The home page opens with a muted, looping video. The original was an 18MB `.mov` file. The tool [ffmpeg](glossary:ffmpeg) re-encoded it:
+
+```bash
+ffmpeg -i "$SRC" -an -vf "scale='min(1920,iw)':-2,fps=30" -c:v libx264 -crf "$CRF" -preset slow -movflags +faststart public/videos/hero.mp4
+```
+
+Reading it piece by piece:
+
+- `-an` removes the audio track (a background video does not need sound, and browsers only autoplay muted video).
+- `scale='min(1920,iw)':-2` makes it at most 1920 pixels wide, keeping its shape.
+- `-c:v libx264` encodes it as H.264, the format every browser plays.
+- `-crf` sets the quality-versus-size balance.
+- `+faststart` moves the file's index to the front, so playback starts before the whole file has downloaded.
+
+A second command makes a WebM version (smaller, for browsers that support it), and a third saves one frame as a **poster** image, which shows instantly while the video loads. The spec's target was a hero video of 3MB or less.
+
+## What did not change
+
+The photos themselves were never edited: no filters, no colour changes. The spec was explicit that the studio's real work must look like the real work. All the savings come from size and format, not from altering the pictures.

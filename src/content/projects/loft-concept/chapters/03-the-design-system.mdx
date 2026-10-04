@@ -1,0 +1,76 @@
+---
+title: The design system
+station: 3
+summary: How the Brand Guide became colour tokens, type rules and a test that keeps text readable, and how your feedback reshaped it.
+minutes: 8
+evidence: reconstructed
+check:
+  - q: What is a design token, and why use one instead of typing the colour each time?
+    a: A named value such as --umber that stores a design decision once. Every place uses the name, so changing the colour means editing one line instead of hunting through every file.
+  - q: What does the contrast test protect against?
+    a: Someone picking a text colour that is too pale on its background. It calculates the WCAG contrast ratio and fails the build if body text drops below 4.5 to 1.
+  - q: What did your feedback change about the project cards?
+    a: They were mixed sizes on desktop and the sector links looked like more cards, so the cards became an even two-column 3:2 grid and the sectors got their own distinct panels.
+sources:
+  - label: Colour tokens (src/styles/tokens.css)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/src/styles/tokens.css
+  - label: The contrast check (src/lib/contrast.ts)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/src/lib/contrast.ts
+  - label: "Commit 4c6c274: brand tokens and contrast tests"
+    url: https://github.com/Junyuquick/loft-concept-website/commit/4c6c274
+---
+
+A design system is the set of rules that makes every page look like it belongs to the same studio: which colours, which fonts, how much space, how things move. Writing these rules down once means no page can drift from them.
+
+## Colours as tokens
+
+The Brand Guide names four colours. In code they became [design tokens](glossary:design-token): named values stored once in a [CSS](glossary:css) file and used everywhere by name.
+
+```css
+:root {
+  --white: #FFFFFF;  /* surfaces, form fields */
+  --bone:  #F5F0E6;  /* the page background */
+  --stone: #B6A591;  /* hairlines, secondary text on dark */
+  --umber: #564739;  /* text, buttons, dark sections */
+}
+```
+
+Plain English: `:root` means "the whole page", and each `--name: value;` line creates a token. Elsewhere, a rule like `color: var(--umber);` says "use whatever umber currently is". If the studio ever adjusts its brown, one line changes and the whole site follows.
+
+The old orange had no place in the Brand Guide, so it was removed. The guide has no bright accent colour, so umber on bone became the colour for buttons and calls to action.
+
+## A test for readable text
+
+Pale text on a pale background is hard to read, especially for people with weaker eyesight. The web has a standard for this, [WCAG contrast](glossary:wcag-contrast): normal text needs a contrast ratio of at least 4.5 to 1 against its background.
+
+Instead of trusting our eyes, the redesign added a [test](glossary:test) that calculates the ratio from the actual colour codes:
+
+```ts
+// How bright a colour is, as the eye perceives it (0 = black, 1 = white)
+export function luminance(hex: string): number { /* ... */ }
+
+// Brighter + 0.05, divided by darker + 0.05: 21 is black on white, 1 is identical colours
+export function contrastRatio(fg: string, bg: string): number {
+  const [a, b] = [luminance(fg), luminance(bg)].sort((x, y) => y - x);
+  return (a + 0.05) / (b + 0.05);
+}
+```
+
+The test reads the colours straight out of the tokens file, so if anyone later picks a paler brown, the build fails before it reaches a visitor.
+
+## Type, space and motion
+
+- **Type.** The Brand Guide's font, Noah, needs a paid web licence, so Figtree stands in, stored behind a single `--font-sans` token so the swap is one line. TeX Gyre Pagella Italic is used sparingly for pull quotes. Fonts are self-hosted (served from the site itself) so pages do not wait on another company's server.
+- **Space.** A spacing scale based on 8px, generous section padding, and a reading width of about 65 characters per line, which is easier on the eye than long lines.
+- **Motion.** Subtle: images fade in as you scroll, links draw an underline. All of it switches off for visitors whose device asks for reduced motion.
+- **The logo** was traced from the 41KB JPEG into an [SVG](glossary:svg), a vector drawing that stays sharp at any size, and the [favicons](glossary:favicon) were generated from it.
+
+## Your feedback reshaped it
+
+A design system is only right when it looks right on the real site. After seeing the first build, you sent three rounds of feedback, and each became a commit:
+
+1. **Cards and sector panels.** On desktop the project cards were mixed sizes, and the Residential and Commercial links read as more project cards. Fix: an even two-column 3:2 grid, and sector panels with their own heading and text over the image.
+2. **Testimonials and the contact form.** The testimonials looked poorly laid out and the form's boxes and type looked poor. Fix: testimonials as aligned rows with one highlighted line each (a test makes sure the highlight is word-for-word from the real quote), and a lighter form with hairline fields.
+3. **A textured background.** The flat background felt sterile. Fix: a seamless 8KB paper texture generated from the Brand Guide's own page stock.
+
+This is a normal and healthy loop: build, look, react, adjust. The tokens and the tests make each adjustment safe, because a fix in one place cannot quietly break another.

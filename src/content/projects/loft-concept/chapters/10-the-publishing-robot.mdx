@@ -1,0 +1,97 @@
+---
+title: The publishing robot
+station: 10
+summary: The GitHub Actions workflow that tests, builds and uploads the site to Vodien on every change, the staging copy, and the first deploy that ran out of time.
+minutes: 11
+evidence: witnessed
+check:
+  - q: If a test fails during a publish, what happens to the live site?
+    a: Nothing. The upload is the last step and only runs if every step before it passed, so the live site keeps its previous version and the developer gets an email.
+  - q: Why does pushing to the redesign branch not change the live site?
+    a: The workflow uploads redesign to public_html/staging (the staging site) and only main to public_html (the live site).
+  - q: Why was the first upload so slow, and later ones fast?
+    a: The first upload had no record of what was on the server, so it sent all 1,775 files (about 250MB). It then leaves a tracking file, so later uploads send only the files that changed; with the image cache, a small change took about 10 seconds.
+sources:
+  - label: The workflow (.github/workflows/deploy.yml)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/.github/workflows/deploy.yml
+  - label: The workflow's tests (src/lib/deploy-workflow.test.ts)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/src/lib/deploy-workflow.test.ts
+  - label: "Commit a8a45a3: allowing 90 minutes"
+    url: https://github.com/Junyuquick/loft-concept-website/commit/a8a45a3
+---
+
+When the client clicks Save, a commit lands in GitHub. Something then has to turn that into a live web page. That something is a [workflow](glossary:workflow) run by [GitHub Actions](glossary:github-actions): a free robot that starts by itself whenever the repository changes.
+
+## The workflow, step by step
+
+The whole robot is one [YAML](glossary:yaml) file. Here is its heart, with a few lines (the Node setup, the image cache, the staging robots step and the username) left out for clarity:
+
+```yaml
+on:
+  push:
+    branches: [main, redesign]        # run whenever either branch changes
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false           # queue publishes, never run two at once
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest            # a fresh Linux machine, lent by GitHub
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7     # 1. download the repository
+      - run: npm ci                   # 2. install the exact tools
+      - run: npx astro sync           # 3. generate the schema the tests read
+      - run: npm test                 # 4. run every test
+      - run: npm run build            # 5. build the site
+      - run: npm run verify:build     # 6. check every built page
+      - name: Upload to Vodien        # 7. only if all of the above passed
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.VODIEN_FTP_HOST }}
+          password: ${{ secrets.VODIEN_FTP_PASSWORD }}
+          protocol: ftps
+          server-dir: ${{ github.ref_name == 'main' && './' || './staging/' }}
+```
+
+Read it as a recipe the robot follows on a borrowed computer:
+
+1. **Download** the repository.
+2. **Install** the exact versions of Astro and the other tools.
+3. **Test, build, verify.** If any of these fails, the robot stops right there. The upload never happens, the live site keeps its previous version, and an email goes to the developer.
+4. **Upload** the built `dist/` folder to Vodien over [FTPS](glossary:ftps), the encrypted form of [FTP](glossary:ftp).
+
+The last line decides where it goes. Pushes to `main` upload to `./` (the live site); anything else uploads to `./staging/`.
+
+## Keeping the password secret
+
+The FTP password never appears in the code, which is public. It is a GitHub [secret](glossary:secret): stored encrypted in the repository settings, usable by the robot, unreadable by anyone. You added it yourself through GitHub's settings page so it never passed through our chat, and Claude added the host and username, which are not sensitive.
+
+The FTP login itself is a dedicated `deploy` account you created in [cPanel](glossary:cpanel), limited to the website's folder, instead of the main cPanel login that controls everything (email included). When creating it, you checked the domain's document root first, which showed the site lives in `public_html`.
+
+## A staging copy
+
+Before anything touched the real site, the robot needed a safe place to practise. You created the [subdomain](glossary:subdomain) `staging.loftconcept.com.sg`, pointing at a `staging` folder. Since Vodien runs the domain's [DNS](glossary:dns), the address worked immediately.
+
+The workflow treats staging carefully: it replaces staging's `robots.txt` with one that tells search engines to stay away, so Google never indexes a half-finished copy. A test makes sure that replacement can never happen on `main`.
+
+## The first deploy ran out of time
+
+The first run was cancelled after exactly 30 minutes, the time limit Claude had set. Reading the log showed why:
+
+- Building took 13 minutes, because Astro had to optimise every photo from scratch.
+- The upload had sent 770 of 1,775 files in 16 minutes.
+
+Nothing was broken, and the live site was untouched. The full first upload simply needed about 40 minutes. Claude raised the limit to 90 minutes (with a test pinning it) and the next run succeeded: 15 minutes building, 43 minutes uploading.
+
+Two things make later publishes fast:
+
+- **The upload keeps a tracking file** on the server listing every file and its fingerprint, so next time it sends only what changed.
+- **The image cache.** Optimised photos are saved between runs, so unchanged photos are not reprocessed.
+
+The proof came right after: the next deploy built in 4 seconds and uploaded in 8.
+
+## Two publishes at once
+
+What if the client saves twice in quick succession? The `concurrency` setting queues them: the second waits for the first, and only the newest waiting one runs, so uploads never collide and the latest version always wins. This was confirmed on a real run, which waited 40 minutes behind the first long upload rather than overlapping it.

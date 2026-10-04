@@ -1,0 +1,73 @@
+---
+title: Keeping Google happy
+station: 6
+summary: Why changing a site's addresses can cost its search ranking, and the redirects, canonical tags, sitemap and structured data that prevent it.
+minutes: 8
+evidence: mixed
+check:
+  - q: What does a 301 redirect tell Google?
+    a: That a page has moved permanently to a new address, so Google should transfer the old page's ranking to the new one instead of treating it as gone.
+  - q: Why does every page carry a canonical tag?
+    a: The same page can be reached by several addresses (http, www, .html, trailing slash). The canonical tag names the one official address so Google does not split its ranking across duplicates.
+  - q: What happens to a deleted project's old address?
+    a: It redirects to /portfolio instead of returning "page not found", so old links and search results still land somewhere useful.
+sources:
+  - label: The redirect generator (src/lib/redirects.mjs)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/src/lib/redirects.mjs
+  - label: Structured data (src/lib/schema.ts)
+    url: https://github.com/Junyuquick/loft-concept-website/blob/main/src/lib/schema.ts
+  - label: The live sitemap
+    url: https://loftconcept.com.sg/sitemap-index.xml
+---
+
+[SEO](glossary:seo) (search engine optimisation) is everything that helps a site show up when people search, for example for "interior design Singapore". A redesign is a risky moment for it: if old addresses stop working, Google sees broken pages and the site can drop in the results.
+
+## The problem: the addresses changed
+
+The old site's project pages lived at addresses like `/projects/project-bedok-road.html`. The new site uses `/portfolio/bedok-road`. Google had spent years learning the old addresses, and other websites link to them.
+
+## Fix 1: redirects
+
+A [301 redirect](glossary:redirect-301) is a signpost on the old address that says "moved permanently, go here instead". Browsers follow it instantly, and Google moves the old page's ranking to the new one.
+
+One list of redirects is written in code, then turned into two files: `_redirects` for hosts like Cloudflare and Netlify, and [.htaccess](glossary:htaccess) for [Apache](glossary:apache), the web server Vodien runs:
+
+```js
+for (const slug of slugs) {
+  add(`/projects/project-${slug}`, `/portfolio/${slug}`);
+  add(`/projects/project-${slug}.html`, `/portfolio/${slug}`);
+}
+```
+
+All 24 addresses from the old site's sitemap are covered, and a check fails the build if any is missing. After go-live, each was tested on the live site and all 24 reached a working page.
+
+**One real bug along the way.** Tested on an actual Apache server, the first version made every page redirect to itself in an endless loop, because Apache re-runs the rules on its own internal steps. The fix was to rewrite the rules so they act only on the visitor's original request. This was only found because the redirects were tested on a real server, not just read.
+
+## Fix 2: one official address per page
+
+The same page can be reached as `http://`, `https://`, with `www.`, with `.html` or with a trailing slash. To Google those look like five different pages with identical content. Two things fix this:
+
+- Redirects send `http` and `www` to `https://loftconcept.com.sg`.
+- Every page carries a [canonical URL](glossary:canonical-url) tag naming its one official address.
+
+## Fix 3: a map for search engines
+
+- A [sitemap](glossary:sitemap) lists every public page so search engines find them all.
+- [robots.txt](glossary:robots-txt) tells search engines what they may crawl and where the sitemap is.
+- Pages that should not appear in search, such as the thank-you page, the 404 page and later `/admin`, are marked `noindex`.
+
+## Fix 4: describing the business in a standard format
+
+[Structured data](glossary:structured-data) is a block of machine-readable facts inside the page. The home page describes Loft Concept as a `HomeAndConstructionBusiness`, and each project page describes itself as a piece of work with its photo. Search engines use this for richer results.
+
+## In the admin phase
+
+When the client gained the admin (LC08), new protections were needed:
+
+- **New projects get all of this automatically**: their own `/portfolio/` address, title, description, structured data and sitemap entry.
+- **Deleting a project does not break old links.** When the client was allowed to delete projects (LC12), the old address of a deleted original project was set to redirect to `/portfolio` instead of becoming a dead end.
+- **Hidden things stay hidden.** `/admin`, the staging copy and an upload tracking file are kept out of search engines.
+
+## What is still to do
+
+After launch you asked what had been done for SEO. Two useful steps need your own accounts and are not done yet: submitting the sitemap in Google Search Console, and setting up a Google Business Profile, which often matters more than the website for local searches.

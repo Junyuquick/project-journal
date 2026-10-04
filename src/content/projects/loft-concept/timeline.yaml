@@ -1,0 +1,574 @@
+# Loft Concept website: who did what, in time order (Singapore time).
+# evidence: witnessed = seen in the build conversation; reconstructed = from the redesign spec, plan and commits.
+# approx: true = the time is inferred from the records around it, not logged.
+events:
+  # ---------- Saturday 4 October: the redesign (reconstructed) ----------
+  - at: "2026-10-04T19:33:21+08:00"
+    who: you
+    title: Put the old website under version control
+    why: So every later change could be tracked, compared and undone, and so Claude could work on a copy safely.
+    how: Created a git repository for the existing hand-written HTML site and made the first commit.
+    evidence: reconstructed
+    source: { type: commit, ref: "6511327" }
+    chapter: the-big-picture
+
+  - at: "2026-10-04T20:30:00+08:00"
+    approx: true
+    who: claude
+    title: Audited the old site and wrote the redesign spec
+    why: To find what was actually wrong before changing anything, and agree the plan in writing.
+    how: "Measured the old site: 316MB of unoptimised photos, an 18MB hero video, 25 copy-pasted pages, an off-brand orange and font, and right-click blocking. Wrote a design spec covering brand tokens, pages, the Astro framework choice, SEO and risks, with six open questions for you."
+    evidence: reconstructed
+    source: { type: spec, ref: "docs/superpowers/specs/2026-10-04-website-redesign-design.md" }
+    chapter: auditing-the-old-site
+
+  - at: "2026-10-04T21:00:00+08:00"
+    approx: true
+    who: you
+    title: Answered the spec's open questions
+    why: Some decisions only the owner can make, such as fonts that cost money, analytics and the phone number.
+    how: "Wrote answers into the spec: remove right-click blocking, use Figtree since there is no Noah web licence, no vector logo exists, testimonials are real, analytics wanted, contact number +65 8533 7311."
+    evidence: reconstructed
+    source: { type: spec, ref: "docs/superpowers/specs/2026-10-04-website-redesign-design.md" }
+    chapter: auditing-the-old-site
+
+  - at: "2026-10-04T21:37:37+08:00"
+    who: claude
+    title: Moved the old site aside and set up Astro
+    why: A framework replaces 25 copy-pasted HTML files with shared layouts and one template per page type.
+    how: Moved the legacy files into a legacy/ folder and created a new Astro project around them.
+    evidence: reconstructed
+    source: { type: commit, ref: "d95bccf" }
+    chapter: building-with-astro
+
+  - at: "2026-10-04T21:37:50+08:00"
+    who: claude
+    title: Pinned TypeScript 6
+    why: The type checker (astro check) needed a TypeScript version it supports.
+    how: Fixed the TypeScript dependency to version 6 in package.json.
+    evidence: reconstructed
+    source: { type: commit, ref: "3c75822" }
+    chapter: building-with-astro
+
+  - at: "2026-10-04T21:38:44+08:00"
+    who: claude
+    title: Added the brand colours, base styles and a contrast test
+    why: The Brand Guide's four colours had to replace the old orange, and text must stay readable against them.
+    how: Wrote CSS variables (design tokens) for white, bone, stone and umber, plus a test that fails if text colours drop below the WCAG contrast minimum.
+    evidence: reconstructed
+    source: { type: commit, ref: "4c6c274" }
+    chapter: the-design-system
+
+  - at: "2026-10-04T21:39:25+08:00"
+    who: claude
+    title: Traced the logo into a vector
+    why: The only logo was a 41KB JPEG, which looks blurry when scaled and cannot change colour.
+    how: Converted the JPEG mark into an SVG with a tracing script, then made favicons from it.
+    evidence: reconstructed
+    source: { type: commit, ref: "39ccf86" }
+    chapter: the-design-system
+
+  - at: "2026-10-04T21:43:05+08:00"
+    who: claude
+    title: Built the image and video pipeline
+    why: 316MB of original photos and an 18MB video would make the site painfully slow.
+    how: A script resized every photo to about 2400px, and the hero video was re-encoded to small MP4 and WebM files with a poster frame. Astro then makes AVIF and WebP sizes at build time.
+    evidence: reconstructed
+    source: { type: commit, ref: "3c8afe6" }
+    chapter: images-and-video
+
+  - at: "2026-10-04T21:44:01+08:00"
+    who: claude
+    title: Turned 19 project pages into one content collection
+    why: Nineteen hand-built project pages would mean nineteen places to fix every change.
+    how: Each project became one Markdown file with structured fields (title, sector, photos), checked by a schema and rendered by a single template.
+    evidence: reconstructed
+    source: { type: commit, ref: "5293a8a" }
+    chapter: building-with-astro
+
+  - at: "2026-10-04T21:44:34+08:00"
+    who: claude
+    title: Generated redirects from every old address
+    why: Google and other sites link to the old URLs; breaking them would lose search rankings and visitors.
+    how: One redirect list produces both a Cloudflare/Netlify _redirects file and an Apache .htaccess file, mapping /projects/project-x to /portfolio/x and .html pages to clean paths.
+    evidence: reconstructed
+    source: { type: commit, ref: "45cbaa8" }
+    chapter: keeping-google-happy
+
+  - at: "2026-10-04T21:45:52+08:00"
+    who: claude
+    title: Built the base layout, header menu and footer
+    why: Every page shares the same frame, so it is written once.
+    how: An Astro layout component with the header, an accessible menu dialog and the footer.
+    evidence: reconstructed
+    source: { type: commit, ref: "f785470" }
+    chapter: building-with-astro
+
+  - at: "2026-10-04T21:48:42+08:00"
+    who: claude
+    title: Built the home page
+    why: The home page leads with the portfolio and a clear path to booking.
+    how: Hero video, statement, selected work, sector panels, process steps, a testimonial and the booking call to action, from shared components.
+    evidence: reconstructed
+    source: { type: commit, ref: "7204fd3" }
+    chapter: building-with-astro
+
+  - at: "2026-10-04T21:50:02+08:00"
+    who: claude
+    title: Built the portfolio page with a sector filter
+    why: Visitors want to see only residential or only commercial work.
+    how: A grid of project covers with filter buttons that also work without JavaScript.
+    evidence: reconstructed
+    source: { type: commit, ref: "ca2eceb" }
+    chapter: building-with-astro
+
+  - at: "2026-10-04T21:56:11+08:00"
+    who: claude
+    title: Built the project page template
+    why: One template renders all 19 projects the same careful way.
+    how: Hero photo, facts strip, story, gallery and next project, all read from each project's Markdown file.
+    evidence: reconstructed
+    source: { type: commit, ref: "f28e505" }
+    chapter: building-with-astro
+
+  - at: "2026-10-04T21:57:04+08:00"
+    who: claude
+    title: Built the about and testimonials pages
+    why: The studio story and real client words build trust.
+    how: Two Astro pages using the same layout and the testimonials collection.
+    evidence: reconstructed
+    source: { type: commit, ref: "34d2f7a" }
+    chapter: building-with-astro
+
+  - at: "2026-10-04T21:58:22+08:00"
+    who: claude
+    title: Built the contact form, thank-you, 404 and privacy pages
+    why: The site's main goal is booking consultations, so the form has to be easy and forgiving.
+    how: A Formspree form with inline validation, a thank-you page, a branded 404 and a privacy page.
+    evidence: reconstructed
+    source: { type: commit, ref: "a39a344" }
+    chapter: building-with-astro
+
+  - at: "2026-10-04T21:58:46+08:00"
+    who: claude
+    title: Added structured data, robots.txt and sitemap checks
+    why: Search engines understand a page better when it describes itself in a standard format.
+    how: JSON-LD describing the business and each project, a robots.txt pointing at the sitemap, and checks on both.
+    evidence: reconstructed
+    source: { type: commit, ref: "11ba3dc" }
+    chapter: keeping-google-happy
+
+  - at: "2026-10-04T22:01:26+08:00"
+    who: claude
+    title: Added build, browser and Lighthouse verification
+    why: Calling something done should rest on checks that run, not on looking at it.
+    how: A script that inspects every built page, a Playwright browser pass and a Lighthouse score check.
+    evidence: reconstructed
+    source: { type: commit, ref: "a9e5f0d" }
+    chapter: testing-and-verification
+
+  - at: "2026-10-04T22:03:26+08:00"
+    who: claude
+    title: Fixed canonical URLs and the current-page menu marker
+    why: With Astro's build.format set to 'file', page URLs ended in .html, so canonical tags pointed at addresses that redirect.
+    how: A small cleanPath helper strips .html for canonical tags and navigation.
+    evidence: reconstructed
+    source: { type: commit, ref: "6fe4985" }
+    chapter: keeping-google-happy
+
+  - at: "2026-10-04T22:10:00+08:00"
+    approx: true
+    who: you
+    title: Curated what goes on the home page
+    why: The owner knows which projects best represent the studio.
+    how: "Chose Mount Sinai Road for the home page (Jalan Lana's photos carry a third-party watermark), a reply promise of one working day, and the Brand Guide's own mission wording."
+    evidence: reconstructed
+    source: { type: commit, ref: "800aedf" }
+    chapter: auditing-the-old-site
+
+  - at: "2026-10-04T22:16:55+08:00"
+    who: claude
+    title: Applied and recorded your curation decisions
+    why: Decisions should live in the spec so nobody has to remember them.
+    how: Updated the home page content and added a "Decisions recorded" list to the spec.
+    evidence: reconstructed
+    source: { type: commit, ref: "800aedf" }
+    chapter: auditing-the-old-site
+
+  - at: "2026-10-04T22:45:00+08:00"
+    approx: true
+    who: you
+    title: Gave feedback on the project cards and sector panels
+    why: On desktop the cards were mixed sizes, and the Residential/Commercial links looked like more project cards.
+    how: Reviewed the site and reported both problems.
+    evidence: reconstructed
+    source: { type: commit, ref: "057f60b" }
+    chapter: the-design-system
+
+  - at: "2026-10-04T22:51:57+08:00"
+    who: claude
+    title: Made project cards equal and sector panels distinct
+    why: To fix your feedback.
+    how: Cards became a two-column 3:2 grid; the sectors section got its own heading and text-on-image panels.
+    evidence: reconstructed
+    source: { type: commit, ref: "057f60b" }
+    chapter: the-design-system
+
+  - at: "2026-10-04T23:00:00+08:00"
+    approx: true
+    who: you
+    title: Gave feedback on testimonials and the contact form
+    why: Testimonials looked poorly laid out on desktop, and the form's boxes and type looked poor.
+    how: Reviewed both pages and reported it.
+    evidence: reconstructed
+    source: { type: commit, ref: "076faa7" }
+    chapter: the-design-system
+
+  - at: "2026-10-04T23:04:02+08:00"
+    who: claude
+    title: Reworked testimonials and the contact form
+    why: To fix your feedback.
+    how: Testimonials became aligned rows with one verbatim highlighted line each (a test checks it is verbatim); the form got hairline fields and two-column pairing on desktop.
+    evidence: reconstructed
+    source: { type: commit, ref: "076faa7" }
+    chapter: the-design-system
+
+  - at: "2026-10-04T23:06:00+08:00"
+    approx: true
+    who: you
+    title: Asked for a textured background
+    why: The flat background felt sterile.
+    how: Requested a texture like the Brand Guide's paper.
+    evidence: reconstructed
+    source: { type: commit, ref: "eaea59e" }
+    chapter: the-design-system
+
+  - at: "2026-10-04T23:09:10+08:00"
+    who: claude
+    title: Added the bone paper texture
+    why: To answer your request with something light enough not to slow the page.
+    how: Generated a seamless 8KB paper tile from the Brand Guide's page stock and used it as the page background.
+    evidence: reconstructed
+    source: { type: commit, ref: "eaea59e" }
+    chapter: the-design-system
+
+  - at: "2026-10-04T23:20:21+08:00"
+    who: claude
+    title: Stopped tracking the legacy site in git
+    why: The old files were large and no longer needed in history going forward.
+    how: Added legacy/ to .gitignore and kept a copy of the old sitemap so checks still work.
+    evidence: reconstructed
+    source: { type: commit, ref: "8052b1d" }
+    chapter: testing-and-verification
+
+  - at: "2026-10-04T23:29:36+08:00"
+    who: claude
+    title: Fixed Apache redirect loops and added a live-server checker
+    why: On a real Apache server every page redirected to itself.
+    how: Rewrote the rules as mod_rewrite guarded by REDIRECT_STATUS, turned off DirectorySlash, and wrote verify-server.mjs to test status codes on any server.
+    evidence: reconstructed
+    source: { type: commit, ref: "a75041c" }
+    chapter: testing-and-verification
+
+  # ---------- Saturday night: the client admin (witnessed) ----------
+  - at: "2026-10-04T23:31:00+08:00"
+    approx: true
+    who: you
+    title: Asked for a way for the client to add and edit projects
+    why: The client should not need a developer every time they finish a project.
+    how: Asked for the client to manage projects through a user interface.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: letting-the-client-edit
+
+  - at: "2026-10-04T23:33:00+08:00"
+    approx: true
+    who: together
+    with: [claude, you]
+    title: Chose the approach for the admin
+    why: A static site cannot be edited live, so the choice of tool depends on hosting and how changes publish.
+    how: "Claude explained the options; you chose Vodien hosting, a separate /admin page, a 2-3 minute publish delay instead of rebuilding as a dynamic site, and kept photos in GitHub after asking about the 100MB limit."
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: letting-the-client-edit
+
+  - at: "2026-10-04T23:42:04+08:00"
+    who: claude
+    title: Wrote the admin design spec
+    why: To agree the design in writing before building.
+    how: Spec covering Sveltia CMS, GitHub sign-in through a Cloudflare Worker, a GitHub Action deploying over FTPS to Vodien, testing and risks.
+    evidence: witnessed
+    source: { type: commit, ref: "d87c2aa" }
+    chapter: letting-the-client-edit
+
+  - at: "2026-10-04T23:44:35+08:00"
+    who: claude
+    title: Settled where uploaded photos go
+    why: Sveltia can only give each project its own photo folder if every project is restructured.
+    how: Checked Sveltia's docs and chose one shared uploads folder, so no existing project moves.
+    evidence: witnessed
+    source: { type: commit, ref: "0f29d1a" }
+    chapter: letting-the-client-edit
+
+  - at: "2026-10-04T23:52:00+08:00"
+    approx: true
+    who: you
+    title: Created the deploy FTP account on Vodien
+    why: The publishing robot needs its own login that can only reach the website folder.
+    how: In cPanel, created deploy@loftconcept.com.sg rooted at public_html (after checking the domain's document root).
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: the-publishing-robot
+
+  - at: "2026-10-04T23:56:43+08:00"
+    who: you
+    title: Stored the FTP password as a GitHub secret
+    why: The password must never appear in code or chat, but the robot needs it.
+    how: Added VODIEN_FTP_PASSWORD under the repo's Actions secrets.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: the-publishing-robot
+
+  - at: "2026-10-04T23:57:08+08:00"
+    who: claude
+    title: Added the FTP host and username secrets
+    why: To keep all deploy settings in one safe place.
+    how: Set VODIEN_FTP_HOST and VODIEN_FTP_USER with the GitHub CLI.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: the-publishing-robot
+
+  - at: "2026-10-04T23:59:27+08:00"
+    who: you
+    title: Created the client's GitHub account
+    why: The client signs in to the admin with GitHub.
+    how: Registered the loftconcept account and shared the username.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: sign-in
+
+  - at: "2026-10-05T00:05:00+08:00"
+    approx: true
+    who: together
+    with: [claude, you]
+    title: Decided to launch the redesign and the admin together
+    why: Claude found the live site was still the old one, so the first deploy would launch the whole redesign.
+    how: You chose to test everything on a staging copy first and go live only on your word.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: go-live
+
+  - at: "2026-10-05T00:08:54+08:00"
+    who: claude
+    title: Wrote the implementation plan
+    why: Small, testable steps in order, so nothing is forgotten.
+    how: A five-task plan with tests written before code and the files each task touches.
+    evidence: witnessed
+    source: { type: commit, ref: "40ea612" }
+    chapter: how-we-worked
+
+  - at: "2026-10-05T00:11:47+08:00"
+    who: claude
+    title: Made /admin load on Apache
+    why: With DirectorySlash off, /admin would have returned an error instead of the admin page.
+    how: A test first, then a redirect from /admin to /admin/ in both .htaccess and _redirects.
+    evidence: witnessed
+    source: { type: commit, ref: "fe5b25a" }
+    chapter: letting-the-client-edit
+
+  - at: "2026-10-05T00:22:36+08:00"
+    who: claude
+    title: Built the admin page and its config
+    why: The form the client actually uses.
+    how: Sveltia CMS from a CDN, a config whose fields match the project schema (checked by a drift test), uploads shrunk to 2400px WebP. A browser test caught two real config problems before commit.
+    evidence: witnessed
+    source: { type: commit, ref: "f1c7354" }
+    chapter: letting-the-client-edit
+
+  - at: "2026-10-05T00:23:17+08:00"
+    who: claude
+    title: Built the publishing robot
+    why: Every save should test, build and upload the site without anyone touching it.
+    how: A GitHub Actions workflow that runs tests, builds, verifies, then uploads changed files to Vodien over FTPS; redesign goes to staging, main goes live.
+    evidence: witnessed
+    source: { type: commit, ref: "daa6791" }
+    chapter: the-publishing-robot
+
+  - at: "2026-10-05T00:28:00+08:00"
+    approx: true
+    who: you
+    title: Created the staging subdomain
+    why: A private copy of the site to test on before anything goes live.
+    how: In cPanel, added staging.loftconcept.com.sg pointing at public_html/staging.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: the-publishing-robot
+
+  - at: "2026-10-05T00:53:32+08:00"
+    who: claude
+    title: First deploy hit the 30 minute limit
+    why: A first upload sends every file, and the job was cut off part way.
+    how: Read the log (770 of 1,775 files uploaded), worked out the full upload needs about 40 minutes, and checked the live site was untouched.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: the-publishing-robot
+
+  - at: "2026-10-05T00:54:16+08:00"
+    who: claude
+    title: Raised the deploy time limit to 90 minutes
+    why: So the one-time full upload can finish.
+    how: A test that pins the limit, then the change.
+    evidence: witnessed
+    source: { type: commit, ref: "a8a45a3" }
+    chapter: the-publishing-robot
+
+  - at: "2026-10-05T01:06:38+08:00"
+    who: you
+    title: Deployed the sign-in helper on Cloudflare
+    why: GitHub sign-in needs a secret kept on a server, and the site has none.
+    how: Used Sveltia's Deploy to Cloudflare button, which created the sveltia-cms-auth Worker.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: sign-in
+
+  - at: "2026-10-05T01:10:00+08:00"
+    approx: true
+    who: you
+    title: Registered the GitHub OAuth app
+    why: GitHub needs to know which app is asking to sign people in, and where to send them back.
+    how: Created Loft Concept Admin with the Worker's /callback address and expiring tokens turned off.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: sign-in
+
+  - at: "2026-10-05T01:13:04+08:00"
+    who: claude
+    title: Connected the admin to the sign-in Worker
+    why: The admin has to know where its sign-in helper lives.
+    how: Added base_url to the admin config, test first.
+    evidence: witnessed
+    source: { type: commit, ref: "78e9a8e" }
+    chapter: sign-in
+
+  - at: "2026-10-05T01:20:00+08:00"
+    approx: true
+    who: together
+    with: [claude, you]
+    title: Fixed the Worker's missing settings
+    why: Claude's check showed the Worker reported "client ID or secret is not configured".
+    how: Claude read the screenshot and spotted the Client ID typed as a variable name; you re-entered the three variables and redeployed; Claude re-tested and confirmed only your two domains are allowed.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: sign-in
+
+  - at: "2026-10-05T01:53:06+08:00"
+    who: claude
+    title: Verified the staging site
+    why: To prove the robot works before you test the admin.
+    how: Ran the live-server checker against staging (every page and redirect passed), confirmed staging hides from search engines and the live site was untouched.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: the-publishing-robot
+
+  - at: "2026-10-05T02:06:41+08:00"
+    who: you
+    title: Added a test project in the admin
+    why: The real end-to-end test, as the client would use it.
+    how: Signed in on staging, created Admin Test Project with phone photos, and saved.
+    evidence: witnessed
+    source: { type: commit, ref: "5a53a09" }
+    chapter: testing-the-admin-for-real
+
+  - at: "2026-10-05T02:08:50+08:00"
+    who: you
+    title: Edited Bedok Road in the admin
+    why: Editing existing projects must not break their photos.
+    how: Changed only the summary's ending and saved.
+    evidence: witnessed
+    source: { type: commit, ref: "bf32090" }
+    chapter: testing-the-admin-for-real
+
+  - at: "2026-10-05T02:10:35+08:00"
+    who: claude
+    title: Checked the saved files and cleaned up
+    why: To confirm what the admin really wrote, then leave no test data behind.
+    how: Checked the photo paths and sizes, and that Bedok Road changed only its summary; then removed the test project and restored Bedok Road.
+    evidence: witnessed
+    source: { type: commit, ref: "7f4be1f" }
+    chapter: testing-the-admin-for-real
+
+  - at: "2026-10-05T02:14:00+08:00"
+    approx: true
+    who: claude
+    title: Had the whole change reviewed by a fresh reviewer
+    why: The author of a change has blind spots; a fresh reader catches what they miss.
+    how: A separate reviewer agent read the full diff, spec and plan, and reported four important findings and no critical ones.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: review-and-safety-fixes
+
+  - at: "2026-10-05T02:17:37+08:00"
+    who: claude
+    title: Fixed what the review found
+    why: Some admin actions the form allowed would have made the build fail silently.
+    how: Each fix reproduced first with a failing check, then fixed; projects without a gallery and repeated titles now publish.
+    evidence: witnessed
+    source: { type: commit, ref: "4d5e345" }
+    chapter: review-and-safety-fixes
+
+  - at: "2026-10-05T02:25:00+08:00"
+    approx: true
+    who: you
+    title: Asked for safe deleting, two small fixes, then go-live
+    why: You wanted the client able to delete projects, and wanted launch done while you slept.
+    how: Gave three ordered tasks and confirmed your backup of the old site, then went to sleep.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: review-and-safety-fixes
+
+  - at: "2026-10-05T02:30:46+08:00"
+    who: claude
+    title: Made deleting projects safe
+    why: Deleting an original project broke its old address, the home page and testimonial links.
+    how: Old addresses of deleted projects now go to /portfolio, the home page falls back to another project, and testimonials only link to projects that exist. Tested by building with three projects removed.
+    evidence: witnessed
+    source: { type: commit, ref: "fc029b7" }
+    chapter: review-and-safety-fixes
+
+  - at: "2026-10-05T02:31:24+08:00"
+    who: claude
+    title: Hid /staging/ from search engines and blocked the tracking file
+    why: Small leaks the review found.
+    how: A Disallow line in robots.txt and a 403 rule for .ftp-deploy-sync-state.json, both tested on Apache.
+    evidence: witnessed
+    source: { type: commit, ref: "9e21ba7" }
+    chapter: review-and-safety-fixes
+
+  - at: "2026-10-05T02:33:37+08:00"
+    who: together
+    with: [claude, you]
+    title: Launched the new website
+    why: Everything had passed on staging.
+    how: On your earlier go-ahead, Claude merged the launch pull request into main at 2:33am, a quiet time; the robot built and uploaded the whole site.
+    evidence: witnessed
+    source: { type: commit, ref: "0472ba4" }
+    chapter: go-live
+
+  - at: "2026-10-05T03:21:00+08:00"
+    approx: true
+    who: claude
+    title: Verified the live site
+    why: Launch is only done when the live site is checked.
+    how: Every page, all 24 old addresses, /admin, http to https and robots.txt checked on loftconcept.com.sg.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: go-live
+
+  - at: "2026-10-05T03:21:22+08:00"
+    who: claude
+    title: Recorded the go-live in the spec
+    why: So the record says when and how it went live.
+    how: Added the launch date, Worker address and the post-review changes to the spec.
+    evidence: witnessed
+    source: { type: commit, ref: "91275e0" }
+    chapter: go-live

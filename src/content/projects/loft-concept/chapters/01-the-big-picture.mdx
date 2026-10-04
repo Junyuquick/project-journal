@@ -1,15 +1,69 @@
 ---
 title: The big picture
 station: 1
-summary: Placeholder while pages are built.
-minutes: 1
+summary: What was built for Loft Concept, in two phases, and how all the pieces connect.
+minutes: 6
 evidence: mixed
 check:
-  - q: Placeholder?
-    a: Yes.
+  - q: Why does a change made in /admin take a couple of minutes to appear on the live site?
+    a: Because the site is static. Every change has to be built into finished HTML pages and uploaded to Vodien by the publishing robot (GitHub Actions) before visitors can see it.
+  - q: Which service holds the master copy of every page and photo?
+    a: GitHub. The repository is the source of truth; Vodien only holds the finished, optimised output.
+  - q: What were the two phases of the project?
+    a: First the redesign (rebuilding the old hand-written site in Astro), then the client admin and publishing pipeline (letting the client add and edit projects themselves).
+sources:
+  - label: The Loft Concept repository
+    url: https://github.com/Junyuquick/loft-concept-website
+  - label: The live site
+    url: https://loftconcept.com.sg
 ---
-Files travel over [FTP](glossary:ftp).
 
-<RouteDiagram title="Test" caption="Probe." stations={[{id:'a',label:'Browser',x:0,y:0},{id:'b',label:'GitHub',x:3,y:0},{id:'c',label:'Vodien',x:5,y:2}]} lines={[{label:'Publish',color:'var(--line-claude)',stations:['a','b','c']}]} />
+Loft Concept is an interior design and construction studio in Singapore. Its website shows off finished homes and offices, and its main job is to get people to book a consultation. This line of the journal follows how that website was rebuilt and how the client was given a way to publish their own projects.
 
-<Source href="https://github.com/Junyuquick/loft-concept-website" label="The repo" />
+## Two phases
+
+**Phase 1: the redesign (Saturday evening, 4 October 2026).** The old site was 25 hand-written HTML pages with the same header copied into every file, 316MB of unoptimised photos and colours that did not match the studio's Brand Guide. It was rebuilt with a [framework](glossary:framework) called [Astro](glossary:astro), so every page shares one layout and all 19 projects share one template.
+
+**Phase 2: the client admin (that night, into 5 October).** Once rebuilt, the site was a [static site](glossary:static-site): finished pages that only a developer could change. So we added a private admin page at `loftconcept.com.sg/admin` where the client fills in a form, uploads photos and clicks Save. A robot then rebuilds the site and uploads it, and the change is live a couple of minutes later.
+
+## How the pieces connect
+
+Read this map from left to right. It is the path a single change takes, from the client's browser to a visitor's screen.
+
+<RouteDiagram
+  title="How a change reaches the live site"
+  caption="The client saves in the admin; GitHub stores the change; GitHub Actions tests, builds and uploads; Vodien serves the result. Sign-in branches off through a small Cloudflare Worker."
+  stations={[
+    { id: 'admin', label: 'Admin page', x: 0, y: 1, note: 'The client fills in a form and clicks Save' },
+    { id: 'github', label: 'GitHub', x: 3, y: 1, note: 'Stores the change as a commit' },
+    { id: 'robot', label: 'GitHub Actions', x: 5, y: 3, labelAt: 's', note: 'Tests, builds and uploads the site' },
+    { id: 'vodien', label: 'Vodien', x: 8, y: 3, note: 'The web host that serves the pages' },
+    { id: 'visitor', label: 'Visitor', x: 10, y: 1, note: 'Sees the new page' },
+    { id: 'worker', label: 'Cloudflare Worker', x: 2, y: 3, labelAt: 's', note: 'Handles signing in with GitHub' },
+  ]}
+  lines={[
+    { label: 'A change being published', color: 'var(--line-claude)', stations: ['admin', 'github', 'robot', 'vodien', 'visitor'] },
+    { label: 'Signing in', color: 'var(--line-you)', stations: ['admin', 'worker', 'github'] },
+  ]}
+/>
+
+Each station has one job, and that separation is the main idea of the whole system:
+
+- **The admin page** only edits files. It has no server of its own; it is a single page that runs in the browser.
+- **[GitHub](glossary:github)** stores every file and remembers every change as a [commit](glossary:commit), so anything can be undone.
+- **[GitHub Actions](glossary:github-actions)** is the robot. Each time something changes, it runs the tests, [builds](glossary:build) the site and uploads it.
+- **Vodien** is the [hosting](glossary:hosting) company. It serves the finished files to visitors and never runs any of our code.
+- **The [Cloudflare Worker](glossary:cloudflare-worker)** exists only to make "Sign in with GitHub" work safely.
+
+## Why it was built this way
+
+A different design could have made changes appear instantly, like WordPress does, by building every page fresh from a database each time someone visits. We chose not to, and you approved that trade-off in our conversation:
+
+- **Fast and safe.** Visitors get ready-made files. There is no database to hack and no server code to keep patched.
+- **Free to run.** GitHub, GitHub Actions and the Cloudflare Worker all fit in free plans; Vodien was already paid for.
+- **Every change is recorded.** Because the admin saves to GitHub, every edit the client makes can be seen and reversed.
+- **The cost is a short delay.** A change takes a minute or two to go live, because the site has to be rebuilt.
+
+---
+
+The rest of this line follows the work in order. Stations LC02 to LC07 cover the redesign, LC08 to LC13 cover the admin and launch, and LC14 looks back at how we worked together.
