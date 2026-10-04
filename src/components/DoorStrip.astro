@@ -1,0 +1,89 @@
+---
+// The strip map above a train door: the whole line, with this station ringed.
+import { stationCode } from '../lib/content';
+
+interface Stop { station: number; title: string; slug: string }
+interface Props { slug: string; code: string; color: string; ink: 'dark' | 'light'; title: string; stops: Stop[]; current: number }
+const { slug, code, color, ink, title, stops, current } = Astro.props;
+---
+<nav class="strip" aria-label={`${title} line`} style={`--line:${color}`} data-strip>
+  <a class="strip__name" href={`/projects/${slug}`}>
+    <span class="strip__code" style={`background:${color};color:${ink === 'dark' ? '#16181b' : '#fff'}`}>{code}</span>
+    <span>{title}</span>
+  </a>
+  <ol class="strip__stops">
+    {stops.map((s) => (
+      <li class:list={['strip__stop', { 'is-ridden': s.station < current, 'is-current': s.station === current }]}>
+        <a href={`/projects/${slug}/${s.slug}`} aria-current={s.station === current ? 'step' : undefined} title={s.title}>
+          <span class="strip__dot" aria-hidden="true"></span>
+          <span class="strip__label">{stationCode(code, s.station)}</span>
+          <span class="visually-hidden">{s.title}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<script>
+  for (const strip of document.querySelectorAll<HTMLElement>('[data-strip]')) {
+    const here = strip.querySelector<HTMLElement>('[aria-current="step"]');
+    const list = strip.querySelector<HTMLElement>('.strip__stops');
+    if (here && list) list.scrollLeft = here.offsetLeft - list.clientWidth / 2 + here.clientWidth / 2;
+  }
+</script>
+
+<style>
+  .strip { display: flex; align-items: center; gap: var(--s-5); padding: var(--s-4) 0; border-bottom: 1px solid var(--rule); }
+  .strip__name { display: inline-flex; align-items: center; gap: var(--s-2); font-family: var(--font-sign); font-weight: 750; text-decoration: none; white-space: nowrap; }
+  .strip__code { padding: 0.3em 0.55em 0.2em; border-radius: var(--radius-pill); font-size: var(--step--1); }
+  .strip__stops {
+    position: relative;
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: var(--s-2) var(--s-2) 0;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    flex: 1;
+  }
+  .strip__stop { position: relative; flex: 1 0 3.25rem; }
+  /* the line itself runs through every stop at dot height */
+  .strip__stop::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: calc(0.75rem - var(--line-width) / 2);
+    height: var(--line-width);
+    background: var(--line);
+  }
+  .strip__stop:first-child::before { left: 50%; }
+  .strip__stop:last-child::before { right: 50%; }
+  .strip__stop a {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-1);
+    min-height: 44px;
+    text-decoration: none;
+    font-family: var(--font-sign);
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+  }
+  .strip__dot {
+    width: 1.5rem; height: 1.5rem;
+    border-radius: 50%;
+    background: var(--station-fill);
+    border: 4px solid var(--line);
+    transition: transform 0.25s var(--ease-out);
+  }
+  .is-ridden .strip__dot { background: var(--line); }
+  .is-current .strip__dot { border-color: var(--ink); border-width: 5px; transform: scale(1.15); }
+  .is-current .strip__label { color: var(--ink); }
+  .strip__stop a:hover .strip__dot { transform: scale(1.15); }
+  @media (max-width: 40rem) {
+    .strip { flex-direction: column; align-items: stretch; gap: var(--s-2); }
+    .strip__name { align-self: flex-start; }
+  }
+</style>
