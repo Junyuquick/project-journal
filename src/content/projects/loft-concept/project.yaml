@@ -1,0 +1,9 @@
+title: Loft Concept website
+code: LC
+color: "#FA9E0D"
+ink: dark
+summary: A Singapore interior design studio's website, rebuilt in Astro, then given an admin page so the client can publish their own projects.
+repo: https://github.com/Junyuquick/loft-concept-website
+contributors: [claude, you]
+startedAt: "2026-10-04T19:33:00+08:00"
+endedAt: "2026-10-05T03:21:00+08:00"

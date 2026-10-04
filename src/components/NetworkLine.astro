@@ -1,0 +1,99 @@
+---
+// One project drawn as a full MRT line: stations with angled names, as on the network map.
+import { stationCode } from '../lib/content';
+import { inkOn, type Project } from '../lib/journal';
+
+interface Props { project: Project }
+const { project } = Astro.props;
+const { slug, data, chapters } = project;
+---
+<div class="net" style={`--line:${data.color}`} data-line={slug}>
+  <ol class="net__stops">
+    {chapters.map((c) => (
+      <li class="net__stop" data-station={c.data.station}>
+        <a href={`/projects/${slug}/${c.slug}`}>
+          <span class="net__dot" aria-hidden="true"></span>
+          <span class="net__name">
+            <span class="net__code">{stationCode(data.code, c.data.station)}</span>
+            <span class="net__title">{c.data.title}</span>
+          </span>
+        </a>
+      </li>
+    ))}
+  </ol>
+  <span class="net__terminus" style={`background:${data.color};color:${inkOn(data.ink)}`} aria-hidden="true">{data.code}</span>
+</div>
+
+<style>
+  /* Room above for the leaning names, and to the right for the last ones */
+  .net { position: relative; padding-top: 9.5rem; padding-right: 8.5rem; }
+  .net__stops { display: flex; list-style: none; margin: 0; padding: 0 0 0 3.25rem; position: relative; }
+  .net__stops::before {
+    content: '';
+    position: absolute;
+    left: 1.5rem; right: 0;
+    top: calc(0.875rem - var(--line-width) / 2);
+    height: var(--line-width);
+    background: var(--line);
+    border-radius: 3px;
+  }
+  .net__terminus {
+    position: absolute;
+    left: 0;
+    top: calc(9.5rem + 0.875rem);
+    transform: translateY(-50%);
+    font-family: var(--font-sign);
+    font-weight: 800;
+    font-size: var(--step--1);
+    padding: 0.35em 0.6em 0.25em;
+    border-radius: var(--radius-pill);
+  }
+  .net__stop { flex: 1 1 0; min-width: 0; position: relative; }
+  .net__stop a { display: block; text-decoration: none; min-height: 44px; }
+  .net__dot {
+    display: block;
+    width: 1.75rem; height: 1.75rem;
+    border-radius: 50%;
+    background: var(--station-fill);
+    border: 5px solid var(--line);
+    transition: transform 0.25s var(--ease-out), border-color 0.25s;
+  }
+  /* Station names lean at 45 degrees, the way they sit on the MRT map */
+  .net__name {
+    position: absolute;
+    left: 0.6rem;
+    bottom: calc(100% - 0.2rem);
+    transform-origin: left bottom;
+    transform: rotate(-45deg);
+    white-space: nowrap;
+    font-family: var(--font-sign);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    line-height: 1.1;
+    display: flex;
+    gap: 0.45em;
+    align-items: baseline;
+    padding-bottom: 0.4rem;
+  }
+  .net__code { color: var(--ink-soft); font-size: 0.8em; }
+  .net__title { max-width: 12.5rem; overflow: hidden; text-overflow: ellipsis; }
+  .net__stop a:hover .net__dot, .net__stop a:focus-visible .net__dot { transform: scale(1.2); border-color: var(--ink); }
+  .net__stop a:hover .net__title { text-decoration: underline; text-decoration-thickness: 2px; }
+  .net__stop.is-here .net__dot { border-color: var(--ink); background: var(--line); box-shadow: 0 0 0 5px var(--ground), 0 0 0 8px var(--ink); }
+
+  /* Phones: the line turns vertical and names sit beside each station */
+  @media (max-width: 52rem) {
+    .net { padding-top: 0; padding-right: 0; }
+    .net__stops { flex-direction: column; padding: 3rem 0 0; }
+    .net__stops::before { left: calc(0.875rem - var(--line-width) / 2); right: auto; top: 1rem; bottom: 0.875rem; width: var(--line-width); height: auto; }
+    .net__terminus { top: 0; transform: none; }
+    .net__stop { flex: none; }
+    .net__stop a { display: flex; align-items: center; gap: var(--s-3); padding-block: var(--s-1); }
+    .net__name { position: static; transform: none; white-space: normal; padding: 0; }
+    .net__title { max-width: none; overflow: visible; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .net__stop.is-here .net__dot { animation: here 2.4s var(--ease-out) infinite; }
+    @keyframes here { 50% { box-shadow: 0 0 0 5px var(--ground), 0 0 0 11px color-mix(in srgb, var(--ink) 35%, transparent); } }
+  }
+</style>

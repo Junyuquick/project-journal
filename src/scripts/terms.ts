@@ -3,14 +3,14 @@ interface Term { id: string; term: string; definition: string; analogy?: string 
 
 const data = document.getElementById('glossary-data');
 const terms: Record<string, Term> = data ? JSON.parse(data.textContent ?? '{}') : {};
-let open: { button: HTMLButtonElement; panel: HTMLElement } | null = null;
+let active: { button: HTMLButtonElement; panel: HTMLElement } | null = null;
 
 function close(returnFocus = true) {
-  if (!open) return;
-  open.panel.remove();
-  open.button.setAttribute('aria-expanded', 'false');
-  if (returnFocus) open.button.focus();
-  open = null;
+  if (!active) return;
+  active.panel.remove();
+  active.button.setAttribute('aria-expanded', 'false');
+  if (returnFocus) active.button.focus();
+  active = null;
 }
 
 function show(button: HTMLButtonElement) {
@@ -37,7 +37,7 @@ function show(button: HTMLButtonElement) {
   panel.style.left = `${left}px`;
   panel.style.top = `${r.bottom + window.scrollY + 8}px`;
   button.setAttribute('aria-expanded', 'true');
-  open = { button, panel };
+  active = { button, panel };
   panel.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
 }
 
@@ -45,15 +45,15 @@ document.addEventListener('click', (e) => {
   const target = e.target as HTMLElement;
   const button = target.closest<HTMLButtonElement>('button.term');
   if (button) {
-    if (open?.button === button) close();
+    if (active?.button === button) close();
     else show(button);
     return;
   }
-  if (open && !open.panel.contains(target)) close(false);
+  if (active && !active.panel.contains(target)) close(false);
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && open) {
+  if (e.key === 'Escape' && active) {
     e.preventDefault();
     close();
   }

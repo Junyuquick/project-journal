@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { stationCode } from '../lib/content';
+import { loadProjects } from '../lib/journal';
+
+const terms = (await getCollection('glossary')).sort((a, b) => a.data.term.localeCompare(b.data.term, 'en', { sensitivity: 'base' }));
+const projects = await loadProjects();
+const usedIn = (id: string) =>
+  projects.flatMap((p) =>
+    p.chapters
+      .filter((c) => (c.body ?? '').includes(`](glossary:${id})`))
+      .map((c) => ({ href: `/projects/${p.slug}/${c.slug}`, code: stationCode(p.data.code, c.data.station), title: c.data.title })),
+  );
+const letters = [...new Set(terms.map((t) => t.data.term[0].toUpperCase()))];
+---
+<Base title="Glossary" description="Every technical term used in the journal, in plain English.">
+  <div class="wrap glossary">
+    <header class="glossary__head">
+      <h1>Glossary</h1>
+      <p>Every technical word used in the journal, in plain English. In a chapter, tap an underlined word to see its entry without leaving the page.</p>
+      <nav class="glossary__index" aria-label="Jump to letter">
+        {letters.map((l) => <a href={`#letter-${l}`}>{l}</a>)}
+      </nav>
+    </header>
+
+    <dl class="terms">
+      {terms.map((t, i) => {
+        const first = i === 0 || terms[i - 1].data.term[0].toUpperCase() !== t.data.term[0].toUpperCase();
+        const refs = usedIn(t.id);
+        return (
+          <div class="term" id={t.id}>
+            {first && <span class="term__letter" id={`letter-${t.data.term[0].toUpperCase()}`} aria-hidden="true">{t.data.term[0].toUpperCase()}</span>}
+            <dt>{t.data.term}</dt>
+            <dd>
+              <p>{t.data.definition}</p>
+              {t.data.analogy && <p class="term__analogy">Think of it as: {t.data.analogy}</p>}
+              {refs.length > 0 && (
+                <p class="term__used">Used in {refs.map((r, j) => <>{j > 0 && ', '}<a href={r.href} title={r.title}>{r.code}</a></>)}</p>
+              )}
+            </dd>
+          </div>
+        );
+      })}
+    </dl>
+  </div>
+</Base>
+
+<style>
+  .glossary { padding-block: var(--s-7) var(--s-8); }
+  .glossary__head { display: grid; gap: var(--s-4); max-width: 62ch; margin-bottom: var(--s-7); }
+  .glossary__head p { font-size: var(--step-1); line-height: 1.5; color: var(--ink-soft); }
+  .glossary__index { display: flex; flex-wrap: wrap; gap: var(--s-1); }
+  .glossary__index a { min-width: 44px; min-height: 44px; display: inline-grid; place-items: center; font-family: var(--font-sign); font-weight: 750; text-decoration: none; border-radius: 50%; }
+  .glossary__index a:hover { background: var(--code-ground); }
+  .terms { margin: 0; max-width: var(--measure); }
+  .term { display: grid; grid-template-columns: minmax(8rem, 13rem) 1fr; gap: var(--s-2) var(--s-5); padding-block: var(--s-5); border-top: 1px solid var(--rule); scroll-margin-top: var(--s-5); }
+  .term:target { background: color-mix(in srgb, var(--selection) 55%, transparent); }
+  .term__letter { grid-column: 1 / -1; font-family: var(--font-sign); font-weight: 800; font-size: var(--step-3); line-height: 1; scroll-margin-top: var(--s-5); }
+  dt { font-family: var(--font-sign); font-weight: 800; font-size: var(--step-1); }
+  dd { margin: 0; display: grid; gap: var(--s-2); }
+  .term__analogy { color: var(--ink-soft); font-style: italic; }
+  .term__used { font-family: var(--font-sign); font-weight: 650; font-size: var(--step--1); color: var(--ink-soft); }
+  @media (max-width: 40rem) { .term { grid-template-columns: 1fr; } }
+</style>

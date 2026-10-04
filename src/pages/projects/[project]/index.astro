@@ -1,0 +1,98 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { stationCode } from '../../../lib/content';
+import { formatDate, inkOn, loadProjects, type Project } from '../../../lib/journal';
+
+export async function getStaticPaths() {
+  const projects = await loadProjects();
+  return projects.map((project) => ({ params: { project: project.slug }, props: { project } }));
+}
+const { project } = Astro.props as { project: Project };
+const { slug, data, chapters } = project;
+const evidenceNote = { witnessed: '', reconstructed: 'Rebuilt from the record', mixed: 'Partly rebuilt from the record' } as const;
+---
+<Base title={data.title} description={data.summary}>
+  <div class="wrap line" style={`--line:${data.color}`}>
+    <header class="line__head">
+      <span class="line__code" style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code} line</span>
+      <h1>{data.title}</h1>
+      <p class="line__summary">{data.summary}</p>
+      <p class="line__facts">
+        {chapters.length} {chapters.length === 1 ? 'station' : 'stations'}, {formatDate(data.startedAt)} to {formatDate(data.endedAt)}
+        {data.repo && <><br /><a href={data.repo}>The real code on GitHub</a></>}
+      </p>
+      <p class="line__actions">
+        <a class="go" href={`/projects/${slug}/${chapters[0]?.slug ?? ''}`} data-continue={slug}>Start at {data.code}01</a>
+        <a class="go go--quiet" href={`/projects/${slug}/timeline`}>Who did what: the timeline</a>
+      </p>
+    </header>
+
+    {chapters.length === 0 ? (
+      <p class="empty">No stations on this line yet. Add chapters to <code>src/content/projects/{slug}/chapters/</code>.</p>
+    ) : (
+      <ol class="route" aria-label="Stations">
+        {chapters.map((c) => (
+          <li class="stop" data-station={c.data.station}>
+            <span class="stop__dot" aria-hidden="true"></span>
+            <div class="stop__body">
+              <h2>
+                <a href={`/projects/${slug}/${c.slug}`}>
+                  <span class="stop__code">{stationCode(data.code, c.data.station)}</span>
+                  <span>{c.data.title}</span>
+                </a>
+              </h2>
+              <p>{c.data.summary}</p>
+              <p class="stop__meta">
+                {c.data.minutes} min read
+                {evidenceNote[c.data.evidence] && <span class="stop__evidence">{evidenceNote[c.data.evidence]}</span>}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    )}
+  </div>
+</Base>
+
+<script>
+  import { readPosition } from '../../../scripts/position';
+  const link = document.querySelector<HTMLAnchorElement>('[data-continue]');
+  const station = link && readPosition(link.dataset.continue!);
+  if (link && station) {
+    const stop = document.querySelector<HTMLElement>(`.stop[data-station="${station}"]`);
+    stop?.classList.add('is-here');
+    const a = stop?.querySelector('a');
+    const code = stop?.querySelector('.stop__code')?.textContent;
+    if (a && code) {
+      link.href = a.getAttribute('href')!;
+      link.textContent = `Continue at ${code}`;
+    }
+  }
+</script>
+
+<style>
+  .line { padding-block: var(--s-7) var(--s-8); }
+  .line__head { display: grid; gap: var(--s-4); max-width: 62ch; margin-bottom: var(--s-7); }
+  .line__code { justify-self: start; font-family: var(--font-sign); font-weight: 800; padding: 0.35em 0.7em 0.25em; border-radius: var(--radius-pill); }
+  .line__summary { font-size: var(--step-1); line-height: 1.5; }
+  .line__facts { color: var(--ink-soft); font-family: var(--font-sign); font-weight: 650; }
+  .line__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+  .go { display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--s-5); border-radius: var(--radius-pill); background: var(--ink); color: var(--ground); font-family: var(--font-sign); font-weight: 750; text-decoration: none; }
+  .go--quiet { background: none; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); }
+  .go:hover { text-decoration: underline; }
+  .empty { color: var(--ink-soft); }
+
+  /* The route runs down the left; each station hangs off it */
+  .route { list-style: none; margin: 0; padding: 0; position: relative; max-width: 64ch; }
+  .route::before { content: ''; position: absolute; left: calc(0.875rem - var(--line-width) / 2); top: 0.6rem; bottom: 0.6rem; width: var(--line-width); background: var(--line); border-radius: 3px; }
+  .stop { position: relative; display: grid; grid-template-columns: 1.75rem 1fr; gap: var(--s-4); padding-bottom: var(--s-6); }
+  .stop__dot { width: 1.75rem; height: 1.75rem; border-radius: 50%; background: var(--station-fill); border: 5px solid var(--line); position: relative; margin-top: 0.15rem; }
+  .stop.is-here .stop__dot { border-color: var(--ink); background: var(--line); box-shadow: 0 0 0 4px var(--ground), 0 0 0 7px var(--ink); }
+  .stop__body { display: grid; gap: var(--s-2); }
+  h2 { font-size: var(--step-1); }
+  h2 a { text-decoration: none; display: inline-flex; gap: var(--s-3); align-items: baseline; }
+  h2 a:hover span:last-child { text-decoration: underline; text-decoration-thickness: 2px; }
+  .stop__code { color: var(--ink-soft); font-size: 0.85em; min-width: 2.6rem; }
+  .stop__meta { display: flex; flex-wrap: wrap; gap: var(--s-3); color: var(--ink-soft); font-family: var(--font-sign); font-size: var(--step--1); font-weight: 650; }
+  .stop__evidence { border: 1.5px dashed var(--ink-soft); border-radius: var(--radius-pill); padding: 0 0.6em; }
+</style>
