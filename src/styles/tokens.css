@@ -1,0 +1,85 @@
+/* The MRT network map: one stroke weight, fixed line colours, signage type. */
+:root {
+  /* Contributor lines (fixed across every project) */
+  --line-claude: #005ec4; /* Downtown Line blue */
+  --line-you: #009645; /* East-West Line green */
+  --line-others: #9900aa; /* North-East Line purple */
+  /* Badge grounds carry white text, so the green is deepened to keep 4.5:1 */
+  --badge-claude: #005ec4;
+  --badge-you: #007a3a;
+  --badge-others: #8a0099;
+
+  --line-width: 6px;
+  --station-r: 7px;
+
+  --font-sign: 'Overpass Variable', 'Overpass', system-ui, sans-serif;
+  --font-read: 'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible Next', system-ui, sans-serif;
+  --font-code: 'Overpass Mono Variable', 'Overpass Mono', ui-monospace, monospace;
+
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: 1.625rem;
+  --step-3: clamp(1.875rem, 1.4rem + 1.6vw, 2.5rem);
+  --step-4: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 5rem;
+
+  --measure: 68ch;
+  --page: 72rem;
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --radius-pill: 999px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: light;
+  --ground: #f3f4f2;
+  --ground-raised: #ffffff;
+  --ink: #16181b;
+  --ink-soft: #4a4f57;
+  --rule: #d3d6da;
+  --track: #c4c8cd; /* unlit / reconstructed track */
+  --station-fill: #ffffff;
+  --code-ground: #e7e9ec;
+  --selection: #cfe0f7;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --ground: #111316;
+    --ground-raised: #191c20;
+    --ink: #eef0f2;
+    --ink-soft: #a7adb6;
+    --rule: #2c3036;
+    --track: #3c424a;
+    --station-fill: #111316;
+    --code-ground: #1d2126;
+    --selection: #1d3d66;
+    --line-claude: #3b8cf0;
+    --line-you: #1fb866;
+    --line-others: #c04fd1;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --ground: #111316;
+  --ground-raised: #191c20;
+  --ink: #eef0f2;
+  --ink-soft: #a7adb6;
+  --rule: #2c3036;
+  --track: #3c424a;
+  --station-fill: #111316;
+  --code-ground: #1d2126;
+  --selection: #1d3d66;
+  --line-claude: #3b8cf0;
+  --line-you: #1fb866;
+  --line-others: #c04fd1;
+}

@@ -1,0 +1,97 @@
+@import '@fontsource-variable/overpass/wght.css';
+@import '@fontsource-variable/overpass-mono/wght.css';
+@import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
+@import '@fontsource-variable/atkinson-hyperlegible-next/wght-italic.css';
+@import './tokens.css';
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--track) var(--ground); }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-read);
+  font-size: var(--step-0);
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--selection); color: var(--ink); }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-sign);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  margin: 0;
+}
+h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.025em; }
+h2 { font-size: var(--step-3); font-weight: 750; }
+h3 { font-size: var(--step-1); font-weight: 700; }
+p { margin: 0; text-wrap: pretty; }
+
+a { color: inherit; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 3px; }
+
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
+
+code, kbd, pre { font-family: var(--font-code); font-size: 0.9em; }
+:not(pre) > code {
+  background: var(--code-ground);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+pre {
+  background: var(--code-ground);
+  padding: var(--s-4);
+  border-radius: 6px;
+  overflow-x: auto;
+  line-height: 1.5;
+  font-size: 0.875rem;
+}
+
+img, svg { max-width: 100%; }
+
+.wrap { width: min(100% - 2 * var(--gutter), var(--page)); margin-inline: auto; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+/* Line badge: a contributor's or project's line colour with its code, as on MRT signage. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-sign);
+  font-weight: 750;
+  font-size: var(--step--1);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  padding: 0.4em 0.7em 0.3em;
+  border-radius: var(--radius-pill);
+  color: #fff;
+  background: var(--badge, var(--ink));
+  white-space: nowrap;
+}
+.badge--claude { --badge: var(--badge-claude); }
+.badge--you { --badge: var(--badge-you); }
+.badge--others { --badge: var(--badge-others); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

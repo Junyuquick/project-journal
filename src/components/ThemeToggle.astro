@@ -1,0 +1,50 @@
+---
+---
+<button class="theme" type="button" aria-label="Switch between light and dark" data-theme-toggle>
+  <span class="theme__dot" aria-hidden="true"></span>
+  <span data-theme-label>Theme</span>
+</button>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const label = btn?.querySelector('[data-theme-label]');
+  const current = () =>
+    (document.documentElement.dataset.theme as 'light' | 'dark' | undefined) ??
+    (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const render = () => {
+    const t = current();
+    if (label) label.textContent = t === 'dark' ? 'Dark' : 'Light';
+    btn?.setAttribute('aria-pressed', String(t === 'dark'));
+  };
+  btn?.addEventListener('click', () => {
+    const next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem('pj-theme', next); } catch {}
+    render();
+  });
+  render();
+</script>
+
+<style>
+  .theme {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 44px;
+    padding: var(--s-2) var(--s-3);
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+  }
+  .theme:hover { border-color: var(--ink-soft); }
+  .theme__dot {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 50%;
+    border: 2px solid var(--ink);
+    background: linear-gradient(90deg, var(--ink) 50%, var(--station-fill) 50%);
+  }
+</style>
