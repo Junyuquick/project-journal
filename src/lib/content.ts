@@ -78,3 +78,12 @@ export function eventsByDay<T extends { at: string }>(events: T[]): { day: strin
   }
   return days;
 }
+
+/** Where a timeline event came from, as a link into the project's repository when there is one. */
+export function sourceLink(source: TimelineEvent['source'], repo: string | undefined): { href?: string; label: string } {
+  const label = { commit: `Commit ${source.ref}`, spec: `Spec: ${source.ref}`, plan: `Plan: ${source.ref}`, conversation: 'Our conversation' }[source.type] ?? source.type;
+  if (source.url) return { href: source.url, label };
+  if (!repo || !source.ref) return { label };
+  if (source.type === 'commit') return { href: `${repo}/commit/${source.ref}`, label };
+  return { href: `${repo}/blob/main/${source.ref}`, label };
+}

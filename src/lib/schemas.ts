@@ -27,6 +27,8 @@ export const chapterSchema = z.object({
 
 export const eventSchema = z.object({
   at: z.string(),
+  /** true when the time is inferred from neighbouring records rather than logged */
+  approx: z.boolean().default(false),
   who: z.enum(['claude', 'you', 'together', 'others']),
   with: z.array(z.enum(['claude', 'you', 'others'])).optional(),
   title: z.string(),

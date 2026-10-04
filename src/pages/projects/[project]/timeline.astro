@@ -1,0 +1,179 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { eventsByDay, lanesFor, sourceLink, stationCode, type Lane } from '../../../lib/content';
+import { inkOn, loadProjects, type Project } from '../../../lib/journal';
+
+export async function getStaticPaths() {
+  const projects = await loadProjects();
+  return projects.map((project) => ({ params: { project: project.slug }, props: { project } }));
+}
+const { project } = Astro.props as { project: Project };
+const { slug, data, chapters, events } = project;
+const lanes = lanesFor(data.contributors);
+const names: Record<string, string> = { claude: 'Claude', you: 'You', together: 'Together', others: 'Others' };
+const filters = [...lanes.filter((l) => l !== 'others'), 'together', ...lanes.filter((l) => l === 'others')];
+const days = eventsByDay(events);
+const chapterFor = (s?: string) => chapters.find((c) => c.slug === s);
+const timeFmt = new Intl.DateTimeFormat('en-SG', { timeZone: 'Asia/Singapore', hour: '2-digit', minute: '2-digit', hour12: false });
+const dayFmt = new Intl.DateTimeFormat('en-SG', { timeZone: 'Asia/Singapore', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+const laneIndex = (l: string) => lanes.indexOf(l as Lane);
+const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.who === f).length]));
+---
+<Base title={`Timeline: ${data.title}`} description={`Who did what, and when, while building ${data.title}.`}>
+  <div class="wrap tl" style={`--lanes:${lanes.length}`}>
+    <header class="tl__head">
+      <a class="tl__project" href={`/projects/${slug}`}>
+        <span style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code}</span>{data.title}
+      </a>
+      <h1>Who did what</h1>
+      <p class="tl__lede">Every step of the build in time order. Each contributor runs as a line; a station on a line is something they did. An interchange across lines is something done together.</p>
+
+      <div class="tl__legend">
+        <ul class="tl__keys" aria-label="How to read the lines">
+          <li><span class="key key--solid" aria-hidden="true"></span>Solid track: seen first-hand in our conversation</li>
+          <li><span class="key key--dashed" aria-hidden="true"></span>Dashed track: rebuilt from specs, plans and git commits</li>
+          <li><span class="key key--hub" aria-hidden="true"></span>Interchange: done together</li>
+        </ul>
+      </div>
+
+      <div class="tl__filters" role="group" aria-label="Show or hide lines">
+        {filters.map((f) => (
+          <button type="button" class:list={['badge', 'filter', `badge--${f}`]} data-filter={f} aria-pressed="true">
+            <span class="filter__tick" aria-hidden="true"></span>
+            {names[f]} <span class="filter__n">{counts[f]}</span>
+          </button>
+        ))}
+      </div>
+    </header>
+
+    {events.length === 0 && <p class="tl__empty">No timeline yet for this project.</p>}
+    <p class="tl__empty" data-all-off hidden>Every line is switched off. Turn a line back on to see its stations.</p>
+
+    <div class="tl__days" data-events>
+      {days.map((d) => (
+        <section class="day" aria-labelledby={`day-${d.day}`}>
+          <h2 id={`day-${d.day}`}>{dayFmt.format(new Date(d.events[0].at))}</h2>
+          <ol class="events">
+            {d.events.map((e) => {
+              const ch = chapterFor(e.chapter);
+              const src = sourceLink(e.source, data.repo);
+              const span = e.who === 'together' ? (e.with ?? []).map(laneIndex).filter((i) => i >= 0) : [laneIndex(e.who)];
+              return (
+                <li class:list={['ev', `ev--${e.who}`, { 'ev--rebuilt': e.evidence === 'reconstructed' }]} data-who={e.who}>
+                  <div class="ev__track" aria-hidden="true">
+                    {lanes.map((l) => <span class={`lane lane--${l}`}></span>)}
+                    {e.who === 'together' ? (
+                      <span class="hub" style={`--from:${Math.min(...span)};--to:${Math.max(...span)}`}></span>
+                    ) : (
+                      <span class={`stop stop--${e.who}`} style={`--at:${span[0]}`}></span>
+                    )}
+                  </div>
+                  <div class="ev__body">
+                    <p class="ev__meta">
+                      <time datetime={e.at} title={e.approx ? 'Approximate: inferred from the records around it' : undefined}>{e.approx ? 'about ' : ''}{timeFmt.format(new Date(e.at))}</time>
+                      <span class={`ev__who ev__who--${e.who}`}>{e.who === 'together' ? (e.with ?? []).map((w) => names[w]).join(' + ') : names[e.who]}</span>
+                    </p>
+                    <h3>{e.title}</h3>
+                    <dl>
+                      <dt>What it was for</dt><dd>{e.why}</dd>
+                      <dt>How</dt><dd>{e.how}</dd>
+                    </dl>
+                    <p class="ev__links">
+                      {src.href ? <a href={src.href} target="_blank" rel="noopener">{src.label}</a> : <span>{src.label}</span>}
+                      {ch && <a href={`/projects/${slug}/${ch.slug}`}>Read {stationCode(data.code, ch.data.station)}: {ch.data.title}</a>}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      ))}
+    </div>
+  </div>
+</Base>
+
+<script>
+  const list = document.querySelector<HTMLElement>('[data-events]');
+  const allOff = document.querySelector<HTMLElement>('[data-all-off]');
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  const apply = () => {
+    const on = new Set(buttons.filter((b) => b.getAttribute('aria-pressed') === 'true').map((b) => b.dataset.filter));
+    for (const ev of list?.querySelectorAll<HTMLElement>('.ev') ?? []) ev.hidden = !on.has(ev.dataset.who);
+    for (const day of list?.querySelectorAll<HTMLElement>('.day') ?? []) day.hidden = !day.querySelector('.ev:not([hidden])');
+    for (const b of buttons) list?.classList.toggle(`off-${b.dataset.filter}`, !on.has(b.dataset.filter));
+    if (allOff) allOff.hidden = on.size > 0;
+  };
+  for (const b of buttons) {
+    b.addEventListener('click', () => {
+      b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+      apply();
+    });
+  }
+</script>
+
+<style>
+  .tl { padding-block: var(--s-7) var(--s-8); --lane: 1.75rem; }
+  .tl__head { display: grid; gap: var(--s-4); max-width: 64ch; margin-bottom: var(--s-6); }
+  .tl__project { justify-self: start; display: inline-flex; align-items: center; gap: var(--s-2); font-family: var(--font-sign); font-weight: 750; text-decoration: none; }
+  .tl__project span { padding: 0.3em 0.6em 0.2em; border-radius: var(--radius-pill); font-size: var(--step--1); }
+  .tl__lede { font-size: var(--step-1); line-height: 1.5; color: var(--ink-soft); }
+  .tl__keys { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); font-size: var(--step--1); }
+  .tl__keys li { display: flex; align-items: center; gap: var(--s-3); }
+  .key { flex: none; width: 2.25rem; height: var(--line-width); background: var(--ink); border-radius: 3px; }
+  .key--dashed { background: repeating-linear-gradient(90deg, var(--ink) 0 8px, transparent 8px 14px); }
+  .key--hub { height: 1.1rem; width: 2.25rem; background: var(--station-fill); border: 3px solid var(--ink); border-radius: var(--radius-pill); }
+  .tl__filters { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .filter { border: 0; cursor: pointer; min-height: 44px; font-size: var(--step-0); padding-inline: 0.9em; transition: opacity 0.2s, transform 0.15s var(--ease-out); }
+  .filter:active { transform: scale(0.97); }
+  .badge--together { --badge: var(--station-fill); color: var(--ink); box-shadow: inset 0 0 0 3px var(--ink); }
+  .filter__tick { width: 0.85rem; height: 0.85rem; border-radius: 50%; border: 2px solid currentColor; background: currentColor; }
+  .filter[aria-pressed='false'] { opacity: 0.45; }
+  .filter[aria-pressed='false'] .filter__tick { background: transparent; }
+  .filter__n { font-weight: 600; opacity: 0.85; }
+  .tl__empty { padding: var(--s-5); border: 2px dashed var(--track); border-radius: 10px; max-width: 64ch; }
+
+  .day + .day { margin-top: var(--s-6); }
+  .day h2 { font-size: var(--step-1); padding-block: var(--s-3); position: sticky; top: 0; background: var(--ground); z-index: 2; border-bottom: 1px solid var(--rule); }
+  .events { list-style: none; margin: 0; padding: 0; }
+  .ev { display: grid; grid-template-columns: calc(var(--lanes) * var(--lane)) minmax(0, 1fr); gap: var(--s-4); }
+  .ev[hidden] { display: none; }
+
+  /* The lines: one column per contributor, continuous from row to row */
+  .ev__track { position: relative; display: grid; grid-template-columns: repeat(var(--lanes), var(--lane)); }
+  .lane { justify-self: center; width: var(--line-width); background: var(--lane-c); }
+  .lane--claude { --lane-c: var(--line-claude); }
+  .lane--you { --lane-c: var(--line-you); }
+  .lane--others { --lane-c: var(--line-others); }
+  .ev--rebuilt .lane { background: repeating-linear-gradient(180deg, var(--lane-c) 0 10px, transparent 10px 17px); }
+  .off-claude .lane--claude, .off-you .lane--you, .off-others .lane--others { opacity: 0.18; }
+
+  .stop, .hub { position: absolute; top: 1.15rem; }
+  .stop { left: calc(var(--at) * var(--lane) + var(--lane) / 2 - 0.7rem); width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--station-fill); border: 4px solid var(--stop-c); }
+  .stop--claude { --stop-c: var(--line-claude); }
+  .stop--you { --stop-c: var(--line-you); }
+  .stop--others { --stop-c: var(--line-others); }
+  .hub { left: calc(var(--from) * var(--lane) + var(--lane) / 2 - 0.8rem); width: calc((var(--to) - var(--from)) * var(--lane) + 1.6rem); height: 1.6rem; top: 1.05rem; border-radius: var(--radius-pill); background: var(--station-fill); border: 4px solid var(--ink); }
+
+  .ev__body { padding-block: var(--s-4) var(--s-5); display: grid; gap: var(--s-2); max-width: 64ch; border-bottom: 1px solid var(--rule); }
+  .ev__meta { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: baseline; font-family: var(--font-sign); font-weight: 700; font-size: var(--step--1); }
+  time { font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+  .ev__who--claude { color: var(--line-claude); }
+  .ev__who--you { color: var(--line-you); }
+  .ev__who--others { color: var(--line-others); }
+  h3 { font-size: var(--step-1); }
+  dl { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--s-1) var(--s-4); }
+  dt { font-family: var(--font-sign); font-weight: 750; color: var(--ink-soft); font-size: var(--step--1); padding-top: 0.15em; }
+  dd { margin: 0; }
+  .ev__links { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); font-family: var(--font-sign); font-weight: 650; font-size: var(--step--1); color: var(--ink-soft); }
+  .ev__links a { overflow-wrap: anywhere; }
+
+  @media (max-width: 40rem) {
+    .tl { --lane: 1.2rem; }
+    .ev { gap: var(--s-3); }
+    dl { grid-template-columns: 1fr; }
+    dd + dt { margin-top: var(--s-2); }
+    .stop { width: 1.1rem; height: 1.1rem; left: calc(var(--at) * var(--lane) + var(--lane) / 2 - 0.55rem); border-width: 3px; }
+    .hub { height: 1.3rem; left: calc(var(--from) * var(--lane) + var(--lane) / 2 - 0.65rem); width: calc((var(--to) - var(--from)) * var(--lane) + 1.3rem); border-width: 3px; }
+  }
+</style>

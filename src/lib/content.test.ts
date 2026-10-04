@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chapterSlug, eventsByDay, lanesFor, sortChapters, validateStations, validateTimeline } from './content';
+import { chapterSlug, eventsByDay, lanesFor, sortChapters, sourceLink, validateStations, validateTimeline } from './content';
 
 const ev = (at: string, who: string, extra: object = {}) => ({ at, who, title: 't', why: 'w', how: 'h', evidence: 'witnessed', source: { type: 'conversation' }, ...extra });
 
@@ -51,5 +51,20 @@ describe('eventsByDay', () => {
   it('groups events by their Singapore date', () => {
     const days = eventsByDay([ev('2026-10-04T23:57:00+08:00', 'you'), ev('2026-10-05T00:08:00+08:00', 'claude')]);
     expect(days.map((d) => d.day)).toEqual(['2026-10-04', '2026-10-05']);
+  });
+});
+
+describe('sourceLink', () => {
+  it('links a commit to the project repo', () => {
+    expect(sourceLink({ type: 'commit', ref: 'fe5b25a' }, 'https://github.com/a/b')).toEqual({ href: 'https://github.com/a/b/commit/fe5b25a', label: 'Commit fe5b25a' });
+  });
+  it('links a spec or plan file to its path in the repo', () => {
+    expect(sourceLink({ type: 'spec', ref: 'docs/x.md' }, 'https://github.com/a/b')).toEqual({ href: 'https://github.com/a/b/blob/main/docs/x.md', label: 'Spec: docs/x.md' });
+  });
+  it('has no link for the conversation', () => {
+    expect(sourceLink({ type: 'conversation' }, 'https://github.com/a/b')).toEqual({ label: 'Our conversation' });
+  });
+  it('prefers an explicit url', () => {
+    expect(sourceLink({ type: 'commit', ref: 'x', url: 'https://e.com' }, undefined).href).toBe('https://e.com');
   });
 });
