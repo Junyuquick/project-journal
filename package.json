@@ -12,6 +12,7 @@
     "verify:layout": "node scripts/verify-layout.mjs"
   },
   "dependencies": {
+    "@astrojs/markdown-remark": "7.3.1",
     "@astrojs/mdx": "8.0.2",
     "@fontsource-variable/atkinson-hyperlegible-next": "5.3.0",
     "@fontsource-variable/overpass": "5.3.0",
@@ -23,7 +24,10 @@
   "devDependencies": {
     "@astrojs/check": "0.9.10",
     "playwright": "1.63.0",
+    "remark-mdx": "3.1.1",
+    "remark-parse": "11.0.0",
     "typescript": "6.0.3",
+    "unified": "11.0.5",
     "vitest": "5.0.3"
   }
 }

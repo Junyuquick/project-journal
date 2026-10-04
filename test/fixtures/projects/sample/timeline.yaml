@@ -1,0 +1,17 @@
+events:
+  - at: "2026-10-05T09:00:00+08:00"
+    who: others
+    title: A collaborator joins
+    why: To prove the Others line appears when listed.
+    how: Listed in project.yaml contributors.
+    evidence: witnessed
+    source: { type: conversation }
+    chapter: start
+  - at: "2026-10-05T09:30:00+08:00"
+    who: together
+    with: [claude, you]
+    title: Built together
+    why: To prove interchange events validate.
+    how: Fixture data.
+    evidence: reconstructed
+    source: { type: spec, ref: "fixture" }

@@ -1,0 +1,8 @@
+- id: ftp
+  term: FTP
+  definition: File Transfer Protocol, a long-standing way to copy files from one computer to a web server.
+  analogy: A courier that carries boxes of files from your computer to the server's shelf.
+- id: oauth
+  term: OAuth
+  definition: A sign-in method that lets a website act on your behalf at another service (like GitHub) without ever seeing your password.
+  analogy: A hotel key card the front desk gives you, instead of handing you the master key.
