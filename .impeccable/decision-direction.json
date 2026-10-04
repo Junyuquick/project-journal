@@ -1,0 +1,147 @@
+{
+  "title": "Choose the visual world for Project Journal",
+  "question": "The roll assigned The Lined Script. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "The Lined Script",
+      "kicker": "THE ROLL",
+      "lineage": "A film script supervisor's lined shooting script and daily continuity log",
+      "thesis": "Each project is a shooting script; coloured pencil coverage lines in the margin show who did each part.",
+      "palette": ["#fbfbf8", "#1d1d1b", "#2f6fd6", "#1f9d6b", "#e2364b", "#cfe0f7", "#f7d3dc", "#f6ec9a"],
+      "materials": ["screenplay pages in industry revision colours (white, blue, pink, yellow)", "coloured-pencil coverage lines", "typed timecodes"],
+      "viewport": "A chapter opens as a script page: scene number in both margins, a typed slugline, beginner prose, and pencil lines down the right margin for Claude, You or Together.",
+      "risk": "Script supervision is a niche craft; if the pencil-line legend is not taught on the first page, the margins read as decoration.",
+      "raised": [
+        { "from": "challenger-cracktro", "raise": "Nothing is boxed: no cards anywhere; hierarchy lives only in margin position, typed sluglines and pencil lines." },
+        { "from": "challenger-cutting-bench", "raise": "A folded tape flag marks the scene you stopped reading and is re-flagged when you return." },
+        { "from": "challenger-broadside", "raise": "One alarm colour, tally-light red, is reserved for irreversible moments (going live, deleting); nothing else may use it." },
+        { "from": "challenger-jcard", "raise": "Every timeline take carries its real running time from git, right-aligned like a tracklist." },
+        { "from": "challenger-provenance", "raise": "Evidence is graded by line style: straight pencil = witnessed in the conversation, squiggle = reconstructed from specs and commits." }
+      ],
+      "wireframe": { "cols": 12, "rows": 10, "regions": [
+        { "label": "scene no.", "x": 0, "y": 1, "w": 1, "h": 1 },
+        { "label": "slugline + prose", "x": 2, "y": 1, "w": 7, "h": 8, "accent": true },
+        { "label": "pencil coverage lines", "x": 10, "y": 1, "w": 1, "h": 8 },
+        { "label": "scene no.", "x": 11, "y": 1, "w": 1, "h": 1 },
+        { "label": "revision-colour band", "x": 0, "y": 0, "w": 12, "h": 1 }
+      ] }
+    },
+    {
+      "id": "model-pick",
+      "label": "The MRT Line Map",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Singapore's MRT network map",
+      "thesis": "Each project is a rail network: Claude, You and Others run as coloured lines, Together is an interchange, chapters are stations.",
+      "palette": ["#f4f5f7", "#1b1b1f", "#e1251b", "#009645", "#9900aa", "#fa9e0d"],
+      "materials": ["transit-map schematic lines at 45 degrees", "station roundels", "platform signage type"],
+      "viewport": "The timeline as a horizontal line diagram, lanes as coloured routes that merge at interchange stations; chapters as stops you ride in order.",
+      "risk": "Transit-map timelines are a familiar device; it is where many runs in this category land, and long prose has no native home on a map.",
+      "wireframe": { "cols": 12, "rows": 10, "regions": [
+        { "label": "line diagram", "x": 0, "y": 1, "w": 12, "h": 3, "accent": true },
+        { "label": "station / chapter text", "x": 2, "y": 5, "w": 8, "h": 5 }
+      ] }
+    },
+    {
+      "id": "challenger-brick",
+      "label": "Brick Build Instructions",
+      "verdict": "competitive",
+      "lineage": "Brick-toy build-instruction booklets",
+      "thesis": "Every chapter is a numbered build step: what already exists is ghosted, the new piece arrives bright with an arrow to its seat.",
+      "palette": ["#aee1ff", "#111111", "#e53935", "#ffcd00", "#ffffff", "#147bd1"],
+      "materials": ["sky-blue instruction pages", "black keyline drawings", "stud grid"],
+      "viewport": "Step 12 in huge numerals, a 1:1 parts call-out (e.g. 'GitHub Action, 1x'), and the system diagram with only the new piece in colour.",
+      "case": "Fuses well and wins on recognisability for a beginner; loses on the core timeline, since instruction books never say who placed which piece.",
+      "risk": "Can read toy-like, and long explanations fight a mostly wordless form.",
+      "hero": "https://impeccable.style/worlds/cards/games-toys-physics-play-brick-build-instructions-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/games-toys-physics-play-brick-build-instructions.webp"
+    },
+    {
+      "id": "challenger-provenance",
+      "label": "Provenance Ribbon",
+      "verdict": "declined",
+      "lineage": "Museum provenance timelines",
+      "thesis": "One ribbon passes between hands through the project's life.",
+      "palette": ["#efe7d6", "#a3161c", "#8a8578"],
+      "materials": ["archival buff", "silk ribbon"],
+      "viewport": "A single custody ribbon down the page with dated folds.",
+      "case": "Its known/inferred distinction is exactly right, but a beginner coder does not identify with museum custody records.",
+      "kept": "Evidence graded by line style (witnessed vs reconstructed).",
+      "risk": "Reads archival and solemn for a learning notebook.",
+      "hero": "https://impeccable.style/worlds/cards/exhibition-museum-curation-provenance-ribbon-hero.webp"
+    },
+    {
+      "id": "challenger-cutting-bench",
+      "label": "Cutting Bench Select Rail",
+      "verdict": "declined",
+      "lineage": "Film editor's cutting bench",
+      "thesis": "Chapters as frames on a perforated rail; set-aside attempts hang on pins.",
+      "palette": ["#0d0d0d", "#f26a1b", "#ffffff"],
+      "materials": ["film grain", "perforated strip"],
+      "viewport": "A rail of chapter frames across the top, tape flag where you stopped.",
+      "case": "Same film family as the roll but weaker on who-did-what, and a black/orange field is hard for long reading.",
+      "kept": "The tape flag that remembers where you stopped.",
+      "risk": "Dark, dense field tires readers on long chapters.",
+      "hero": "https://impeccable.style/worlds/cards/operate-a-cutting-bench-select-rail-hero.webp"
+    },
+    {
+      "id": "challenger-jcard",
+      "label": "Mixtape J-Card",
+      "verdict": "declined",
+      "lineage": "Hand-lettered cassette inlays",
+      "thesis": "Side A the redesign, Side B the admin, each track timed.",
+      "palette": ["#ffffff", "#2a4fbf", "#9a9a9a", "#d4202a"],
+      "materials": ["ballpoint on inlay stock"],
+      "viewport": "A folded tracklist with running times.",
+      "case": "Charming for Loft Concept's two halves, but future projects will not split into two sides.",
+      "kept": "Real running times right-aligned on every entry.",
+      "risk": "Handwriting hurts readability at length.",
+      "hero": "https://impeccable.style/worlds/cards/vernacular-ephemera-cassette-j-card-hero.webp"
+    },
+    {
+      "id": "challenger-broadside",
+      "label": "Penny-press Broadside",
+      "verdict": "declined",
+      "lineage": "Relief-engraved news broadsides",
+      "thesis": "Each project shouted as one dense printed sheet.",
+      "palette": ["#e9e4d6", "#151515", "#d1342a"],
+      "materials": ["newsprint", "relief ink"],
+      "viewport": "Wood-type headline over two rammed columns.",
+      "case": "Dense justified columns are the opposite of beginner-friendly reading.",
+      "kept": "One alarm colour reserved for a single kind of moment.",
+      "risk": "Shouty and cramped.",
+      "hero": "https://impeccable.style/worlds/cards/posters-covers-sleeves-posada-calavera-broadside-hero.webp"
+    },
+    {
+      "id": "challenger-cracktro",
+      "label": "Cracktro Scroller",
+      "verdict": "declined",
+      "lineage": "Demoscene crack intros",
+      "thesis": "Bitmap text on a drifting starfield, rank as depth.",
+      "palette": ["#050505", "#f2efe6", "#ffb000"],
+      "materials": ["bitmap type", "parallax dust"],
+      "viewport": "One still line of text over drifting layers.",
+      "case": "Bitmap text on black fails long-form beginner reading on a phone.",
+      "kept": "Nothing enclosed by boxes; one consistent hierarchy mechanism.",
+      "risk": "Novelty over comprehension.",
+      "hero": "https://impeccable.style/worlds/cards/operate-c-cracktro-scroller-queue-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code", "toggle": false },
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A clean developer-docs site (left chapter sidebar, centred prose, right 'on this page' list), executed impeccably.",
+    "palette": ["#ffffff", "#111827", "#6b7280", "#2563eb"],
+    "materials": ["clean grid", "system sans", "syntax-highlighted code"],
+    "viewport": "Sidebar of chapters, article column, a vertical timeline with filter chips.",
+    "risk": "This is the 'generic docs template' you said would feel wrong.",
+    "wireframe": { "cols": 12, "rows": 10, "regions": [
+      { "label": "sidebar", "x": 0, "y": 0, "w": 3, "h": 10 },
+      { "label": "article", "x": 3, "y": 0, "w": 6, "h": 10, "accent": true },
+      { "label": "on this page", "x": 9, "y": 0, "w": 3, "h": 10 }
+    ] }
+  },
+  "steer": true
+}
