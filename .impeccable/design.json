@@ -1,0 +1,689 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-05T04:14:08+00:00",
+  "title": "Design System: Project Journal",
+  "extensions": {
+    "colorMeta": {
+      "line-claude": {
+        "role": "primary",
+        "displayName": "Downtown Line Blue",
+        "canonical": "#005ec4",
+        "tonalRamp": [
+          "oklch(15% 0.080 256.9)",
+          "oklch(26% 0.124 256.9)",
+          "oklch(37% 0.168 256.9)",
+          "oklch(48% 0.176 256.9)",
+          "oklch(59% 0.176 256.9)",
+          "oklch(70% 0.140 256.9)",
+          "oklch(82% 0.092 256.9)",
+          "oklch(95% 0.040 256.9)"
+        ]
+      },
+      "line-you": {
+        "role": "primary",
+        "displayName": "East-West Line Green",
+        "canonical": "#009645",
+        "tonalRamp": [
+          "oklch(15% 0.080 150.3)",
+          "oklch(26% 0.124 150.3)",
+          "oklch(37% 0.161 150.3)",
+          "oklch(48% 0.161 150.3)",
+          "oklch(59% 0.161 150.3)",
+          "oklch(70% 0.140 150.3)",
+          "oklch(82% 0.092 150.3)",
+          "oklch(95% 0.040 150.3)"
+        ]
+      },
+      "line-others": {
+        "role": "primary",
+        "displayName": "North-East Line Purple",
+        "canonical": "#9900aa",
+        "tonalRamp": [
+          "oklch(15% 0.080 322.8)",
+          "oklch(26% 0.124 322.8)",
+          "oklch(37% 0.168 322.8)",
+          "oklch(48% 0.212 322.8)",
+          "oklch(59% 0.184 322.8)",
+          "oklch(70% 0.140 322.8)",
+          "oklch(82% 0.092 322.8)",
+          "oklch(95% 0.040 322.8)"
+        ]
+      },
+      "badge-claude": {
+        "role": "secondary",
+        "displayName": "Claude Badge Ground",
+        "canonical": "#005ec4",
+        "tonalRamp": [
+          "oklch(15% 0.080 256.9)",
+          "oklch(26% 0.124 256.9)",
+          "oklch(37% 0.168 256.9)",
+          "oklch(48% 0.176 256.9)",
+          "oklch(59% 0.176 256.9)",
+          "oklch(70% 0.140 256.9)",
+          "oklch(82% 0.092 256.9)",
+          "oklch(95% 0.040 256.9)"
+        ]
+      },
+      "badge-you": {
+        "role": "secondary",
+        "displayName": "Deepened EWL Green",
+        "canonical": "#007a3a",
+        "tonalRamp": [
+          "oklch(15% 0.080 151.3)",
+          "oklch(26% 0.124 151.3)",
+          "oklch(37% 0.136 151.3)",
+          "oklch(48% 0.136 151.3)",
+          "oklch(59% 0.136 151.3)",
+          "oklch(70% 0.136 151.3)",
+          "oklch(82% 0.092 151.3)",
+          "oklch(95% 0.040 151.3)"
+        ]
+      },
+      "badge-others": {
+        "role": "secondary",
+        "displayName": "Deepened NEL Purple",
+        "canonical": "#8a0099",
+        "tonalRamp": [
+          "oklch(15% 0.080 323.0)",
+          "oklch(26% 0.124 323.0)",
+          "oklch(37% 0.168 323.0)",
+          "oklch(48% 0.212 323.0)",
+          "oklch(59% 0.184 323.0)",
+          "oklch(70% 0.140 323.0)",
+          "oklch(82% 0.092 323.0)",
+          "oklch(95% 0.040 323.0)"
+        ]
+      },
+      "line-loft-concept": {
+        "role": "tertiary",
+        "displayName": "Circle Line Orange (Loft Concept)",
+        "canonical": "#FA9E0D",
+        "tonalRamp": [
+          "oklch(15% 0.080 68.3)",
+          "oklch(26% 0.124 68.3)",
+          "oklch(37% 0.168 68.3)",
+          "oklch(48% 0.168 68.3)",
+          "oklch(59% 0.168 68.3)",
+          "oklch(70% 0.140 68.3)",
+          "oklch(82% 0.092 68.3)",
+          "oklch(95% 0.040 68.3)"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Map Grey",
+        "canonical": "#f3f4f2",
+        "tonalRamp": [
+          "oklch(15% 0.003 128.5)",
+          "oklch(26% 0.003 128.5)",
+          "oklch(37% 0.003 128.5)",
+          "oklch(48% 0.003 128.5)",
+          "oklch(59% 0.003 128.5)",
+          "oklch(70% 0.003 128.5)",
+          "oklch(82% 0.003 128.5)",
+          "oklch(95% 0.003 128.5)"
+        ]
+      },
+      "ground-raised": {
+        "role": "neutral",
+        "displayName": "Raised White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(37% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(59% 0.000 89.9)",
+          "oklch(70% 0.000 89.9)",
+          "oklch(82% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Signage Ink",
+        "canonical": "#16181b",
+        "tonalRamp": [
+          "oklch(15% 0.007 258.4)",
+          "oklch(26% 0.007 258.4)",
+          "oklch(37% 0.007 258.4)",
+          "oklch(48% 0.007 258.4)",
+          "oklch(59% 0.007 258.4)",
+          "oklch(70% 0.007 258.4)",
+          "oklch(82% 0.007 258.4)",
+          "oklch(95% 0.007 258.4)"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "canonical": "#4a4f57",
+        "tonalRamp": [
+          "oklch(15% 0.015 259.8)",
+          "oklch(26% 0.015 259.8)",
+          "oklch(37% 0.015 259.8)",
+          "oklch(48% 0.015 259.8)",
+          "oklch(59% 0.015 259.8)",
+          "oklch(70% 0.015 259.8)",
+          "oklch(82% 0.015 259.8)",
+          "oklch(95% 0.015 259.8)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#d3d6da",
+        "tonalRamp": [
+          "oklch(15% 0.006 255.5)",
+          "oklch(26% 0.006 255.5)",
+          "oklch(37% 0.006 255.5)",
+          "oklch(48% 0.006 255.5)",
+          "oklch(59% 0.006 255.5)",
+          "oklch(70% 0.006 255.5)",
+          "oklch(82% 0.006 255.5)",
+          "oklch(95% 0.006 255.5)"
+        ]
+      },
+      "track": {
+        "role": "neutral",
+        "displayName": "Unlit Track",
+        "canonical": "#c4c8cd",
+        "tonalRamp": [
+          "oklch(15% 0.008 253.9)",
+          "oklch(26% 0.008 253.9)",
+          "oklch(37% 0.008 253.9)",
+          "oklch(48% 0.008 253.9)",
+          "oklch(59% 0.008 253.9)",
+          "oklch(70% 0.008 253.9)",
+          "oklch(82% 0.008 253.9)",
+          "oklch(95% 0.008 253.9)"
+        ]
+      },
+      "station-fill": {
+        "role": "neutral",
+        "displayName": "Station White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(37% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(59% 0.000 89.9)",
+          "oklch(70% 0.000 89.9)",
+          "oklch(82% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "code-ground": {
+        "role": "neutral",
+        "displayName": "Code Ground",
+        "canonical": "#e7e9ec",
+        "tonalRamp": [
+          "oklch(15% 0.005 258.3)",
+          "oklch(26% 0.005 258.3)",
+          "oklch(37% 0.005 258.3)",
+          "oklch(48% 0.005 258.3)",
+          "oklch(59% 0.005 258.3)",
+          "oklch(70% 0.005 258.3)",
+          "oklch(82% 0.005 258.3)",
+          "oklch(95% 0.005 258.3)"
+        ]
+      },
+      "selection": {
+        "role": "neutral",
+        "displayName": "Selection Blue",
+        "canonical": "#cfe0f7",
+        "tonalRamp": [
+          "oklch(15% 0.037 256.0)",
+          "oklch(26% 0.037 256.0)",
+          "oklch(37% 0.037 256.0)",
+          "oklch(48% 0.037 256.0)",
+          "oklch(59% 0.037 256.0)",
+          "oklch(70% 0.037 256.0)",
+          "oklch(82% 0.037 256.0)",
+          "oklch(95% 0.037 256.0)"
+        ]
+      },
+      "night-ground": {
+        "role": "neutral",
+        "displayName": "Platform Night",
+        "canonical": "#111316",
+        "tonalRamp": [
+          "oklch(15% 0.007 258.4)",
+          "oklch(26% 0.007 258.4)",
+          "oklch(37% 0.007 258.4)",
+          "oklch(48% 0.007 258.4)",
+          "oklch(59% 0.007 258.4)",
+          "oklch(70% 0.007 258.4)",
+          "oklch(82% 0.007 258.4)",
+          "oklch(95% 0.007 258.4)"
+        ]
+      },
+      "night-ground-raised": {
+        "role": "neutral",
+        "displayName": "Night Raised",
+        "canonical": "#191c20",
+        "tonalRamp": [
+          "oklch(15% 0.009 255.6)",
+          "oklch(26% 0.009 255.6)",
+          "oklch(37% 0.009 255.6)",
+          "oklch(48% 0.009 255.6)",
+          "oklch(59% 0.009 255.6)",
+          "oklch(70% 0.009 255.6)",
+          "oklch(82% 0.009 255.6)",
+          "oklch(95% 0.009 255.6)"
+        ]
+      },
+      "night-ink": {
+        "role": "neutral",
+        "displayName": "Night Ink",
+        "canonical": "#eef0f2",
+        "tonalRamp": [
+          "oklch(15% 0.003 247.9)",
+          "oklch(26% 0.003 247.9)",
+          "oklch(37% 0.003 247.9)",
+          "oklch(48% 0.003 247.9)",
+          "oklch(59% 0.003 247.9)",
+          "oklch(70% 0.003 247.9)",
+          "oklch(82% 0.003 247.9)",
+          "oklch(95% 0.003 247.9)"
+        ]
+      },
+      "night-ink-soft": {
+        "role": "neutral",
+        "displayName": "Night Soft Ink",
+        "canonical": "#a7adb6",
+        "tonalRamp": [
+          "oklch(15% 0.015 258.4)",
+          "oklch(26% 0.015 258.4)",
+          "oklch(37% 0.015 258.4)",
+          "oklch(48% 0.015 258.4)",
+          "oklch(59% 0.015 258.4)",
+          "oklch(70% 0.015 258.4)",
+          "oklch(82% 0.015 258.4)",
+          "oklch(95% 0.015 258.4)"
+        ]
+      },
+      "night-rule": {
+        "role": "neutral",
+        "displayName": "Night Rule",
+        "canonical": "#2c3036",
+        "tonalRamp": [
+          "oklch(15% 0.012 258.4)",
+          "oklch(26% 0.012 258.4)",
+          "oklch(37% 0.012 258.4)",
+          "oklch(48% 0.012 258.4)",
+          "oklch(59% 0.012 258.4)",
+          "oklch(70% 0.012 258.4)",
+          "oklch(82% 0.012 258.4)",
+          "oklch(95% 0.012 258.4)"
+        ]
+      },
+      "night-track": {
+        "role": "neutral",
+        "displayName": "Night Track",
+        "canonical": "#3c424a",
+        "tonalRamp": [
+          "oklch(15% 0.016 255.6)",
+          "oklch(26% 0.016 255.6)",
+          "oklch(37% 0.016 255.6)",
+          "oklch(48% 0.016 255.6)",
+          "oklch(59% 0.016 255.6)",
+          "oklch(70% 0.016 255.6)",
+          "oklch(82% 0.016 255.6)",
+          "oklch(95% 0.016 255.6)"
+        ]
+      },
+      "night-code-ground": {
+        "role": "neutral",
+        "displayName": "Night Code Ground",
+        "canonical": "#1d2126",
+        "tonalRamp": [
+          "oklch(15% 0.011 254.0)",
+          "oklch(26% 0.011 254.0)",
+          "oklch(37% 0.011 254.0)",
+          "oklch(48% 0.011 254.0)",
+          "oklch(59% 0.011 254.0)",
+          "oklch(70% 0.011 254.0)",
+          "oklch(82% 0.011 254.0)",
+          "oklch(95% 0.011 254.0)"
+        ]
+      },
+      "night-selection": {
+        "role": "neutral",
+        "displayName": "Night Selection",
+        "canonical": "#1d3d66",
+        "tonalRamp": [
+          "oklch(15% 0.080 255.6)",
+          "oklch(26% 0.081 255.6)",
+          "oklch(37% 0.081 255.6)",
+          "oklch(48% 0.081 255.6)",
+          "oklch(59% 0.081 255.6)",
+          "oklch(70% 0.081 255.6)",
+          "oklch(82% 0.081 255.6)",
+          "oklch(95% 0.040 255.6)"
+        ]
+      },
+      "night-line-claude": {
+        "role": "primary",
+        "displayName": "Night Downtown Line Blue",
+        "canonical": "#3b8cf0",
+        "tonalRamp": [
+          "oklch(15% 0.080 255.5)",
+          "oklch(26% 0.124 255.5)",
+          "oklch(37% 0.168 255.5)",
+          "oklch(48% 0.169 255.5)",
+          "oklch(59% 0.169 255.5)",
+          "oklch(70% 0.140 255.5)",
+          "oklch(82% 0.092 255.5)",
+          "oklch(95% 0.040 255.5)"
+        ]
+      },
+      "night-line-you": {
+        "role": "primary",
+        "displayName": "Night East-West Line Green",
+        "canonical": "#1fb866",
+        "tonalRamp": [
+          "oklch(15% 0.080 153.1)",
+          "oklch(26% 0.124 153.1)",
+          "oklch(37% 0.168 153.1)",
+          "oklch(48% 0.169 153.1)",
+          "oklch(59% 0.169 153.1)",
+          "oklch(70% 0.140 153.1)",
+          "oklch(82% 0.092 153.1)",
+          "oklch(95% 0.040 153.1)"
+        ]
+      },
+      "night-line-others": {
+        "role": "primary",
+        "displayName": "Night North-East Line Purple",
+        "canonical": "#c04fd1",
+        "tonalRamp": [
+          "oklch(15% 0.080 322.2)",
+          "oklch(26% 0.124 322.2)",
+          "oklch(37% 0.168 322.2)",
+          "oklch(48% 0.212 322.2)",
+          "oklch(59% 0.184 322.2)",
+          "oklch(70% 0.140 322.2)",
+          "oklch(82% 0.092 322.2)",
+          "oklch(95% 0.040 322.2)"
+        ]
+      },
+      "text-you": {
+        "role": "secondary",
+        "displayName": "EWL Green, as text",
+        "canonical": "#007a3a",
+        "tonalRamp": [
+          "oklch(15% 0.080 151.3)",
+          "oklch(26% 0.124 151.3)",
+          "oklch(37% 0.136 151.3)",
+          "oklch(48% 0.136 151.3)",
+          "oklch(59% 0.136 151.3)",
+          "oklch(70% 0.136 151.3)",
+          "oklch(82% 0.092 151.3)",
+          "oklch(95% 0.040 151.3)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Chapter, timeline and glossary page titles (h1)."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Project names on the network page, the home intro, glossary letters."
+      },
+      "headline-sm": {
+        "displayName": "Headline Small",
+        "purpose": "In-chapter section heads, Check your understanding, Sources, the next-station call."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Station titles on a line page, timeline days and events, glossary terms."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All prose at a 68ch measure; italic for analogies."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Chapter, line, project and glossary summaries."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Metadata rows, timeline times, definition terms, nav, buttons."
+      },
+      "station-code": {
+        "displayName": "Station Code",
+        "purpose": "Line badges, station and line code pills."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Inline code (0.9em) and code blocks (0.875rem)."
+      }
+    },
+    "shadows": [
+      {
+        "name": "popover-lift",
+        "value": "0 10px 30px rgb(22 24 27 / 0.18)",
+        "purpose": "Glossary term popover only; the one element that floats over prose."
+      },
+      {
+        "name": "you-are-here-halo",
+        "value": "0 0 0 5px var(--ground), 0 0 0 8px var(--ink)",
+        "purpose": "Line work, not elevation: ink halo on the stored reading position (4px/7px on the line page)."
+      },
+      {
+        "name": "quiet-outline",
+        "value": "inset 0 0 0 2px var(--ink)",
+        "purpose": "Line work: the quiet button outline."
+      },
+      {
+        "name": "nav-current",
+        "value": "inset 0 -3px 0 var(--ink)",
+        "purpose": "Line work: square underline bar under the current nav link."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The only easing; every state transition."
+      },
+      {
+        "name": "press",
+        "value": "0.15s",
+        "purpose": "Button and filter press scale (0.98 / 0.97)."
+      },
+      {
+        "name": "popover-in",
+        "value": "0.18s",
+        "purpose": "Popover fades in from 4px above."
+      },
+      {
+        "name": "state",
+        "value": "0.2s",
+        "purpose": "Filter fade, check ring fill."
+      },
+      {
+        "name": "station-grow",
+        "value": "0.25s",
+        "purpose": "Station grows on hover (1.15x to 1.2x)."
+      },
+      {
+        "name": "route-draw",
+        "value": "1.1s",
+        "purpose": "Solid route-diagram lines draw in once."
+      },
+      {
+        "name": "here-breathe",
+        "value": "2.4s infinite",
+        "purpose": "You-are-here halo breathes."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "All animation and transition removed under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "nav-compact",
+        "value": "30rem"
+      },
+      {
+        "name": "phone",
+        "value": "40rem"
+      },
+      {
+        "name": "network-vertical",
+        "value": "52rem"
+      },
+      {
+        "name": "timeline-rail",
+        "value": "64rem"
+      }
+    ],
+    "lineGeometry": {
+      "lineWidth": "6px",
+      "networkTrunk": "10px",
+      "angles": [
+        "0deg",
+        "45deg",
+        "90deg"
+      ],
+      "routeGrid": "72px",
+      "measure": "68ch",
+      "page": "72rem",
+      "gutter": "clamp(1rem, 4vw, 3rem)",
+      "minTarget": "44px"
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink pill, the only filled control; starts or continues a line.",
+      "html": "<a class=\"ds-go\" href=\"#\">Start at LC01</a>",
+      "css": ".ds-go { display: inline-flex; align-items: center; min-height: 48px; padding: 0 1.5rem; border-radius: 999px; background: var(--ink, #16181b); color: var(--ground, #f3f4f2); font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 750; text-decoration: none; transition: transform 0.15s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)); } .ds-go:hover { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 0.2em; } .ds-go:active { transform: scale(0.98); } .ds-go:focus-visible { outline: 3px solid var(--ink, #16181b); outline-offset: 3px; }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Transparent pill with a 2px inset ink outline for the secondary route (Timeline).",
+      "html": "<a class=\"ds-go-quiet\" href=\"#\">Timeline</a>",
+      "css": ".ds-go-quiet { display: inline-flex; align-items: center; min-height: 48px; padding: 0 1.5rem; border-radius: 999px; background: none; color: var(--ink, #16181b); box-shadow: inset 0 0 0 2px var(--ink, #16181b); font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 750; text-decoration: none; transition: transform 0.15s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)); } .ds-go-quiet:hover { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 0.2em; } .ds-go-quiet:active { transform: scale(0.98); } .ds-go-quiet:focus-visible { outline: 3px solid var(--ink, #16181b); outline-offset: 3px; }"
+    },
+    {
+      "name": "Line Badges",
+      "kind": "chip",
+      "refersTo": "badge-claude",
+      "description": "Contributor line badges on the deepened grounds, white Overpass 750 text.",
+      "html": "<span class=\"ds-badge ds-badge--claude\">Claude</span> <span class=\"ds-badge ds-badge--you\">You</span> <span class=\"ds-badge ds-badge--others\">Others</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 0.4em; font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 750; font-size: 0.875rem; line-height: 1; letter-spacing: 0.02em; padding: 0.4em 0.7em 0.3em; border-radius: 999px; color: #fff; white-space: nowrap; } .ds-badge--claude { background: var(--badge-claude, #005ec4); } .ds-badge--you { background: var(--badge-you, #007a3a); } .ds-badge--others { background: var(--badge-others, #8a0099); }"
+    },
+    {
+      "name": "Timeline Filter",
+      "kind": "chip",
+      "refersTo": "badge-you",
+      "description": "A line badge as a toggle with a station-dot tick and count; off fades to 45% and hollows the tick.",
+      "html": "<button class=\"ds-filter\" aria-pressed=\"true\"><span class=\"ds-filter__tick\"></span>You <span class=\"ds-filter__n\">12</span></button> <button class=\"ds-filter\" aria-pressed=\"false\"><span class=\"ds-filter__tick\"></span>You <span class=\"ds-filter__n\">12</span></button>",
+      "css": ".ds-filter { display: inline-flex; align-items: center; gap: 0.4em; min-height: 44px; padding: 0.4em 0.9em 0.3em; border: 0; border-radius: 999px; background: var(--badge-you, #007a3a); color: #fff; font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 750; font-size: 1.0625rem; line-height: 1; letter-spacing: 0.02em; cursor: pointer; transition: opacity 0.2s, transform 0.15s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)); } .ds-filter:active { transform: scale(0.97); } .ds-filter__tick { width: 0.85rem; height: 0.85rem; border-radius: 50%; border: 2px solid currentColor; background: currentColor; } .ds-filter[aria-pressed='false'] { opacity: 0.45; } .ds-filter[aria-pressed='false'] .ds-filter__tick { background: transparent; } .ds-filter__n { font-weight: 600; opacity: 0.85; } .ds-filter:focus-visible { outline: 3px solid var(--ink, #16181b); outline-offset: 3px; }"
+    },
+    {
+      "name": "Site Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Overpass 800 wordmark; Overpass 650 pill links; current page marked by a square 3px ink underline; theme toggle with a half-filled station disc.",
+      "html": "<header class=\"ds-head\"><a class=\"ds-wordmark\" href=\"#\">Project Journal</a><nav class=\"ds-nav\"><a href=\"#\" aria-current=\"page\">Network</a><a href=\"#\">Glossary</a><button class=\"ds-theme\"><span class=\"ds-theme__dot\"></span>Theme</button></nav></header>",
+      "css": ".ds-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.75rem; border-bottom: 1px solid var(--rule, #d3d6da); } .ds-wordmark { font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em; text-decoration: none; color: var(--ink, #16181b); } .ds-nav { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 650; } .ds-nav a { color: var(--ink, #16181b); text-decoration: none; padding: 0.5rem 0.75rem; min-height: 44px; display: inline-flex; align-items: center; border-radius: 999px; } .ds-nav a:hover { background: var(--code-ground, #e7e9ec); } .ds-nav a[aria-current='page'] { box-shadow: inset 0 -3px 0 var(--ink, #16181b); border-radius: 0; } .ds-nav a:focus-visible, .ds-theme:focus-visible { outline: 3px solid var(--ink, #16181b); outline-offset: 3px; } .ds-theme { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0.5rem 0.75rem; font: inherit; color: var(--ink, #16181b); background: none; border: 1px solid var(--rule, #d3d6da); border-radius: 999px; cursor: pointer; } .ds-theme:hover { border-color: var(--ink-soft, #4a4f57); } .ds-theme__dot { width: 0.85rem; height: 0.85rem; border-radius: 50%; border: 2px solid var(--ink, #16181b); background: linear-gradient(90deg, var(--ink, #16181b) 50%, var(--station-fill, #fff) 50%); }"
+    },
+    {
+      "name": "Glossary Term and Popover",
+      "kind": "custom",
+      "refersTo": "term-popover",
+      "description": "Dotted-underline term in prose; raised white popover with 2px ink border, the one element that lifts.",
+      "html": "<p class=\"ds-prose\">Astro builds a <button class=\"ds-term\" aria-expanded=\"true\">static site</button>.</p><div class=\"ds-pop\"><p class=\"ds-pop__name\">Static site</p><p>Pages built once, ahead of time.</p><p class=\"ds-pop__analogy\">Like printing the timetable before the trains run.</p><div class=\"ds-pop__foot\"><a href=\"#\">Open in glossary</a><button class=\"ds-pop__close\">Close</button></div></div>",
+      "css": ".ds-prose { font-family: var(--font-read, 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif); font-size: 1.0625rem; line-height: 1.65; color: var(--ink, #16181b); } .ds-term { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: help; text-decoration: underline dotted 2px; text-underline-offset: 0.22em; text-decoration-color: var(--ink-soft, #4a4f57); } .ds-term:hover, .ds-term[aria-expanded='true'] { text-decoration-style: solid; text-decoration-color: var(--ink, #16181b); } .ds-pop { width: min(22rem, 100%); background: var(--ground-raised, #fff); color: var(--ink, #16181b); border: 2px solid var(--ink, #16181b); border-radius: 10px; padding: 1rem; box-shadow: 0 10px 30px rgb(22 24 27 / 0.18); font-family: var(--font-read, 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif); font-size: 0.875rem; line-height: 1.55; } .ds-pop p { margin: 0; } .ds-pop__name { font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 800; font-size: 1.0625rem; margin-bottom: 0.25rem !important; } .ds-pop__analogy { margin-top: 0.5rem !important; color: var(--ink-soft, #4a4f57); font-style: italic; } .ds-pop__foot { display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 700; } .ds-pop__foot a { color: inherit; text-decoration-thickness: 2px; text-underline-offset: 0.2em; } .ds-pop__close { font: inherit; background: none; border: 1px solid var(--rule, #d3d6da); border-radius: 999px; padding: 0.25rem 0.75rem; min-height: 44px; color: inherit; cursor: pointer; }"
+    },
+    {
+      "name": "Network Line",
+      "kind": "custom",
+      "description": "Signature: the project as a 10px line with 6px-ringed stations, 45-degree names and the you-are-here halo.",
+      "html": "<div class=\"ds-net\"><span class=\"ds-net__term\">LC</span><ol class=\"ds-net__stops\"><li class=\"ds-net__stop is-ridden\"><a href=\"#\"><span class=\"ds-net__dot\"></span><span class=\"ds-net__name\"><span class=\"ds-net__code\">LC01</span>Brief</span></a></li><li class=\"ds-net__stop is-here\"><a href=\"#\"><span class=\"ds-net__dot\"></span><span class=\"ds-net__name\"><span class=\"ds-net__code\">LC02</span>Stack</span></a></li><li class=\"ds-net__stop\"><a href=\"#\"><span class=\"ds-net__dot\"></span><span class=\"ds-net__name\"><span class=\"ds-net__code\">LC03</span>Deploy</span></a></li></ol></div>",
+      "css": ".ds-net { position: relative; padding-top: 6rem; padding-right: 4rem; --dot: 2.25rem; --line: var(--line-loft-concept, #FA9E0D); } .ds-net__term { position: absolute; left: 0; top: calc(6rem + var(--dot) / 2); transform: translateY(-50%); font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 800; font-size: 0.875rem; padding: 0.35em 0.6em 0.25em; border-radius: 999px; background: var(--line); color: #16181b; } .ds-net__stops { display: flex; list-style: none; margin: 0; padding: 0 0 0 3.5rem; position: relative; } .ds-net__stops::before { content: ''; position: absolute; left: 1.5rem; right: 0; top: calc(var(--dot) / 2 - 5px); height: 10px; background: var(--line); border-radius: 3px; } .ds-net__stop { flex: 1 1 0; position: relative; } .ds-net__stop a { display: block; min-height: 44px; text-decoration: none; color: var(--ink, #16181b); } .ds-net__dot { display: block; position: relative; width: var(--dot); height: var(--dot); border-radius: 50%; background: var(--station-fill, #fff); border: 6px solid var(--line); transition: transform 0.25s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)), border-color 0.25s; } .ds-net__name { position: absolute; left: 0.8rem; bottom: calc(100% - 0.3rem); transform-origin: left bottom; transform: rotate(-45deg); white-space: nowrap; font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 700; font-size: 1.0625rem; display: flex; gap: 0.45em; align-items: baseline; padding-bottom: 0.4rem; } .ds-net__code { color: var(--ink-soft, #4a4f57); font-size: 0.8em; } .ds-net__stop a:hover .ds-net__dot, .ds-net__stop a:focus-visible .ds-net__dot { transform: scale(1.2); border-color: var(--ink, #16181b); } .ds-net__stop a:focus-visible { outline: 3px solid var(--ink, #16181b); outline-offset: 3px; } .ds-net__stop.is-here .ds-net__dot { border-color: var(--ink, #16181b); background: var(--line); box-shadow: 0 0 0 5px var(--ground, #f3f4f2), 0 0 0 8px var(--ink, #16181b); animation: ds-here 2.4s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) infinite; } @keyframes ds-here { 50% { box-shadow: 0 0 0 5px var(--ground, #f3f4f2), 0 0 0 11px color-mix(in srgb, var(--ink, #16181b) 35%, transparent); } } @media (prefers-reduced-motion: reduce) { .ds-net__stop.is-here .ds-net__dot { animation: none; } }"
+    },
+    {
+      "name": "Door Strip",
+      "kind": "custom",
+      "description": "Signature: the strip map above a train door; ridden stations filled, current station ink-ringed.",
+      "html": "<div class=\"ds-strip\"><a class=\"ds-strip__name\" href=\"#\"><span class=\"ds-strip__code\">LC</span>Loft Concept</a><ol class=\"ds-strip__stops\"><li class=\"ds-strip__stop is-ridden\"><a href=\"#\"><span class=\"ds-strip__dot\"></span>01</a></li><li class=\"ds-strip__stop is-ridden is-current\"><a href=\"#\"><span class=\"ds-strip__dot\"></span>02</a></li><li class=\"ds-strip__stop\"><a href=\"#\"><span class=\"ds-strip__dot\"></span>03</a></li><li class=\"ds-strip__stop\"><a href=\"#\"><span class=\"ds-strip__dot\"></span>04</a></li></ol></div>",
+      "css": ".ds-strip { --line: var(--line-loft-concept, #FA9E0D); display: flex; align-items: center; gap: 1.5rem; padding: 1rem 0; border-bottom: 1px solid var(--rule, #d3d6da); } .ds-strip__name { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 750; text-decoration: none; color: var(--ink, #16181b); white-space: nowrap; } .ds-strip__code { padding: 0.3em 0.55em 0.2em; border-radius: 999px; font-size: 0.875rem; background: var(--line); color: #16181b; } .ds-strip__stops { display: flex; list-style: none; margin: 0; padding: 0.5rem 0.5rem 0; flex: 1; } .ds-strip__stop { position: relative; flex: 1 0 3.25rem; } .ds-strip__stop::before { content: ''; position: absolute; left: 0; right: 0; top: calc(0.75rem - 3px); height: 6px; background: var(--line); } .ds-strip__stop:first-child::before { left: 50%; } .ds-strip__stop:last-child::before { right: 50%; } .ds-strip__stop a { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; min-height: 44px; text-decoration: none; font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 700; font-size: 0.75rem; color: var(--ink-soft, #4a4f57); } .ds-strip__dot { width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--station-fill, #fff); border: 4px solid var(--line); transition: transform 0.25s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)); } .ds-strip__stop.is-ridden .ds-strip__dot { background: var(--line); } .ds-strip__stop.is-current .ds-strip__dot { border-color: var(--ink, #16181b); border-width: 5px; transform: scale(1.15); } .ds-strip__stop.is-current a { color: var(--ink, #16181b); } .ds-strip__stop a:hover .ds-strip__dot { transform: scale(1.15); } .ds-strip__stop a:focus-visible { outline: 3px solid var(--ink, #16181b); outline-offset: 3px; }"
+    },
+    {
+      "name": "Check Your Understanding",
+      "kind": "custom",
+      "description": "Disclosure list whose marker is a 4px ink station ring that fills once the answer is open.",
+      "html": "<ol class=\"ds-check\"><li><details open><summary>Why is the site static?</summary><p>Every page is built ahead of time, so nothing runs on a server.</p></details></li><li><details><summary>What does the door strip show?</summary><p>Where you are on the line.</p></details></li></ol>",
+      "css": ".ds-check { margin: 0; padding-left: 1.4rem; display: grid; gap: 0.75rem; font-family: var(--font-read, 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif); color: var(--ink, #16181b); } .ds-check li::marker { font-family: var(--font-sign, 'Overpass Variable', 'Overpass', system-ui, sans-serif); font-weight: 800; } .ds-check summary { cursor: pointer; font-weight: 700; min-height: 44px; list-style: none; display: flex; gap: 0.75rem; align-items: flex-start; padding-block: 0.5rem; } .ds-check summary::-webkit-details-marker { display: none; } .ds-check summary::before { content: ''; flex: none; width: 1.1rem; height: 1.1rem; margin-top: 0.25em; border-radius: 50%; border: 4px solid var(--ink, #16181b); background: var(--station-fill, #fff); transition: background 0.2s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)); } .ds-check details[open] summary::before { background: var(--ink, #16181b); } .ds-check summary:hover::before { transform: scale(1.1); } .ds-check summary:focus-visible { outline: 3px solid var(--ink, #16181b); outline-offset: 3px; } .ds-check details p { margin: 0 0 0.5rem; padding: 0.75rem 1rem; background: var(--code-ground, #e7e9ec); border-radius: 8px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Network Map",
+    "overview": "The site is drawn as a transit map in the Singapore MRT idiom. Every project is a coloured line, every chapter a numbered station, and the people who did the work (Claude, You, Others) are fixed line colours that run as continuous lanes down the timeline. The reader sees the network, boards a line, rides it station by station with a door strip overhead, and changes lines on the timeline. Wayfinding is the content's skeleton, not an ornament laid over a docs template.\n\nThe ground is a cool map grey by day and a platform-screen night in dark mode. Strokes are uniform and geometric (a 6px line weight for routes, lanes, strips and line rules, with the Home network trunk the one heavier 10px line; all routed only at 0, 45 and 90 degrees), stations are white discs ringed in their line's colour, and interchanges are white capsules outlined in ink. Signage type (Overpass) carries every code, heading and label; a reading face built for legibility (Atkinson Hyperlegible Next) carries the prose. Colour is information: it says who did the work or which line you are on, never decoration.\n\nDensity is calm and generous. Pages are single-column reading measures with the map device at their head; the only raised surface is the glossary popover. Motion is short, eased out, and limited to state (a station grows on hover, a route draws in once, the \"you are here\" ring breathes), all of it removed under reduced motion.",
+    "keyCharacteristics": [
+      "Fixed contributor line colours across every project: DTL blue for Claude, EWL green for You, NEL purple for Others.",
+      "Each project owns one line colour and a two-letter code (Loft Concept: CCL orange, LC); stations are coded LC01, LC02...",
+      "One line weight (6px) and three angles (0/45/90); only the Home network trunk runs heavier (10px).",
+      "Pill-shaped line badges and station codes, as on platform signage.",
+      "Ink rings mark only where the reader is: the current station or the stored reading position.",
+      "Flat surfaces; depth only for the floating glossary popover."
+    ],
+    "rules": [
+      {
+        "name": "The Colour Is Who Rule",
+        "body": "Contributor colours are fixed across every project and mean only who did the work. Never use them for emphasis, status or decoration, and never reassign them per project.",
+        "section": "colors"
+      },
+      {
+        "name": "The Signal Over Text Rule",
+        "body": "Line colours are strokes and fills. Any text set in, or on, a contributor colour uses the deepened badge value, not the raw line value.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Voices Rule",
+        "body": "Overpass speaks for the map (headings, codes, labels, controls); Atkinson speaks for the explanation (prose, summaries, answers). Never set prose in Overpass or a station code in Atkinson.",
+        "section": "typography"
+      },
+      {
+        "name": "The Code Leads Rule",
+        "body": "A station or line code sits inline in front of its title, never stacked above it as a separate small line.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Map Rule",
+        "body": "A map has no shadows. Only a popover floating over prose may lift.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** draw every line at the 6px line weight and route it at 0, 45 or 90 degrees only; the Home network trunk (10px) is the single heavier line.",
+      "**Do** keep Claude blue, You green and Others purple fixed on every project and every surface.",
+      "**Do** lead headings with their station or line code as an inline pill.",
+      "**Do** reserve ink rings for the reader's position: the current station or the stored \"you are here\".",
+      "**Do** use dashed strokes to mean reconstructed or planned, as the timeline and route diagrams already do.",
+      "**Do** set text on a contributor colour using the deepened badge grounds.",
+      "**Do** keep every tap target at least 44px."
+    ],
+    "donts": [
+      "**Don't** use a grey chapter sidebar beside a centred article; the line and door strip are the navigation.",
+      "**Don't** use contributor colours for emphasis, links or status.",
+      "**Don't** add shadows to cards, buttons or map elements; only the popover lifts.",
+      "**Don't** set prose in Overpass or headings in Atkinson.",
+      "**Don't** add a small label stacked above a heading; the code pill does that job inline."
+    ]
+  }
+}
