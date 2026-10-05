@@ -8,7 +8,7 @@ check:
   - q: Why can the admin page not handle the GitHub sign-in by itself?
     a: Completing an OAuth sign-in needs a client secret, and anything in a web page can be read by anyone. The secret must live on a server, and the static site has none, so a small Cloudflare Worker holds it.
   - q: Anyone can sign in with GitHub. What stops a stranger editing the site?
-    a: Signing in only proves who you are. Saving needs write access to the repository, which only collaborators (you and loftconcept) have.
+    a: Signing in only proves who you are. Saving needs write access to the repository, which only collaborators (you and the client) have.
   - q: Why was "Expire user access tokens" switched off?
     a: The sign-in helper does not pass on GitHub's refresh token, so expiring tokens would have broken the client's session after about 8 hours with an error instead of a clean re-login.
 sources:
@@ -47,7 +47,7 @@ The site has no server; that is the point of a static site. So a tiny program, a
 
 This part had to be done in your own accounts, so you did it with Claude guiding:
 
-1. **Deployed the Worker** with Sveltia's "Deploy to Cloudflare" button. This created a copy of its code on your GitHub account and the Worker at `sveltia-cms-auth.junyuquick246.workers.dev`. Using your account (not the client's) keeps the infrastructure with the developer.
+1. **Deployed the Worker** with Sveltia's "Deploy to Cloudflare" button. This created a copy of its code on your GitHub account and the Worker at a `sveltia-cms-auth.<your-subdomain>.workers.dev` address. Using your account (not the client's) keeps the infrastructure with the developer.
 2. **Registered a GitHub OAuth app** called Loft Concept Admin, whose callback address is the Worker's `/callback`. That tells GitHub where to send people after they approve.
 3. **Gave the Worker its settings**: the Client ID, the client secret (stored encrypted) and `ALLOWED_DOMAINS` set to the live and staging addresses, so other websites cannot use your Worker.
 
@@ -65,4 +65,4 @@ Your screenshot showed why: there was a single variable whose **name** was the C
 
 ## Signing in is not the same as being allowed
 
-Anyone with a GitHub account can sign in. But saving means writing to the repository, and GitHub only allows that for collaborators. The repository has two: you, and the client's account `loftconcept`, which you created and added. A stranger can sign in and see the admin, but every save would be refused.
+Anyone with a GitHub account can sign in. But saving means writing to the repository, and GitHub only allows that for collaborators. The repository has two: you, and the client's GitHub account, which you created and added. A stranger can sign in and see the admin, but every save would be refused.

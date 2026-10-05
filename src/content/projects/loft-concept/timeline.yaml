@@ -315,7 +315,7 @@ events:
     who: you
     title: Created the deploy FTP account on Vodien
     why: The publishing robot needs its own login that can only reach the website folder.
-    how: In cPanel, created deploy@loftconcept.com.sg rooted at public_html (after checking the domain's document root).
+    how: In cPanel, created a dedicated deploy FTP account rooted at public_html (after checking the domain's document root).
     evidence: witnessed
     source: { type: conversation }
     chapter: the-publishing-robot
@@ -342,7 +342,7 @@ events:
     who: you
     title: Created the client's GitHub account
     why: The client signs in to the admin with GitHub.
-    how: Registered the loftconcept account and shared the username.
+    how: Registered the client's GitHub account and shared the username.
     evidence: witnessed
     source: { type: conversation }
     chapter: sign-in
