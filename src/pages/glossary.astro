@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { asContinuation, indexLetter, stationCode } from '../lib/content';
@@ -11,7 +12,7 @@ const usedIn = (id: string) =>
   projects.flatMap((p) =>
     p.chapters
       .filter((c) => (c.body ?? '').includes(`](glossary:${id})`))
-      .map((c) => ({ href: `/projects/${p.slug}/${c.slug}`, code: stationCode(p.data.code, c.data.station), title: c.data.title })),
+      .map((c) => ({ href: url(`/projects/${p.slug}/${c.slug}`), code: stationCode(p.data.code, c.data.station), title: c.data.title })),
   );
 const letters = [...new Set(terms.map((t) => indexLetter(t.data.term)))];
 ---

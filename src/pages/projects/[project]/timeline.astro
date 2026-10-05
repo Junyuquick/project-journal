@@ -1,4 +1,5 @@
 ---
+import { url } from '../../../lib/url';
 import Base from '../../../layouts/Base.astro';
 import { eventsByDay, lanesFor, sourceLink, stationCode, type Lane } from '../../../lib/content';
 import { inkOn, loadProjects, type Project } from '../../../lib/journal';
@@ -23,7 +24,7 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
   <div class="wrap tl" style={`--lanes:${lanes.length}`}>
     <header class="tl__head">
       <h1 class="has-pill"><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code}</span><span>Who did what</span></h1>
-      <p class="tl__lede">Every step of building the <a href={`/projects/${slug}`}>{data.title}</a>, in time order. Each contributor runs as a line; a station on a line is something they did. An interchange across lines is something done together.</p>
+      <p class="tl__lede">Every step of building the <a href={url(`/projects/${slug}`)}>{data.title}</a>, in time order. Each contributor runs as a line; a station on a line is something they did. An interchange across lines is something done together.</p>
 
       <div class="tl__legend">
         <ul class="tl__keys" aria-label="How to read the lines">
@@ -82,7 +83,7 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
                     </dl>
                     <p class="ev__links">
                       {src.href ? <a href={src.href} target="_blank" rel="noopener">{src.label}</a> : <span>{src.label}</span>}
-                      {ch && <a href={`/projects/${slug}/${ch.slug}`}>Read {stationCode(data.code, ch.data.station)}: {ch.data.title}</a>}
+                      {ch && <a href={url(`/projects/${slug}/${ch.slug}`)}>Read {stationCode(data.code, ch.data.station)}: {ch.data.title}</a>}
                     </p>
                   </div>
                 </li>

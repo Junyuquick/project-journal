@@ -1,4 +1,5 @@
 ---
+import { url, pagePath } from '../lib/url';
 import '../styles/base.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
 
@@ -8,7 +9,7 @@ interface Props {
 }
 const { title, description } = Astro.props;
 const fullTitle = title === 'Project Journal' ? title : `${title} | Project Journal`;
-const path = Astro.url.pathname;
+const path = pagePath(Astro.url.pathname);
 ---
 <!doctype html>
 <html lang="en">
@@ -28,10 +29,10 @@ const path = Astro.url.pathname;
     <a class="skip" href="#main">Skip to content</a>
     <header class="site-head">
       <div class="wrap site-head__row">
-        <a class="wordmark" href="/" aria-current={path === '/' ? 'page' : undefined}>Project Journal</a>
+        <a class="wordmark" href={url('/')} aria-current={path === '/' ? 'page' : undefined}>Project Journal</a>
         <nav aria-label="Site">
-          <a href="/" aria-current={path === '/' ? 'page' : undefined}>Network</a>
-          <a href="/glossary" aria-current={path.startsWith('/glossary') ? 'page' : undefined}>Glossary</a>
+          <a href={url('/')} aria-current={path === '/' ? 'page' : undefined}>Network</a>
+          <a href={url('/glossary')} aria-current={path.startsWith('/glossary') ? 'page' : undefined}>Glossary</a>
           <ThemeToggle />
         </nav>
       </div>

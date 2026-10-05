@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import Base from '../layouts/Base.astro';
 import NetworkLine from '../components/NetworkLine.astro';
 import { formatDate, inkOn, loadProjects } from '../lib/journal';
@@ -17,7 +18,7 @@ const projects = await loadProjects();
         <NetworkLine project={p} />
         <div class="project__meta">
           <h2>
-            <a href={`/projects/${p.slug}`}>
+            <a href={url(`/projects/${p.slug}`)}>
               <span class="project__code" style={`background:${p.data.color};color:${inkOn(p.data.ink)}`}>{p.data.code}</span>
               {p.data.title}
             </a>
@@ -25,8 +26,8 @@ const projects = await loadProjects();
           <p class="project__summary">{p.data.summary}</p>
           <p class="project__facts">{p.chapters.length} {p.chapters.length === 1 ? 'station' : 'stations'}, {formatDate(p.data.startedAt)} to {formatDate(p.data.endedAt)}</p>
           <p class="project__go">
-            {p.chapters.length > 0 && <a class="go" href={`/projects/${p.slug}/${p.chapters[0].slug}`} data-continue={p.slug}>Start at {p.data.code}01</a>}
-            <a class="go go--quiet" href={`/projects/${p.slug}/timeline`}>Timeline</a>
+            {p.chapters.length > 0 && <a class="go" href={url(`/projects/${p.slug}/${p.chapters[0].slug}`)} data-continue={p.slug}>Start at {p.data.code}01</a>}
+            <a class="go go--quiet" href={url(`/projects/${p.slug}/timeline`)}>Timeline</a>
           </p>
         </div>
       </article>

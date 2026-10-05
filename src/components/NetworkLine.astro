@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 // One project drawn as a full MRT line: stations with angled names, as on the network map.
 import { stationCode } from '../lib/content';
 import { inkOn, type Project } from '../lib/journal';
@@ -11,7 +12,7 @@ const { slug, data, chapters } = project;
   <ol class="net__stops">
     {chapters.map((c) => (
       <li class="net__stop" data-station={c.data.station}>
-        <a href={`/projects/${slug}/${c.slug}`}>
+        <a href={url(`/projects/${slug}/${c.slug}`)}>
           <span class="net__dot" aria-hidden="true"></span>
           <span class="net__name">
             <span class="net__code">{stationCode(data.code, c.data.station)}</span>

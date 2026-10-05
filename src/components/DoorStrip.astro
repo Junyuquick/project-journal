@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 // The strip map above a train door: the whole line, with this station ringed.
 import { stationCode } from '../lib/content';
 
@@ -7,14 +8,14 @@ interface Props { slug: string; code: string; color: string; ink: 'dark' | 'ligh
 const { slug, code, color, ink, title, stops, current } = Astro.props;
 ---
 <nav class="strip" aria-label={`${title} line`} style={`--line:${color}`} data-strip>
-  <a class="strip__name" href={`/projects/${slug}`}>
+  <a class="strip__name" href={url(`/projects/${slug}`)}>
     <span class="strip__code" style={`background:${color};color:${ink === 'dark' ? '#16181b' : '#fff'}`}>{code}</span>
     <span>{title}</span>
   </a>
   <ol class="strip__stops">
     {stops.map((s) => (
       <li class:list={['strip__stop', { 'is-ridden': s.station < current, 'is-current': s.station === current }]}>
-        <a href={`/projects/${slug}/${s.slug}`} aria-current={s.station === current ? 'step' : undefined} title={s.title}>
+        <a href={url(`/projects/${slug}/${s.slug}`)} aria-current={s.station === current ? 'step' : undefined} title={s.title}>
           <span class="strip__dot" aria-hidden="true"></span>
           <span class="strip__label">{stationCode(code, s.station)}</span>
           <span class="visually-hidden">{s.title}</span>

@@ -5,7 +5,8 @@ import { mkdirSync } from 'node:fs';
 import { chromium } from 'playwright';
 
 const PORT = 4392;
-const BASE = `http://127.0.0.1:${PORT}`;
+// The preview server serves the site under its base path, as GitHub Pages will.
+const BASE = `http://127.0.0.1:${PORT}/project-journal`;
 const OUT = '.impeccable/review';
 const PAGES = [
   ['home', '/'],

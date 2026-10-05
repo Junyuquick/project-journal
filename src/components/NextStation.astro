@@ -1,9 +1,10 @@
 ---
+import { url } from '../lib/url';
 import { stationCode } from '../lib/content';
 interface Props { slug: string; code: string; color: string; ink: 'dark' | 'light'; next?: { station: number; title: string; slug: string } }
 const { slug, code, color, ink, next } = Astro.props;
 ---
-<a class="next" href={next ? `/projects/${slug}/${next.slug}` : `/projects/${slug}`} style={`--line:${color}`}>
+<a class="next" href={next ? url(`/projects/${slug}/${next.slug}`) : url(`/projects/${slug}`)} style={`--line:${color}`}>
   <span class="next__where">
     <span class="next__say">{next ? 'Next station' : 'End of the line'}</span>
     {next && <span class="next__code" style={`background:${color};color:${ink === 'dark' ? '#16181b' : '#fff'}`}>{stationCode(code, next.station)}</span>}

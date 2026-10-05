@@ -5,6 +5,8 @@ import { join } from 'node:path';
 import { parse } from 'yaml';
 
 const DIST = process.env.DIST ?? 'dist';
+// The site is served from a subfolder on GitHub Pages; every internal link must carry it.
+const BASE = parse(readFileSync('astro.config.mjs', 'utf8').match(/base: '([^']*)'/)?.[1] ?? '""') ?? '';
 const failures = [];
 const fail = (m) => failures.push(m);
 const walk = (dir) => readdirSync(dir).flatMap((f) => (statSync(join(dir, f)).isDirectory() ? walk(join(dir, f)) : [join(dir, f)]));
@@ -26,7 +28,8 @@ for (const file of pages) {
   const h1s = (html.match(/<h1[\s>]/g) ?? []).length;
   if (h1s !== 1) fail(`${name}: expected one <h1>, found ${h1s}`);
   for (const [, href] of html.matchAll(/<a\b[^>]*\shref="(\/[^"]*)"/g)) {
-    if (!resolves(href)) fail(`${name}: broken internal link ${href}`);
+    if (BASE && !(href === BASE || href.startsWith(`${BASE}/`))) fail(`${name}: internal link ${href} is missing the ${BASE} base path`);
+    else if (!resolves(href.slice(BASE.length) || '/')) fail(`${name}: broken internal link ${href}`);
   }
   if (/href="glossary:/.test(html)) fail(`${name}: a glossary link was not turned into a term (reference-style link?)`);
   for (const [, id] of html.matchAll(/data-term="([^"]+)"/g)) {

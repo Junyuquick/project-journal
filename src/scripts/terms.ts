@@ -28,7 +28,7 @@ function show(button: HTMLButtonElement) {
     <p class="term-pop__name" id="term-pop-${t.id}"></p>
     <p class="term-pop__def"></p>
     ${t.analogy ? '<p class="term-pop__analogy"></p>' : ''}
-    <div class="term-pop__foot"><a href="/glossary#${t.id}">Open in glossary</a><button type="button" class="term-pop__close">Close</button></div>`;
+    <div class="term-pop__foot"><a href="${import.meta.env.BASE_URL.replace(/\/$/, '')}/glossary#${t.id}">Open in glossary</a><button type="button" class="term-pop__close">Close</button></div>`;
   panel.querySelector('.term-pop__name')!.textContent = t.term;
   panel.querySelector('.term-pop__def')!.textContent = t.definition;
   if (t.analogy) panel.querySelector('.term-pop__analogy')!.textContent = `Think of it as: ${asContinuation(t.analogy)}`;

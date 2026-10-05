@@ -1,4 +1,5 @@
 ---
+import { url } from '../../../lib/url';
 import Base from '../../../layouts/Base.astro';
 import { stationCode } from '../../../lib/content';
 import { formatDate, inkOn, loadProjects, type Project } from '../../../lib/journal';
@@ -21,8 +22,8 @@ const evidenceNote = { witnessed: '', reconstructed: 'Rebuilt from the record', 
         {data.repo && <><br /><a href={data.repo}>The real code on GitHub</a></>}
       </p>
       <p class="line__actions">
-        {chapters.length > 0 && <a class="go" href={`/projects/${slug}/${chapters[0].slug}`} data-continue={slug}>Start at {data.code}01</a>}
-        <a class="go go--quiet" href={`/projects/${slug}/timeline`}>Who did what: the timeline</a>
+        {chapters.length > 0 && <a class="go" href={url(`/projects/${slug}/${chapters[0].slug}`)} data-continue={slug}>Start at {data.code}01</a>}
+        <a class="go go--quiet" href={url(`/projects/${slug}/timeline`)}>Who did what: the timeline</a>
       </p>
     </header>
 
@@ -35,7 +36,7 @@ const evidenceNote = { witnessed: '', reconstructed: 'Rebuilt from the record', 
             <span class="stop__dot" aria-hidden="true"></span>
             <div class="stop__body">
               <h2>
-                <a href={`/projects/${slug}/${c.slug}`}>
+                <a href={url(`/projects/${slug}/${c.slug}`)}>
                   <span class="stop__code" style={`background:${data.color};color:${inkOn(data.ink)}`}>{stationCode(data.code, c.data.station)}</span>
                   <span>{c.data.title}</span>
                 </a>
