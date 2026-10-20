@@ -31,7 +31,7 @@ const evidenceText = {
   mixed: 'Parts of this chapter come from our conversation and parts are rebuilt from the record (specs, plans and git commits).',
 } as const;
 ---
-<Base title={`${code} ${chapter.data.title}`} description={chapter.data.summary}>
+<Base title={`${code} ${chapter.data.title}`} description={chapter.data.summary} calm>
   <div class="wrap">
     <DoorStrip slug={project.slug} code={data.code} color={data.color} ink={data.ink} title={data.title} stops={stops} current={chapter.data.station} />
   </div>
@@ -41,7 +41,7 @@ const evidenceText = {
       <h1 class="has-pill"><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{code}</span><span>{chapter.data.title}</span></h1>
       <p class="chapter__summary">{chapter.data.summary}</p>
       <p class="chapter__meta">{chapter.data.minutes} min read</p>
-      {evidenceText[chapter.data.evidence] && (
+      {chapter.data.evidence && evidenceText[chapter.data.evidence] && (
         <p class="chapter__evidence"><strong>Where this comes from.</strong> {evidenceText[chapter.data.evidence]}</p>
       )}
     </header>

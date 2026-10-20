@@ -1,0 +1,32 @@
+---
+title: Give Claude a way to check its own work
+station: 2
+summary: The highest-leverage habit. Without a check, "looks done" is the only signal and you become the test suite.
+minutes: 5
+check:
+  - q: Why is "implement email validation" a weak prompt?
+    a: It gives Claude no way to know when it is right. A strong prompt lists example inputs with the expected answers and asks Claude to run the tests afterwards.
+  - q: What should you ask Claude to show you when it says it is finished?
+    a: Evidence, such as test output, the command it ran or a screenshot, rather than only the words "it works".
+  - q: Name three things that can act as a check.
+    a: Tests, a build that exits cleanly, a linter, or a screenshot compared with a mock-up. Anything Claude can run and read.
+sources:
+  - label: Anthropic, Best practices for Claude Code
+    url: https://code.claude.com/docs/en/best-practices
+---
+
+A **check** is anything Claude can run and read: [tests](glossary:test), a [build](glossary:build) that succeeds or fails, a linter, or a screenshot compared with a design. With a check, Claude can try, see that it failed, and fix it by itself. Without one, you have to be the person who tests everything.
+
+## Weak and strong, side by side
+
+| Weak | Strong |
+|---|---|
+| "implement email validation" | "write validateEmail. Cases: user@example.com is true, invalid is false, user@.com is false. Run the tests after." |
+| "make the dashboard look better" | "[paste screenshot] implement this design, take a screenshot of the result, list the differences, and fix them" |
+| "the build is failing" | "build fails with: [paste the error]. Fix it, check the build passes, fix the root cause, and do not hide the error" |
+
+Notice what the strong versions share: they say what "right" looks like and they tell Claude to go and look.
+
+## Ask for evidence
+
+When Claude says "done", ask to see the test output, the command it ran or the screenshot. "It works" is a claim. Output is evidence. This is the same idea behind test-driven work, where the [test](glossary:tdd) comes first and the code is written to satisfy it.

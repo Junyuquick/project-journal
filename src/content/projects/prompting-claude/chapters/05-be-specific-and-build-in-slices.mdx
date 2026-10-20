@@ -1,0 +1,43 @@
+---
+title: Be specific, and build in slices
+station: 5
+summary: Say which file, which pattern and what is wrong, and never ask for a whole app in one giant prompt.
+minutes: 6
+check:
+  - q: Name four ways to make a prompt more specific.
+    a: Name the scope (file, scenario, testing preferences), point to sources (@file, URLs, images, logs), reference an existing pattern to follow, and describe the symptom with what "fixed" means.
+  - q: Why is a 500-word prompt for a whole app a poor plan?
+    a: Building section by section gives better output. Start with a skeleton, then one end-to-end slice at a time, each with its own check.
+  - q: What should you never let Claude do when tests fail?
+    a: Delete or edit the tests to make them pass.
+sources:
+  - label: Anthropic, Best practices for Claude Code
+    url: https://code.claude.com/docs/en/best-practices
+  - label: Anthropic, Prompting best practices
+    url: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices
+---
+
+## Be specific
+
+Vague prompts are fine for exploring ("what would you improve in this file?"). For real work, be exact:
+
+- **Scope.** Which file, which scenario, what testing style ("avoid mocks").
+- **Sources.** Point to `@file`, paste URLs, images or logs.
+- **Patterns.** "Follow how HotDogWidget.php does it."
+- **Symptoms.** Say what you see, where you think it is, and what "fixed" means.
+
+## Build in vertical slices
+
+A very long prompt for a whole app gives worse results than building piece by piece. The order that works:
+
+1. Set up a skeleton and deploy it.
+2. Build one [vertical slice](glossary:vertical-slice): one feature, end to end.
+3. Give that slice its own check.
+4. Make it small enough to [commit](glossary:commit).
+5. Repeat.
+
+Treat version one as an [MVP](glossary:mvp): the smallest thing that does the main job.
+
+## Across many sessions
+
+For a build that spans several sessions, the first session sets up the framework: tests, a script that starts the project, and a progress file. Later sessions work through a to-do list. Use [git](glossary:git) as the memory, and start fresh sessions instead of relying on one that has grown huge. And never let Claude delete or edit tests just to make them pass.

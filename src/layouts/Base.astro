@@ -6,8 +6,10 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 interface Props {
   title: string;
   description: string;
+  /** quieter background for reading pages */
+  calm?: boolean;
 }
-const { title, description } = Astro.props;
+const { title, description, calm = false } = Astro.props;
 const fullTitle = title === 'Project Journal' ? title : `${title} | Project Journal`;
 const path = pagePath(Astro.url.pathname);
 ---
@@ -25,13 +27,14 @@ const path = pagePath(Astro.url.pathname);
       } catch {}
     </script>
   </head>
-  <body>
+  <body data-calm={calm || undefined}>
+    <canvas id="flow-field" aria-hidden="true"></canvas>
     <a class="skip" href="#main">Skip to content</a>
     <header class="site-head">
       <div class="wrap site-head__row">
         <a class="wordmark" href={url('/')} aria-current={path === '/' ? 'page' : undefined}>Project Journal</a>
         <nav aria-label="Site">
-          <a href={url('/')} aria-current={path === '/' ? 'page' : undefined}>Network</a>
+          <a href={url('/')} aria-current={path === '/' ? 'page' : undefined}>Journals</a>
           <a href={url('/glossary')} aria-current={path.startsWith('/glossary') ? 'page' : undefined}>Glossary</a>
           <ThemeToggle />
         </nav>
@@ -40,6 +43,9 @@ const path = pagePath(Astro.url.pathname);
     <main id="main">
       <slot />
     </main>
+    <script>
+      import '../scripts/flow-field';
+    </script>
   </body>
 </html>
 
@@ -54,13 +60,15 @@ const path = pagePath(Astro.url.pathname);
     z-index: 10;
   }
   .skip:focus { top: var(--s-2); }
-  .site-head { border-bottom: 1px solid var(--rule); }
+  #flow-field { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+  body[data-calm] #flow-field { opacity: 0.4; }
+  .site-head { position: relative; }
   .site-head__row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--s-4);
-    min-height: 3.75rem;
+    min-height: 4.5rem;
   }
   .wordmark {
     font-family: var(--font-sign);
@@ -85,7 +93,7 @@ const path = pagePath(Astro.url.pathname);
     align-items: center;
     border-radius: var(--radius-pill);
   }
-  nav a:hover { background: var(--code-ground); }
+  @media (hover: hover) and (pointer: fine) { nav a:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); } }
   nav a[aria-current='page'] { box-shadow: inset 0 -3px 0 var(--ink); border-radius: 0; }
   @media (max-width: 30rem) {
     .wordmark { font-size: var(--step-0); }

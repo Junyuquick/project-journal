@@ -43,6 +43,7 @@ const root = 'src/content/projects';
 for (const slug of readdirSync(root)) {
   const p = parse(readFileSync(join(root, slug, 'project.yaml'), 'utf8'));
   const page = join(DIST, 'projects', slug, 'timeline', 'index.html');
+  if (!existsSync(join(root, slug, 'timeline.yaml'))) { if (existsSync(page)) fail(`${slug}: has a timeline page but no timeline.yaml`); continue; }
   if (!existsSync(page)) { fail(`timeline missing for ${slug}`); continue; }
   const hasOthers = /data-filter="others"/.test(readFileSync(page, 'utf8'));
   if (hasOthers !== p.contributors.includes('others')) fail(`${slug}: Others filter ${hasOthers ? 'shown' : 'missing'} but contributors are ${p.contributors.join(', ')}`);

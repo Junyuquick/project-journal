@@ -6,7 +6,7 @@ import { inkOn, loadProjects, type Project } from '../../../lib/journal';
 
 export async function getStaticPaths() {
   const projects = await loadProjects();
-  return projects.map((project) => ({ params: { project: project.slug }, props: { project } }));
+  return projects.filter((p) => p.events.length > 0).map((project) => ({ params: { project: project.slug }, props: { project } }));
 }
 const { project } = Astro.props as { project: Project };
 const { slug, data, chapters, events } = project;

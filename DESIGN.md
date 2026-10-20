@@ -1,6 +1,6 @@
 ---
 name: Project Journal
-description: A personal learning journal drawn as an MRT network map; every project a line, every chapter a station.
+description: A personal learning journal on a cool paper ground with drifting ink lines; every journal a coloured band on Home, a transit line inside, every chapter a station.
 colors:
   line-claude: "#005ec4"
   line-you: "#009645"
@@ -10,16 +10,16 @@ colors:
   badge-others: "#8a0099"
   text-you: "#007a3a"
   line-loft-concept: "#FA9E0D"
-  ground: "#f3f4f2"
+  ground: "#eef1f4"
   ground-raised: "#ffffff"
-  ink: "#16181b"
-  ink-soft: "#4a4f57"
-  rule: "#d3d6da"
-  track: "#c4c8cd"
+  ink: "#0e1420"
+  ink-soft: "#4d5663"
+  rule: "#cfd5dc"
+  track: "#bcc3cc"
   station-fill: "#ffffff"
-  code-ground: "#e7e9ec"
+  code-ground: "#e1e6ec"
   selection: "#cfe0f7"
-  night-ground: "#111316"
+  night-ground: "#0f1216"
   night-ground-raised: "#191c20"
   night-ink: "#eef0f2"
   night-ink-soft: "#a7adb6"
@@ -32,25 +32,25 @@ colors:
   night-line-others: "#c04fd1"
 typography:
   display:
-    fontFamily: "'Overpass Variable', 'Overpass', system-ui, sans-serif"
+    fontFamily: "'Outfit Variable', 'Outfit', system-ui, sans-serif"
     fontSize: "clamp(2.25rem, 1.5rem + 3vw, 3.75rem)"
     fontWeight: 800
     lineHeight: 1.15
     letterSpacing: "-0.025em"
   headline:
-    fontFamily: "'Overpass Variable', 'Overpass', system-ui, sans-serif"
+    fontFamily: "'Outfit Variable', 'Outfit', system-ui, sans-serif"
     fontSize: "clamp(1.875rem, 1.4rem + 1.6vw, 2.5rem)"
     fontWeight: 750
     lineHeight: 1.15
     letterSpacing: "-0.015em"
   headline-sm:
-    fontFamily: "'Overpass Variable', 'Overpass', system-ui, sans-serif"
+    fontFamily: "'Outfit Variable', 'Outfit', system-ui, sans-serif"
     fontSize: "1.625rem"
     fontWeight: 750
     lineHeight: 1.15
     letterSpacing: "-0.015em"
   title:
-    fontFamily: "'Overpass Variable', 'Overpass', system-ui, sans-serif"
+    fontFamily: "'Outfit Variable', 'Outfit', system-ui, sans-serif"
     fontSize: "1.25rem"
     fontWeight: 700
     lineHeight: 1.15
@@ -66,12 +66,12 @@ typography:
     fontWeight: 400
     lineHeight: 1.5
   label:
-    fontFamily: "'Overpass Variable', 'Overpass', system-ui, sans-serif"
+    fontFamily: "'Outfit Variable', 'Outfit', system-ui, sans-serif"
     fontSize: "0.875rem"
     fontWeight: 650
     lineHeight: 1.25
   station-code:
-    fontFamily: "'Overpass Variable', 'Overpass', system-ui, sans-serif"
+    fontFamily: "'Outfit Variable', 'Outfit', system-ui, sans-serif"
     fontSize: "0.875rem"
     fontWeight: 750
     lineHeight: 1
@@ -164,9 +164,11 @@ components:
 
 **Creative North Star: "The Network Map"**
 
-The site is drawn as a transit map in the Singapore MRT idiom. Every project is a coloured line, every chapter a numbered station, and the people who did the work (Claude, You, Others) are fixed line colours that run as continuous lanes down the timeline. The reader sees the network, boards a line, rides it station by station with a door strip overhead, and changes lines on the timeline. Wayfinding is the content's skeleton, not an ornament laid over a docs template.
+**Home (redesigned 21 Oct 2026, "Contour").** A cool paper ground with ink streamlines drifting behind every page (a canvas that reads the ground and ink colours from CSS, still under reduced motion, quieter on chapter pages). The headline is Outfit 800 with one italic phrase. Each journal is a full-width, stacked colour band in its own colour with its two-letter code at display size, its summary and a start or continue button; a dashed band shows where the next journal goes. Journals have a kind: a project (documented from a build record, with a timeline) or a guide (teaches a method, no timeline). Below Home the transit-map vocabulary is unchanged.
 
-The ground is a cool map grey by day and a platform-screen night in dark mode. Strokes are uniform and geometric (a 6px line weight for routes, lanes, strips and line rules, with the Home network trunk the one heavier 10px line; all routed only at 0, 45 and 90 degrees), stations are white discs ringed in their line's colour, and interchanges are white capsules outlined in ink. Signage type (Overpass) carries every code, heading and label; a reading face built for legibility (Atkinson Hyperlegible Next) carries the prose. Colour is information: it says who did the work or which line you are on, never decoration.
+The rest of the site is drawn as a transit map in the Singapore MRT idiom. Every project is a coloured line, every chapter a numbered station, and the people who did the work (Claude, You, Others) are fixed line colours that run as continuous lanes down the timeline. The reader sees the network, boards a line, rides it station by station with a door strip overhead, and changes lines on the timeline. Wayfinding is the content's skeleton, not an ornament laid over a docs template.
+
+The ground is a cool map grey by day and a platform-screen night in dark mode. Strokes are uniform and geometric (a 6px line weight for routes, lanes, strips and line rules, with the Home network trunk the one heavier 10px line; all routed only at 0, 45 and 90 degrees), stations are white discs ringed in their line's colour, and interchanges are white capsules outlined in ink. Display type (Outfit) carries every code, heading and label; a reading face built for legibility (Atkinson Hyperlegible Next) carries the prose. Colour is information: it says who did the work or which line you are on, never decoration.
 
 Density is calm and generous. Pages are single-column reading measures with the map device at their head; the only raised surface is the glossary popover. Motion is short, eased out, and limited to state (a station grows on hover, a route draws in once, the "you are here" ring breathes), all of it removed under reduced motion.
 
@@ -210,11 +212,11 @@ A neutral cool-grey map with saturated transit line colours used strictly as sig
 
 ## Typography
 
-**Display Font:** Overpass Variable (with system-ui)
+**Display Font:** Outfit Variable (with system-ui)
 **Body Font:** Atkinson Hyperlegible Next Variable (with system-ui)
 **Label/Mono Font:** Overpass Mono Variable (with ui-monospace)
 
-**Character:** Overpass is the road-and-transit signage face, heavy and tight for codes and headings; Atkinson Hyperlegible Next is a reading face designed for low-vision legibility, which suits a beginner studying long explanations on a phone.
+**Character:** Outfit is a geometric display face, heavy and tight for codes and headings; Atkinson Hyperlegible Next is a reading face designed for low-vision legibility, which suits a beginner studying long explanations on a phone.
 
 ### Hierarchy
 - **Display** (800, fluid 2.25rem to 3.75rem, 1.15, -0.025em): chapter and page titles; the home intro uses the headline size instead so the map stays dominant.
@@ -228,7 +230,7 @@ A neutral cool-grey map with saturated transit line colours used strictly as sig
 - **Code** (Overpass Mono, 0.9em inline, 0.875rem blocks, 1.5).
 
 ### Named Rules
-**The Two Voices Rule.** Overpass speaks for the map (headings, codes, labels, controls); Atkinson speaks for the explanation (prose, summaries, answers). Never set prose in Overpass or a station code in Atkinson.
+**The Two Voices Rule.** Outfit speaks for the map (headings, codes, labels, controls); Atkinson speaks for the explanation (prose, summaries, answers). Never set prose in Outfit or a station code in Atkinson.
 
 **The Code Leads Rule.** A station or line code sits inline in front of its title, never stacked above it as a separate small line.
 

@@ -1,0 +1,34 @@
+---
+title: Let Claude interview you, then write the spec
+station: 4
+summary: For anything bigger than a single feature, have Claude ask the questions and write down the answers before building.
+minutes: 5
+check:
+  - q: Why run the build in a fresh session after the spec is written?
+    a: The interview fills the context window. A fresh session starts with a clean window and only the spec, so Claude has more room and less clutter.
+  - q: What makes a strong spec?
+    a: It names files and interfaces, says what is out of scope, and ends with an end-to-end verification step.
+  - q: Where should most of your time go on a big build?
+    a: On the spec. Time spent there beats time spent watching the build.
+sources:
+  - label: Anthropic, Best practices for Claude Code
+    url: https://code.claude.com/docs/en/best-practices
+---
+
+For a whole app or a large feature, you do not yet know everything you want, and neither does Claude. The fix is to let Claude interview you.
+
+## The interview prompt
+
+> I want to build [brief description]. Interview me in detail, one topic at a time: users, core flows, data, edge cases, stack, UI, what is out of scope. Then write SPEC.md with a final end-to-end verification step.
+
+Claude asks, you answer, and the answers become a [spec](glossary:spec): a written description of what to build.
+
+## What a strong spec contains
+
+- The files and interfaces involved, by name.
+- What is **out of scope**, so Claude does not add extras.
+- A last step that proves the whole thing works from start to finish.
+
+## Build in a fresh session
+
+Once SPEC.md exists, start a new session and tell Claude to read it. The interview used up a lot of the [context window](glossary:context-window), and a fresh start gives Claude room. The spec is also the written source of truth, so you and Claude cannot quietly drift apart later. This is the same idea as an [implementation plan](glossary:implementation-plan), written before the work starts.

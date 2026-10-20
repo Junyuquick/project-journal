@@ -1,83 +1,95 @@
 ---
 import { url } from '../lib/url';
 import Base from '../layouts/Base.astro';
-import NetworkLine from '../components/NetworkLine.astro';
 import { formatDate, inkOn, loadProjects } from '../lib/journal';
 
 const projects = await loadProjects();
+const span = (p: (typeof projects)[number]) =>
+  p.data.kind === 'guide' ? `Guide, ${formatDate(p.data.startedAt)}` : `Project, ${formatDate(p.data.startedAt)} to ${formatDate(p.data.endedAt)}`;
 ---
-<Base title="Project Journal" description="How each of my coding projects was built, explained from the ground up, one station at a time.">
-  <section class="wrap intro">
-    <h1>Project Journal</h1>
-    <p>How each of my projects was built, explained from the ground up. Every project is a line and every chapter a station.</p>
+<Base title="Project Journal" description="How each of my coding projects was built, and guides to the methods behind them, explained from the ground up.">
+  <section class="wrap hero">
+    <h1>A journal of things built, <em>explained slowly.</em></h1>
+    <p class="hero__lede">Real projects and guides, taught from the ground up so you can redo the work yourself.</p>
+    <p class="hero__cta">
+      <a class="go" href="#journals">Pick a journal</a>
+      <a class="go go--quiet" href={url('/glossary')}>Open glossary</a>
+    </p>
   </section>
 
-  <section class="wrap network" aria-label="Network map">
+  <section class="wrap shelf" id="journals" aria-label="Journals">
     {projects.map((p) => (
-      <article class="project">
-        <NetworkLine project={p} />
-        <div class="project__meta">
-          <h2>
-            <a href={url(`/projects/${p.slug}`)}>
-              <span class="project__code" style={`background:${p.data.color};color:${inkOn(p.data.ink)}`}>{p.data.code}</span>
-              {p.data.title}
-            </a>
-          </h2>
-          <p class="project__summary">{p.data.summary}</p>
-          <p class="project__facts">{p.chapters.length} {p.chapters.length === 1 ? 'station' : 'stations'}, {formatDate(p.data.startedAt)} to {formatDate(p.data.endedAt)}</p>
-          <p class="project__go">
-            {p.chapters.length > 0 && <a class="go" href={url(`/projects/${p.slug}/${p.chapters[0].slug}`)} data-continue={p.slug}>Start at {p.data.code}01</a>}
-            <a class="go go--quiet" href={url(`/projects/${p.slug}/timeline`)}>Timeline</a>
-          </p>
+      <article class="cover" style={`--c:${p.data.color};--on:${inkOn(p.data.ink)}`}>
+        <p class="cover__code" aria-hidden="true">{p.data.code}</p>
+        <div class="cover__info">
+          <h2><a href={url(`/projects/${p.slug}`)}>{p.data.title}</a></h2>
+          <p class="cover__summary">{p.data.summary}</p>
+          <p class="cover__facts">{span(p)}, {p.chapters.length} {p.chapters.length === 1 ? 'station' : 'stations'}</p>
+          {p.chapters.length > 0 && (
+            <p class="cover__go"><a class="go go--cover" href={url(`/projects/${p.slug}/${p.chapters[0].slug}`)} data-continue={p.slug} data-code={p.data.code} data-line={url(`/projects/${p.slug}`)} data-chapters={JSON.stringify(p.chapters.map((c) => c.slug))}>Start at {p.data.code}01</a></p>
+          )}
         </div>
       </article>
     ))}
+    <div class="cover cover--next">
+      <p class="cover__code" aria-hidden="true">+</p>
+      <div class="cover__info">
+        <h2>Your next project</h2>
+        <p class="cover__summary">Add a folder of Markdown under <code>src/content/projects/</code> and it appears here.</p>
+      </div>
+    </div>
   </section>
 </Base>
 
 <script>
   import { readPosition } from '../scripts/position';
   for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-continue]')) {
-    const slug = link.dataset.continue!;
-    const station = readPosition(slug);
-    if (!station) continue;
-    const stop = document.querySelector<HTMLElement>(`[data-line="${slug}"] [data-station="${station}"]`);
-    stop?.classList.add('is-here');
-    stop?.querySelector('a')?.insertAdjacentHTML('beforeend', '<span class="visually-hidden"> (you are here)</span>');
-    const href = stop?.querySelector('a')?.getAttribute('href');
-    const code = stop?.querySelector('.net__code')?.textContent;
-    if (href && code) {
-      link.href = href;
-      link.textContent = `Continue at ${code}`;
-    }
+    const station = readPosition(link.dataset.continue!);
+    const slugs: string[] = JSON.parse(link.dataset.chapters!);
+    if (!station || !slugs[station - 1]) continue;
+    link.href = `${link.dataset.line}/${slugs[station - 1]}`;
+    link.textContent = `Continue at ${link.dataset.code}${String(station).padStart(2, '0')}`;
   }
 </script>
 
 <style>
-  .intro { padding-block: var(--s-6) 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2) var(--s-5); }
-  .intro h1 { font-size: var(--step-3); }
-  .intro p { max-width: 48ch; font-size: var(--step-0); line-height: 1.5; color: var(--ink-soft); }
-  .network { display: grid; gap: var(--s-8); padding-bottom: var(--s-8); }
-  .project { display: grid; gap: var(--s-5); }
-  .project__meta { display: grid; gap: var(--s-3); max-width: 62ch; padding-left: 3.25rem; }
-  h2 { font-size: var(--step-3); }
-  h2 a { text-decoration: none; display: inline-flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
-  h2 a:hover { text-decoration: underline; }
-  .project__code { font-size: var(--step-0); padding: 0.3em 0.6em 0.2em; border-radius: var(--radius-pill); }
-  .project__summary { font-size: var(--step-1); line-height: 1.5; }
-  .project__facts { color: var(--ink-soft); font-family: var(--font-sign); font-weight: 650; }
-  .project__go { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-2); }
-  .go {
-    display: inline-flex; align-items: center; min-height: 48px;
-    padding: 0 var(--s-5);
-    border-radius: var(--radius-pill);
-    background: var(--ink); color: var(--ground);
-    font-family: var(--font-sign); font-weight: 750;
-    text-decoration: none;
-    transition: transform 0.15s var(--ease-out);
-  }
-  .go:active { transform: scale(0.98); }
+  .hero { padding-block: clamp(3rem, 9vh, 7rem) var(--s-7); max-width: none; }
+  .hero > * { animation: rise 0.9s var(--ease-out) both; }
+  .hero > :nth-child(2) { animation-delay: 0.1s; }
+  .hero > :nth-child(3) { animation-delay: 0.2s; }
+  h1 { font-size: clamp(2.7rem, 1rem + 7.4vw, 6.8rem); font-weight: 800; line-height: 0.96; letter-spacing: -0.05em; max-width: 14ch; }
+  h1 em { font-style: italic; font-weight: 500; display: inline-block; padding-bottom: 0.08em; }
+  .hero__lede { margin-top: var(--s-5); font-size: var(--step-1); color: var(--ink-soft); max-width: 36ch; line-height: 1.5; }
+  .hero__cta, .cover__go { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
+  .go { display: inline-flex; align-items: center; min-height: 54px; padding: 0 var(--s-6); border-radius: var(--radius-pill); background: var(--ink); color: var(--ground); font-family: var(--font-sign); font-weight: 600; text-decoration: none; white-space: nowrap; transition: transform 0.16s var(--ease-out), background-color 0.2s; }
+  .go:active { transform: scale(0.97); }
   .go--quiet { background: none; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); }
-  .go:hover { text-decoration: underline; }
-  @media (max-width: 52rem) { .project__meta { padding-left: 0; } .project { gap: var(--s-4); } .network { gap: var(--s-7); } }
+  @media (hover: hover) and (pointer: fine) { .go:hover { text-decoration: none; background: var(--flow-accent); color: #fff; } .go--quiet:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink); } }
+
+  /* One full-width band per journal, stacked, so every summary is readable without hovering. */
+  .shelf { display: grid; gap: 12px; padding-bottom: var(--s-8); }
+  .cover { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(8rem, 22rem) 1fr; align-items: end; gap: var(--s-5) var(--s-7); min-height: 17rem; padding: var(--s-6); border-radius: 18px; background: var(--c); color: var(--on); animation: rise 0.9s var(--ease-out) both; transition: transform 0.3s var(--ease-out); }
+  .cover:nth-child(2) { animation-delay: 0.1s; } .cover:nth-child(3) { animation-delay: 0.2s; }
+  .cover::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.5; mix-blend-mode: multiply; background: repeating-linear-gradient(135deg, transparent 0 14px, rgb(0 0 0 / 0.05) 14px 15px); }
+  @media (hover: hover) and (pointer: fine) { .cover:not(.cover--next):hover { transform: translateY(-4px); } }
+  .cover__code { position: relative; font-family: var(--font-sign); font-weight: 800; font-size: clamp(5rem, 3rem + 9vw, 11rem); line-height: 0.8; letter-spacing: -0.07em; align-self: start; }
+  .cover__info { position: relative; display: grid; gap: var(--s-3); max-width: 46rem; }
+  .cover h2 { font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.75rem); font-weight: 800; letter-spacing: -0.035em; }
+  .cover h2 a { text-decoration: none; }
+  .cover h2 a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+  .cover__summary { font-size: var(--step-0); max-width: 52ch; }
+  .cover__facts { font-family: var(--font-sign); font-weight: 600; }
+  .cover__go { margin-top: var(--s-2); position: relative; z-index: 1; }
+  .go--cover { background: var(--on); color: var(--c); }
+  .cover:focus-within, .cover :focus-visible { outline-color: var(--on); }
+  .cover--next { background: none; border: 2px dashed var(--track); color: var(--ink-soft); min-height: 13rem; }
+  .cover--next::before { display: none; }
+  .cover--next .cover__code { color: var(--track); }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(22px); filter: blur(5px); } }
+  @media (max-width: 52rem) {
+    .cover { grid-template-columns: 1fr; min-height: 0; padding: var(--s-5); }
+    .cover__code { font-size: 5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero > *, .cover { animation: none; } }
 </style>

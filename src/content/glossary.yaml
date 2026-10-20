@@ -234,3 +234,35 @@
   term: YAML
   definition: A plain-text format for settings and data that uses indentation and colons, such as the admin's config.yml.
   analogy: A neatly indented checklist that a computer can read.
+- id: claude-md
+  term: CLAUDE.md
+  definition: A short file in your project that Claude reads at the start of every session. It holds the facts Claude cannot work out from the code, such as the test command or a style rule.
+  analogy: A sticky note on the office door telling every new helper the house rules.
+- id: context-window
+  term: Context window
+  definition: "Everything Claude can see at one time in a session: your messages, the files it has read, command output. It has a limit, and answers get worse as it fills up."
+  analogy: A desk. Claude can only work with what is on the desk, and a cluttered desk makes it miss things.
+- id: hook
+  term: Hook
+  definition: A small script that Claude Code runs automatically at a set moment, such as after every file edit. Unlike a note in CLAUDE.md, a hook always runs.
+  analogy: A smoke alarm that goes off by itself, rather than a sign asking people to be careful.
+- id: mvp
+  term: MVP
+  definition: The smallest version of an app that does its main job for a real person. You build it first and add the rest later.
+  analogy: A food stall that sells one dish well before it opens a restaurant.
+- id: plan-mode
+  term: Plan mode
+  definition: A Claude Code setting where Claude can read files and propose a plan but cannot edit anything until you approve.
+  analogy: An architect walking the site with a clipboard before any wall is touched.
+- id: prompt
+  term: Prompt
+  definition: The message you give Claude to say what you want done, including any files, examples or checks you attach.
+  analogy: A work order handed to a contractor who has never seen your house.
+- id: subagent
+  term: Subagent
+  definition: A helper session that Claude starts to do one side job, such as reading many files, and then reports back a short summary so your main session stays uncluttered.
+  analogy: Sending an assistant to the archive and asking for a one-page summary instead of carrying every box to your desk.
+- id: vertical-slice
+  term: Vertical slice
+  definition: One small feature built all the way through, from the screen to the data, so that it works end to end before you start the next one.
+  analogy: Cooking one complete plate for the customer rather than preparing every ingredient for every dish first.

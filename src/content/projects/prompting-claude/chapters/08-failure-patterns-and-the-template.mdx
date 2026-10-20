@@ -1,0 +1,49 @@
+---
+title: Failure patterns and the master template
+station: 8
+summary: Six ways sessions go wrong and how to fix each, then a fill-in-the-blanks prompt and a three-message start for any new app.
+minutes: 6
+check:
+  - q: What is a kitchen-sink session and how do you fix it?
+    a: One session with several unrelated asks mixed together. Use /clear between tasks.
+  - q: What are the three messages in the recommended start for a new app?
+    a: First the interview prompt, to get SPEC.md. Second, in a new session, read SPEC.md and CLAUDE.md and propose structure and the first slice without writing code. Third, build slice 1, run the check, show the output and commit.
+  - q: Why list what is out of scope in the template?
+    a: So Claude does not add features you did not ask for, and so the first build stays small.
+sources:
+  - label: Anthropic, Best practices for Claude Code
+    url: https://code.claude.com/docs/en/best-practices
+---
+
+## Failure patterns to recognise
+
+| Pattern | Fix |
+|---|---|
+| Kitchen-sink session: unrelated asks mixed together | `/clear` between tasks |
+| Correcting over and over | After two misses, `/clear` and write a better prompt |
+| An over-long CLAUDE.md | Prune it, and turn must-happen rules into hooks |
+| Plausible code with no checks | Always supply a check: if you cannot verify it, do not ship it |
+| Endless exploration ("investigate X") | Scope it, or give it to a subagent |
+| Drift: Claude contradicts earlier decisions as the app grows | Write the spec and keep it as the source of truth |
+
+## The master template for "build me an app"
+
+```
+Goal: <one sentence: what, for whom, the core job>
+Done when: <command or observable result Claude runs and shows>
+In scope (MVP): <3 to 6 features>
+Out of scope: <explicit list>
+Stack and constraints: <stack, hosting, libraries to use or avoid, credentials available>
+Context: <@files, docs URLs, screenshots, examples to imitate>
+Behavior and edge cases: <core flows, data, empty and error states>
+Design: <reference, mood, constraints>
+Process: <plan first; build in vertical slices; verify each; ask before deleting or installing>
+```
+
+## A three-message start
+
+1. The interview prompt from station 4. Answer the questions and get SPEC.md.
+2. In a new session: `Read SPEC.md and CLAUDE.md. Propose the directory structure, the first slice, and any decision I must make before you write code. Don't write code yet.`
+3. `Build slice 1 per your plan. Run the check, show me the output, then commit.`
+
+That is the whole method: a check for every step, a plan before code, small slices, and a fresh start whenever the window gets crowded.

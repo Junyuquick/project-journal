@@ -1,0 +1,37 @@
+---
+title: The one idea underneath everything
+station: 1
+summary: Why Claude works worse as a session gets longer, and the simple test that tells you whether your prompt is good enough.
+minutes: 4
+check:
+  - q: What happens to Claude's work as its context window fills up?
+    a: Quality drops. Everything in this guide either gives Claude better information for the space it uses, or keeps clutter out of the window.
+  - q: What is the golden test for a prompt?
+    a: Hand it to a colleague who knows nothing about the task. If they would be confused, Claude will be too.
+sources:
+  - label: Anthropic, Best practices for Claude Code
+    url: https://code.claude.com/docs/en/best-practices
+  - label: Anthropic, Prompting best practices
+    url: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices
+---
+
+Claude can only work with what is in front of it. That space is called the [context window](glossary:context-window), and it fills up fast: every message, every file Claude reads and every line of command output goes in. As it fills, the quality of Claude's work drops.
+
+## Two jobs for every prompt
+
+Every habit in this guide does one of two things:
+
+1. Gives Claude **better information** for each bit of space it uses.
+2. Keeps **junk out** of the window.
+
+Keep those two jobs in mind and the rest of the guide is easy to remember.
+
+## Treat Claude as a brilliant new hire
+
+Claude is very capable, but on day one of your project it knows nothing about it. It has not seen your files, your plans or your preferences. Anything you leave out, it has to guess.
+
+## The golden test
+
+Before you send a [prompt](glossary:prompt), imagine handing it to a colleague who knows nothing about the task. Would they understand what to do, what "done" looks like, and where to look? If they would be confused, Claude will be too. Add what is missing.
+
+The next seven stations are the seven habits, in the order that pays off most.

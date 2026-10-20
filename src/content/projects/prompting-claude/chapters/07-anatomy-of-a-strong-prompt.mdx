@@ -1,0 +1,48 @@
+---
+title: Anatomy of a strong prompt
+station: 7
+summary: The order and shape that works, ten rules of thumb, and what is different about the current model.
+minutes: 6
+check:
+  - q: Why put long documents at the top of a prompt and the question at the end?
+    a: Claude does better when the material comes first and the question comes last, so the task is fresh when it starts answering.
+  - q: Which is better, "no markdown" or "write flowing prose paragraphs"?
+    a: The second. Say what to do rather than what to avoid.
+  - q: What should you do if Claude says it is done but shows no test output?
+    a: Tell it to run the tests and show you the result.
+sources:
+  - label: Anthropic, Prompting 101 (Code with Claude talk)
+    url: https://www.youtube.com/watch?v=ysPbXH0LpIE
+  - label: Anthropic, Prompting Claude Sonnet 5.5
+    url: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5
+---
+
+## The order that works
+
+1. The task and the role.
+2. Background documents and data.
+3. Detailed step-by-step instructions.
+4. Examples.
+5. The immediate task.
+6. The output format you want.
+7. A short reminder of what matters most.
+
+## Ten rules of thumb
+
+1. **Set context first.** With no context, Claude guesses.
+2. **Put stable background in one place**, such as a system prompt or [CLAUDE.md](glossary:claude-md).
+3. **Use structure**: XML tags or clear headings like `<instructions>`, `<context>`, `<examples>`.
+4. **Give 3 to 5 relevant, varied examples.** They are among the most reliable ways to steer.
+5. **Say what to do, not what to avoid.** "Write flowing prose paragraphs" beats "no markdown".
+6. **Give the reason behind a rule.** Claude generalises from reasons.
+7. **Define the output format.**
+8. **Allow "I don't know"**, so it says so instead of guessing.
+9. **Iterate.** Prompting is test and refine, not one shot.
+10. **Long documents first, the question last.**
+
+## Notes for the current model (Sonnet 5.5)
+
+- Use `medium` effort for well-specified coding work and `high` for harder or longer jobs. At lower effort it may stop to check in, or skip verification. A higher effort level, or "keep going until the check passes", fixes that.
+- It tends to add tests and docs that fit your repo. If you want only the requested change, say: "only make the requested changes; no extra files or refactors."
+- If it says "done" with no test output, tell it to run the tests and show the result.
+- "Can you suggest changes?" may get only suggestions. Say "make these changes."

@@ -1,0 +1,34 @@
+---
+title: Keep CLAUDE.md short, and manage the session
+station: 6
+summary: One small notes file for what Claude cannot guess, plus the commands that keep a session healthy.
+minutes: 6
+check:
+  - q: What is the test for each line in CLAUDE.md?
+    a: Ask whether removing the line would cause a mistake. If not, cut it.
+  - q: Why use a hook instead of a CLAUDE.md rule for something that must always happen?
+    a: CLAUDE.md is advice that Claude may not follow every time. A hook is run by the program itself, so it always happens.
+  - q: What should you do if you have corrected Claude on the same thing twice?
+    a: Clear the session and start again with a better prompt that includes what you learned.
+sources:
+  - label: Anthropic, Best practices for Claude Code
+    url: https://code.claude.com/docs/en/best-practices
+---
+
+## CLAUDE.md: only what Claude cannot work out
+
+[CLAUDE.md](glossary:claude-md) is read at the start of every session, so every line costs space in the [context window](glossary:context-window).
+
+**Put in:** commands Claude could not guess, style rules that differ from the usual, the test runner, repo etiquette, architecture decisions, environment quirks and gotchas.
+
+**Leave out:** anything Claude can read from the code, long tutorials, and file-by-file maps.
+
+Ask of each line: would removing this cause a mistake? A bloated file gets ignored, so use the word IMPORTANT on at most one or two lines. For rules that must always happen, use a [hook](glossary:hook), because CLAUDE.md is only advice.
+
+## Manage the session
+
+- `/clear` between unrelated tasks.
+- Corrected the same thing twice? `/clear` and restart with a better prompt.
+- `Esc` interrupts. `Esc Esc` or `/rewind` goes back. Trying something risky is cheap.
+- Use a [subagent](glossary:subagent) for investigation, so file reading stays out of your main session.
+- Ask a second session or subagent to review the change against your spec, with fresh eyes. That is the same idea as a [code review](glossary:code-review).

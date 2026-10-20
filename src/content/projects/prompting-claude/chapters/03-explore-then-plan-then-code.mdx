@@ -1,0 +1,34 @@
+---
+title: Explore, then plan, then code
+station: 3
+summary: Jumping straight to code often solves the wrong problem. Ask Claude to look and propose first.
+minutes: 4
+check:
+  - q: What does plan mode stop Claude from doing?
+    a: Editing anything. Claude can read files and propose a plan, but changes only start once you approve.
+  - q: When can you safely skip planning?
+    a: When you could describe the whole change in one sentence, such as fixing a typo.
+  - q: What is a good opener for exploring options?
+    a: "Search around and tell me 2 or 3 ways we could do this. Don't write files yet."
+sources:
+  - label: Anthropic, Best practices for Claude Code
+    url: https://code.claude.com/docs/en/best-practices
+---
+
+If you ask Claude to build something and it starts typing code immediately, it may be solving a problem you did not have. Reading and thinking come first.
+
+## Use plan mode
+
+[Plan mode](glossary:plan-mode) lets Claude read your project and propose what it would do without changing a single file. You switch it on with Shift+Tab, or start Claude with `claude --permission-mode plan`. You read the plan, correct it, and only then let Claude build.
+
+## A good opener
+
+The Claude Code team suggests this when you are not sure how to approach something:
+
+> Search around and tell me 2 or 3 ways we could do this. Don't write files yet.
+
+You get options and their trade-offs instead of one guess already built.
+
+## When to skip it
+
+Planning costs a little time. Skip it when the change is tiny, meaning you could describe the exact edit in one sentence. For anything bigger, the plan is cheaper than rebuilding the wrong thing. Plans also connect to the next habit: a good plan can be turned into a written [spec](glossary:spec).

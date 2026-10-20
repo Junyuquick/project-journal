@@ -1,4 +1,4 @@
-/* The MRT network map: one stroke weight, fixed line colours, signage type. */
+/* Contour: a cool paper ground with drifting ink lines; fixed contributor colours; one display face, one reading face. */
 :root {
   /* Contributor lines (fixed across every project) */
   --line-claude: #005ec4; /* Downtown Line blue */
@@ -16,7 +16,7 @@
   --line-width: 6px;
   --station-r: 7px;
 
-  --font-sign: 'Overpass Variable', 'Overpass', system-ui, sans-serif;
+  --font-sign: 'Outfit Variable', 'Outfit', system-ui, sans-serif;
   --font-read: 'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible Next', system-ui, sans-serif;
   --font-code: 'Overpass Mono Variable', 'Overpass Mono', ui-monospace, monospace;
 
@@ -43,29 +43,31 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
   color-scheme: light;
-  --ground: #f3f4f2;
+  --ground: #eef1f4;
   --ground-raised: #ffffff;
-  --ink: #16181b;
-  --ink-soft: #4a4f57;
-  --rule: #d3d6da;
-  --track: #c4c8cd; /* unlit / reconstructed track */
+  --ink: #0e1420;
+  --ink-soft: #4d5663;
+  --rule: #cfd5dc;
+  --track: #bcc3cc; /* unlit / reconstructed track */
   --station-fill: #ffffff;
-  --code-ground: #e7e9ec;
+  --code-ground: #e1e6ec;
   --selection: #cfe0f7;
+  --flow-accent: #2b4fd0; /* the occasional blue streamline in the background */
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
-    --ground: #111316;
+    --ground: #0f1216;
     --ground-raised: #191c20;
     --ink: #eef0f2;
     --ink-soft: #a7adb6;
     --rule: #2c3036;
     --track: #3c424a;
-    --station-fill: #111316;
+    --station-fill: #0f1216;
     --code-ground: #1d2126;
     --selection: #1d3d66;
+    --flow-accent: #6f93ff;
     --line-claude: #3b8cf0;
     --line-you: #1fb866;
     --line-others: #c04fd1;
@@ -75,15 +77,16 @@
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --ground: #111316;
+  --ground: #0f1216;
   --ground-raised: #191c20;
   --ink: #eef0f2;
   --ink-soft: #a7adb6;
   --rule: #2c3036;
   --track: #3c424a;
-  --station-fill: #111316;
+  --station-fill: #0f1216;
   --code-ground: #1d2126;
   --selection: #1d3d66;
+  --flow-accent: #6f93ff;
   --line-claude: #3b8cf0;
   --line-you: #1fb866;
   --line-others: #c04fd1;

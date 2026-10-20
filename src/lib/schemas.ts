@@ -5,6 +5,8 @@ const evidence = z.enum(['witnessed', 'reconstructed', 'mixed']);
 
 export const projectSchema = z.object({
   title: z.string(),
+  /** a project is documented from a build record; a guide teaches a method and has no timeline */
+  kind: z.enum(['project', 'guide']).default('project'),
   code: z.string().regex(/^[A-Z]{2}$/),
   color: z.string().regex(/^#[0-9a-fA-F]{6}$/),
   ink: z.enum(['dark', 'light']).default('dark'),
@@ -20,7 +22,8 @@ export const chapterSchema = z.object({
   station: z.number().int().positive(),
   summary: z.string().min(10),
   minutes: z.number().int().positive(),
-  evidence,
+  /** where a chapter's claims come from; guides leave it out */
+  evidence: evidence.optional(),
   check: z.array(z.object({ q: z.string(), a: z.string() })).min(1),
   sources: z.array(z.object({ label: z.string(), url: z.url() })).default([]),
 });

@@ -50,10 +50,10 @@ try {
     const here = await browser.newPage({ viewport: { width, height }, reducedMotion: 'reduce' });
     await here.goto(BASE + '/', { waitUntil: 'networkidle' });
     await here.evaluate(() => localStorage.setItem('pj-pos-loft-concept', '4'));
-    for (const [name, path, sel] of [['home', '/', '.net__stop.is-here'], ['line', '/projects/loft-concept/', '.stop.is-here']]) {
+    for (const [name, path, sel] of [['home', '/', null], ['line', '/projects/loft-concept/', '.stop.is-here']]) {
       await here.goto(BASE + path, { waitUntil: 'networkidle' });
-      check((await here.locator(sel).getAttribute('data-station')) === '4', `${vp} ${name}: You are here rings LC04`);
-      check((await here.locator('[data-continue]').textContent())?.includes('Continue at LC04'), `${vp} ${name}: button offers Continue at LC04`);
+      if (sel) check((await here.locator(sel).getAttribute('data-station')) === '4', `${vp} ${name}: You are here rings LC04`);
+      check((await here.locator('[data-continue="loft-concept"]').textContent())?.includes('Continue at LC04'), `${vp} ${name}: button offers Continue at LC04`);
       await here.screenshot({ path: `${OUT}/${vp}-${name}-here.png` });
     }
     await here.close();
