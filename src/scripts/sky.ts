@@ -97,13 +97,17 @@ if (canvas && ctx) {
     }));
   };
 
-  const layout = () => {
+  const fit = () => {
     const dpr = Math.min(devicePixelRatio || 1, 2);
     width = innerWidth;
     height = innerHeight;
     canvas.width = width * dpr;
     canvas.height = height * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+
+  const layout = () => {
+    fit();
     readColours();
     populate();
     if (reduce) paint(0, 0);
@@ -236,11 +240,11 @@ if (canvas && ctx) {
     }
   };
 
-  const follow = (x: number, y: number, now: number) => {
+  const follow = (x: number, y: number, now: number, trail = true) => {
     pointer.x = x;
     pointer.y = y;
     pointer.last = now;
-    if (Math.hypot(x - pointer.dustX, y - pointer.dustY) > 26 && now - pointer.lastDust > 40) {
+    if (trail && Math.hypot(x - pointer.dustX, y - pointer.dustY) > 26 && now - pointer.lastDust > 40) {
       pointer.dustX = x;
       pointer.dustY = y;
       pointer.lastDust = now;
@@ -249,14 +253,21 @@ if (canvas && ctx) {
   };
 
   layout();
-  addEventListener('resize', layout);
+  // Scrolling on a phone shows and hides the address bar, which resizes the window by a few pixels.
+  // Only a change of width is a new sky; a change of height just resizes the canvas, so nothing jumps.
+  addEventListener('resize', () => {
+    const wider = innerWidth !== width;
+    fit();
+    if (wider) populate();
+    if (reduce) paint(0, 0);
+  });
   // A theme switch changes every colour, so read them again.
   new MutationObserver(() => { readColours(); populate(); if (reduce) paint(0, 0); }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
 
   if (!reduce) {
     // Mouse and pen through pointer events; a finger through touch events, which keep coming while the page scrolls.
     addEventListener('pointermove', (e) => { if (e.pointerType !== 'touch') follow(e.clientX, e.clientY, e.timeStamp); }, { passive: true });
-    const touch = (e: TouchEvent) => { const p = e.touches[0]; if (p) follow(p.clientX, p.clientY, e.timeStamp); };
+    const touch = (e: TouchEvent) => { const p = e.touches[0]; if (p) follow(p.clientX, p.clientY, e.timeStamp, false); };
     addEventListener('touchstart', touch, { passive: true });
     addEventListener('touchmove', touch, { passive: true });
     addEventListener('pointerdown', (e) => { burst(e.clientX, e.clientY, 9); }, { passive: true });
