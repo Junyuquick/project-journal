@@ -240,11 +240,11 @@ if (canvas && ctx) {
     }
   };
 
-  const follow = (x: number, y: number, now: number, trail = true) => {
+  const follow = (x: number, y: number, now: number) => {
     pointer.x = x;
     pointer.y = y;
     pointer.last = now;
-    if (trail && Math.hypot(x - pointer.dustX, y - pointer.dustY) > 26 && now - pointer.lastDust > 40) {
+    if (Math.hypot(x - pointer.dustX, y - pointer.dustY) > 26 && now - pointer.lastDust > 40) {
       pointer.dustX = x;
       pointer.dustY = y;
       pointer.lastDust = now;
@@ -267,7 +267,7 @@ if (canvas && ctx) {
   if (!reduce) {
     // Mouse and pen through pointer events; a finger through touch events, which keep coming while the page scrolls.
     addEventListener('pointermove', (e) => { if (e.pointerType !== 'touch') follow(e.clientX, e.clientY, e.timeStamp); }, { passive: true });
-    const touch = (e: TouchEvent) => { const p = e.touches[0]; if (p) follow(p.clientX, p.clientY, e.timeStamp, false); };
+    const touch = (e: TouchEvent) => { const p = e.touches[0]; if (p) follow(p.clientX, p.clientY, e.timeStamp); };
     addEventListener('touchstart', touch, { passive: true });
     addEventListener('touchmove', touch, { passive: true });
     addEventListener('pointerdown', (e) => { burst(e.clientX, e.clientY, 9); }, { passive: true });
