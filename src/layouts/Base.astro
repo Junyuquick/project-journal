@@ -6,7 +6,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 interface Props {
   title: string;
   description: string;
-  /** quieter background for reading pages */
+  /** quieter sky for reading pages: fewer moths, dimmer lights */
   calm?: boolean;
 }
 const { title, description, calm = false } = Astro.props;
@@ -28,14 +28,19 @@ const path = pagePath(Astro.url.pathname);
     </script>
   </head>
   <body data-calm={calm || undefined}>
-    <canvas id="flow-field" aria-hidden="true"></canvas>
+    <div class="sky" aria-hidden="true">
+      <div class="aurora aurora--a"></div>
+      <div class="aurora aurora--b"></div>
+      <div class="moon"></div>
+    </div>
+    <canvas id="sky" aria-hidden="true"></canvas>
     <a class="skip" href="#main">Skip to content</a>
     <header class="site-head">
       <div class="wrap site-head__row">
         <a class="wordmark" href={url('/')} aria-current={path === '/' ? 'page' : undefined}>Project Journal</a>
         <nav aria-label="Site">
           <a href={url('/')} aria-current={path === '/' ? 'page' : undefined}>Journals</a>
-          <a href={url('/glossary')} aria-current={path.startsWith('/glossary') ? 'page' : undefined}>Glossary</a>
+          <a href={url('/glossary')} aria-current={path.startsWith('/glossary') ? 'page' : undefined}>Firefly jar</a>
           <ThemeToggle />
         </nav>
       </div>
@@ -44,7 +49,7 @@ const path = pagePath(Astro.url.pathname);
       <slot />
     </main>
     <script>
-      import '../scripts/flow-field';
+      import '../scripts/sky';
     </script>
   </body>
 </html>
@@ -54,14 +59,39 @@ const path = pagePath(Astro.url.pathname);
     position: absolute;
     left: var(--s-4);
     top: -3rem;
-    background: var(--ink);
-    color: var(--ground);
+    background: var(--flow-accent);
+    color: var(--on-accent);
     padding: var(--s-2) var(--s-4);
+    border-radius: var(--radius-pill);
     z-index: 10;
   }
   .skip:focus { top: var(--s-2); }
-  #flow-field { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-  body[data-calm] #flow-field { opacity: 0.4; }
+
+  /* The sky: fixed behind everything. The aurora and moon move on the compositor, the canvas paints the rest. */
+  .sky { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-low) 100%); }
+  #sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+  body[data-calm] #sky { opacity: 0.8; }
+  .aurora { position: absolute; width: 90vmax; height: 90vmax; border-radius: 50%; will-change: transform; }
+  .aurora--a { left: -35vmax; top: -45vmax; background: radial-gradient(closest-side, var(--aurora-a), transparent); animation: drift-a 70s ease-in-out infinite alternate; }
+  .aurora--b { right: -40vmax; bottom: -50vmax; background: radial-gradient(closest-side, var(--aurora-b), transparent); animation: drift-b 90s ease-in-out infinite alternate; }
+  @keyframes drift-a { to { transform: translate3d(28vmax, 18vmax, 0) scale(1.15); } }
+  @keyframes drift-b { to { transform: translate3d(-30vmax, -14vmax, 0) scale(1.2); } }
+  .moon {
+    position: absolute;
+    right: clamp(1.5rem, 8vw, 7rem);
+    top: clamp(4.5rem, 12vh, 8rem);
+    width: clamp(3.5rem, 7vw, 6.5rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 38%, var(--moon-a), var(--moon-b) 70%);
+    box-shadow: 0 0 60px 26px rgb(var(--moon-halo) / 0.22), 0 0 170px 80px rgb(190 170 255 / 0.14);
+    animation: moon-breathe 12s ease-in-out infinite alternate;
+  }
+  /* on reading pages the moon sinks below the star trail and dims */
+  body[data-calm] .moon { top: 11rem; opacity: 0.5; }
+  @media (max-width: 40rem) { body[data-calm] .moon { top: 14rem; opacity: 0.3; } }
+  @keyframes moon-breathe { to { transform: translateY(10px) scale(1.04); } }
+
   .site-head { position: relative; }
   .site-head__row {
     display: flex;
@@ -72,9 +102,9 @@ const path = pagePath(Astro.url.pathname);
   }
   .wordmark {
     font-family: var(--font-sign);
-    font-weight: 800;
+    font-weight: 700;
     font-size: var(--step-1);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     text-decoration: none;
     white-space: nowrap;
   }
@@ -83,7 +113,7 @@ const path = pagePath(Astro.url.pathname);
     align-items: center;
     gap: var(--s-2);
     font-family: var(--font-sign);
-    font-weight: 650;
+    font-weight: 600;
   }
   nav a {
     text-decoration: none;
@@ -92,13 +122,16 @@ const path = pagePath(Astro.url.pathname);
     display: inline-flex;
     align-items: center;
     border-radius: var(--radius-pill);
+    white-space: nowrap;
+    transition: background-color 0.2s;
   }
-  @media (hover: hover) and (pointer: fine) { nav a:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); } }
-  nav a[aria-current='page'] { box-shadow: inset 0 -3px 0 var(--ink); border-radius: 0; }
+  @media (hover: hover) and (pointer: fine) { nav a:hover { background: var(--glass); } }
+  nav a[aria-current='page'] { box-shadow: inset 0 -2px 0 var(--flow-accent); border-radius: 0; }
   @media (max-width: 30rem) {
     .wordmark { font-size: var(--step-0); }
     nav { gap: 0; }
     nav a { padding-inline: var(--s-2); }
     nav :global([data-theme-label]) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   }
+  @media (prefers-reduced-motion: reduce) { .aurora, .moon { animation: none; } }
 </style>

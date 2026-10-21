@@ -1,7 +1,7 @@
 ---
 import { url } from '../../../lib/url';
 import Base from '../../../layouts/Base.astro';
-import { stationCode } from '../../../lib/content';
+import { constellation } from '../../../lib/constellation';
 import { formatDate, inkOn, loadProjects, type Project } from '../../../lib/journal';
 
 export async function getStaticPaths() {
@@ -12,6 +12,18 @@ const { project } = Astro.props as { project: Project };
 const { slug, data, chapters } = project;
 const span = data.kind === 'guide' ? `a ${data.kind} written ${formatDate(data.startedAt)}` : `${formatDate(data.startedAt)} to ${formatDate(data.endedAt)}`;
 const evidenceNote = { witnessed: '', reconstructed: 'Rebuilt from the record', mixed: 'Partly rebuilt from the record' } as const;
+const sky = constellation(chapters.length);
+// Each thread bows a little, to one side then the other, so the path feels hand-drawn
+const thread = (i: number) => {
+  const a = sky.points[i];
+  const b = sky.points[i + 1];
+  const bow = (i % 2 ? -1 : 1) * 18;
+  const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+  const cx = (a.x + b.x) / 2 - ((b.y - a.y) / len) * bow;
+  const cy = (a.y + b.y) / 2 + ((b.x - a.x) / len) * bow;
+  return `M${a.x} ${a.y} Q${Math.round(cx)} ${Math.round(cy)} ${b.x} ${b.y}`;
+};
+const edge = (x: number) => (x < 220 ? 'start' : x > 780 ? 'end' : 'middle');
 ---
 <Base title={data.title} description={data.summary}>
   <div class="wrap line" style={`--line:${data.color}`}>
@@ -19,38 +31,56 @@ const evidenceNote = { witnessed: '', reconstructed: 'Rebuilt from the record', 
       <h1 class="has-pill"><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code}</span><span>{data.title}</span></h1>
       <p class="line__summary">{data.summary}</p>
       <p class="line__facts">
-        {chapters.length} {chapters.length === 1 ? 'station' : 'stations'}, {span}
+        {chapters.length} {chapters.length === 1 ? 'star' : 'stars'}, {span}
         {data.repo && <><br /><a href={data.repo}>The real code on GitHub</a></>}
       </p>
       <p class="line__actions">
-        {chapters.length > 0 && <a class="go" href={url(`/projects/${slug}/${chapters[0].slug}`)} data-continue={slug}>Start at {data.code}01</a>}
-        {project.events.length > 0 && <a class="go go--quiet" href={url(`/projects/${slug}/timeline`)}>Who did what: the timeline</a>}
+        {chapters.length > 0 && <a class="go" href={url(`/projects/${slug}/${chapters[0].slug}`)} data-continue={slug}>Start at star 1</a>}
+        {project.events.length > 0 && <a class="go go--quiet" href={url(`/projects/${slug}/timeline`)}>Open the Moonlog: who did what</a>}
       </p>
     </header>
 
     {chapters.length === 0 ? (
-      <p class="empty">No stations on this line yet. Add chapters to <code>src/content/projects/{slug}/chapters/</code>.</p>
+      <p class="empty">No stars in this sky yet. Add chapters to <code>src/content/projects/{slug}/chapters/</code>.</p>
     ) : (
-      <ol class="route" aria-label="Stations">
-        {chapters.map((c) => (
-          <li class="stop" data-station={c.data.station}>
-            <span class="stop__dot" aria-hidden="true"></span>
-            <div class="stop__body">
-              <h2>
-                <a href={url(`/projects/${slug}/${c.slug}`)}>
-                  <span class="stop__code" style={`background:${data.color};color:${inkOn(data.ink)}`}>{stationCode(data.code, c.data.station)}</span>
-                  <span>{c.data.title}</span>
-                </a>
-              </h2>
-              <p>{c.data.summary}</p>
-              <p class="stop__meta">
-                {c.data.minutes} min read
-                {c.data.evidence && evidenceNote[c.data.evidence] && <span class="stop__evidence">{evidenceNote[c.data.evidence]}</span>}
-              </p>
-            </div>
-          </li>
-        ))}
-      </ol>
+      <>
+        <figure class="sky-map" aria-label={`${data.title}: constellation of ${chapters.length} stars`}>
+          <svg viewBox={`0 0 1000 ${sky.height}`} role="group" aria-label="Constellation">
+            {chapters.slice(0, -1).map((_, i) => <path class="thread" data-from={chapters[i].data.station} d={thread(i)} />)}
+            {chapters.map((c, i) => (
+              <a class="cstar" href={url(`/projects/${slug}/${c.slug}`)} data-station={c.data.station} aria-label={`Star ${c.data.station}: ${c.data.title}`}>
+                <circle class="cstar__halo" cx={sky.points[i].x} cy={sky.points[i].y} r="20" />
+                <circle class="cstar__hit" cx={sky.points[i].x} cy={sky.points[i].y} r="26" />
+                <circle class="cstar__dot" cx={sky.points[i].x} cy={sky.points[i].y} r="7" />
+                <text class="cstar__n" x={sky.points[i].x} y={sky.points[i].y + 30} text-anchor="middle">{c.data.station}</text>
+                <text class="cstar__title" x={sky.points[i].x} y={sky.points[i].y - 22} text-anchor={edge(sky.points[i].x)}>{c.data.title}</text>
+              </a>
+            ))}
+          </svg>
+        </figure>
+
+        <h2 class="order">In reading order</h2>
+        <ol class="route" aria-label="Stars">
+          {chapters.map((c) => (
+            <li class="stop" data-station={c.data.station}>
+              <span class="stop__dot" aria-hidden="true"></span>
+              <div class="stop__body">
+                <h3>
+                  <a href={url(`/projects/${slug}/${c.slug}`)}>
+                    <span class="stop__code" style={`background:${data.color};color:${inkOn(data.ink)}`}>{c.data.station}</span>
+                    <span>{c.data.title}</span>
+                  </a>
+                </h3>
+                <p>{c.data.summary}</p>
+                <p class="stop__meta">
+                  {c.data.minutes} min read
+                  {c.data.evidence && evidenceNote[c.data.evidence] && <span class="stop__evidence">{evidenceNote[c.data.evidence]}</span>}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </>
     )}
   </div>
 </Base>
@@ -58,42 +88,74 @@ const evidenceNote = { witnessed: '', reconstructed: 'Rebuilt from the record', 
 <script>
   import { readPosition } from '../../../scripts/position';
   const link = document.querySelector<HTMLAnchorElement>('[data-continue]');
-  const station = link && readPosition(link.dataset.continue!);
-  if (link && station) {
-    const stop = document.querySelector<HTMLElement>(`.stop[data-station="${station}"]`);
-    stop?.classList.add('is-here');
-    stop?.querySelector('a')?.insertAdjacentHTML('beforeend', '<span class="visually-hidden"> (you are here)</span>');
+  const star = link && readPosition(link.dataset.continue!);
+  if (link && star) {
+    // Stars behind you are lit gold; the one you are on gets a ring.
+    for (const el of document.querySelectorAll<HTMLElement | SVGElement>('[data-station], [data-from]')) {
+      const n = Number(el.dataset.station ?? el.dataset.from);
+      if (n < star) el.classList.add('is-lit');
+      if (n === star && el.dataset.station) el.classList.add('is-here');
+    }
+    const stop = document.querySelector<HTMLElement>(`.stop[data-station="${star}"]`);
     const a = stop?.querySelector('a');
-    const code = stop?.querySelector('.stop__code')?.textContent;
-    if (a && code) {
+    stop?.querySelector('a')?.insertAdjacentHTML('beforeend', '<span class="visually-hidden"> (you are here)</span>');
+    if (a) {
       link.href = a.getAttribute('href')!;
-      link.textContent = `Continue at ${code}`;
+      link.textContent = `Continue at star ${star}`;
     }
   }
 </script>
 
 <style>
   .line { padding-block: var(--s-7) var(--s-8); }
-  .line__head { display: grid; gap: var(--s-4); max-width: 62ch; margin-bottom: var(--s-7); }
+  .line__head { display: grid; gap: var(--s-4); max-width: 62ch; margin-bottom: var(--s-6); }
   .line__summary { font-size: var(--step-1); line-height: 1.5; }
-  .line__facts { color: var(--ink-soft); font-family: var(--font-sign); font-weight: 650; }
+  .line__facts { color: var(--ink-soft); font-family: var(--font-sign); font-weight: 600; }
   .line__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); }
-  .go { display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--s-5); border-radius: var(--radius-pill); background: var(--ink); color: var(--ground); font-family: var(--font-sign); font-weight: 750; text-decoration: none; }
-  .go--quiet { background: none; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); }
-  .go:hover { text-decoration: underline; }
+  .go { display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--s-5); border-radius: var(--radius-pill); background: var(--flow-accent); color: var(--on-accent); font-family: var(--font-sign); font-weight: 700; text-decoration: none; transition: transform 0.16s var(--ease-out), box-shadow 0.25s; }
+  .go--quiet { background: var(--glass); color: var(--ink); box-shadow: inset 0 0 0 1px var(--glass-edge); }
+  .go:active { transform: scale(0.97); }
+  @media (hover: hover) and (pointer: fine) { .go:hover { box-shadow: 0 0 26px 2px rgb(var(--sky-glow) / 0.45); } }
   .empty { color: var(--ink-soft); }
 
-  /* The route runs down the left; each station hangs off it */
+  /* The constellation: a thread of stars, drawn once, lit behind you. Hidden on phones, where the list below is the path. */
+  .sky-map { margin: 0 0 var(--s-7); padding: var(--s-4) var(--s-5); border-radius: var(--radius-glass); background: var(--glass); border: 1px solid var(--glass-edge); }
+  .sky-map svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .thread { fill: none; stroke: var(--track); stroke-width: 1.5; stroke-dasharray: 2 7; stroke-linecap: round; }
+  .thread.is-lit { stroke: var(--flow-accent); stroke-dasharray: none; stroke-width: 2; }
+  .cstar { cursor: pointer; outline: none; }
+  .cstar__dot { fill: var(--track); transition: fill 0.25s, r 0.25s var(--ease-out); }
+  .cstar__halo { fill: rgb(var(--sky-glow) / 0); transition: fill 0.3s; }
+  .cstar__hit { fill: transparent; }
+  .cstar.is-lit .cstar__dot { fill: var(--flow-accent); }
+  .cstar.is-here .cstar__dot { fill: var(--flow-accent); r: 9; }
+  .cstar.is-here .cstar__halo { fill: rgb(var(--sky-glow) / 0.28); animation: halo 4s ease-in-out infinite; }
+  .cstar__n { font-family: var(--font-sign); font-weight: 600; font-size: 15px; fill: var(--ink-soft); pointer-events: none; }
+  .cstar__title { font-family: var(--font-sign); font-weight: 600; font-size: 17px; fill: var(--ink); paint-order: stroke; stroke: var(--ground); stroke-width: 5px; stroke-linejoin: round; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+  .cstar.is-here .cstar__title { opacity: 1; }
+  .cstar:focus-visible .cstar__dot { stroke: var(--flow-accent); stroke-width: 3; }
+  @media (hover: hover) and (pointer: fine) {
+    .cstar:hover .cstar__dot { fill: var(--flow-accent); r: 10; }
+    .cstar:hover .cstar__halo { fill: rgb(var(--sky-glow) / 0.28); }
+  }
+  .cstar:hover .cstar__title, .cstar:focus-visible .cstar__title { opacity: 1; }
+  @keyframes halo { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  @media (max-width: 40rem) { .sky-map { display: none; } }
+
+  .order { font-size: var(--step-2); margin-bottom: var(--s-5); }
+  /* The list: a thread runs down the left; each star hangs off it */
   .route { list-style: none; margin: 0; padding: 0; position: relative; max-width: 64ch; }
-  .route::before { content: ''; position: absolute; left: calc(0.875rem - var(--line-width) / 2); top: 0.6rem; bottom: 0.6rem; width: var(--line-width); background: var(--line); border-radius: 3px; }
+  .route::before { content: ''; position: absolute; left: calc(0.875rem - 1px); top: 0.6rem; bottom: 0.6rem; border-left: 2px dotted var(--track); }
   .stop { position: relative; display: grid; grid-template-columns: 1.75rem 1fr; gap: var(--s-4); padding-bottom: var(--s-6); }
-  .stop__dot { width: 1.75rem; height: 1.75rem; border-radius: 50%; background: var(--station-fill); border: 5px solid var(--line); position: relative; margin-top: 0.15rem; }
-  .stop.is-here .stop__dot { border-color: var(--ink); background: var(--line); box-shadow: 0 0 0 4px var(--ground), 0 0 0 7px var(--ink); }
+  .stop__dot { width: 0.9rem; height: 0.9rem; margin: 0.4rem 0 0 0.4rem; border-radius: 50%; background: var(--track); position: relative; }
+  .stop.is-lit .stop__dot { background: var(--flow-accent); }
+  .stop.is-here .stop__dot { background: var(--flow-accent); box-shadow: 0 0 0 4px var(--ground), 0 0 0 6px var(--flow-accent), 0 0 20px 6px rgb(var(--sky-glow) / 0.5); }
   .stop__body { display: grid; gap: var(--s-2); }
-  h2 { font-size: var(--step-1); }
-  h2 a { text-decoration: none; display: inline-flex; gap: var(--s-3); align-items: center; }
-  h2 a:hover span:last-child { text-decoration: underline; text-decoration-thickness: 2px; }
-  .stop__code { font-size: 0.8em; padding: 0.25em 0.55em 0.15em; border-radius: var(--radius-pill); align-self: center; flex: none; }
-  .stop__meta { display: flex; flex-wrap: wrap; gap: var(--s-3); color: var(--ink-soft); font-family: var(--font-sign); font-size: var(--step--1); font-weight: 650; }
-  .stop__evidence { border: 1.5px dashed var(--ink-soft); border-radius: var(--radius-pill); padding: 0 0.6em; }
+  h3 { font-size: var(--step-1); }
+  h3 a { text-decoration: none; display: inline-flex; gap: var(--s-3); align-items: center; }
+  h3 a:hover span:last-child { text-decoration: underline; text-decoration-thickness: 2px; }
+  .stop__code { font-size: 0.8em; min-width: 1.9em; text-align: center; padding: 0.25em 0.55em 0.2em; border-radius: var(--radius-pill); align-self: center; flex: none; }
+  .stop__meta { display: flex; flex-wrap: wrap; gap: var(--s-3); color: var(--ink-soft); font-family: var(--font-sign); font-size: var(--step--1); font-weight: 600; }
+  .stop__evidence { border: 1px dashed var(--ink-soft); border-radius: var(--radius-pill); padding: 0 0.7em; }
+  @media (prefers-reduced-motion: reduce) { .cstar.is-here .cstar__halo { animation: none; } }
 </style>

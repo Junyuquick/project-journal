@@ -1,12 +1,11 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
-import DoorStrip from '../../../components/DoorStrip.astro';
+import StarTrail from '../../../components/StarTrail.astro';
 import RouteDiagram from '../../../components/RouteDiagram.astro';
 import Source from '../../../components/Source.astro';
-import Check from '../../../components/Check.astro';
-import NextStation from '../../../components/NextStation.astro';
-import { stationCode } from '../../../lib/content';
+import Reflect from '../../../components/Reflect.astro';
+import NextStar from '../../../components/NextStar.astro';
 import { inkOn, loadProjects, type Chapter, type Project } from '../../../lib/journal';
 
 export async function getStaticPaths() {
@@ -24,21 +23,20 @@ const { data } = project;
 const { Content } = await render(chapter);
 const terms = Object.fromEntries((await getCollection('glossary')).map((t) => [t.id, t.data]));
 const stops = project.chapters.map((c) => ({ station: c.data.station, title: c.data.title, slug: c.slug }));
-const code = stationCode(data.code, chapter.data.station);
 const evidenceText = {
   witnessed: '',
   reconstructed: 'This chapter is rebuilt from the record (the design spec, plan and git commits of a session whose conversation was not kept). Nothing here is invented, but some of the reasons are summarised from those documents.',
   mixed: 'Parts of this chapter come from our conversation and parts are rebuilt from the record (specs, plans and git commits).',
 } as const;
 ---
-<Base title={`${code} ${chapter.data.title}`} description={chapter.data.summary} calm>
+<Base title={`Star ${chapter.data.station}: ${chapter.data.title}`} description={chapter.data.summary} calm>
   <div class="wrap">
-    <DoorStrip slug={project.slug} code={data.code} color={data.color} ink={data.ink} title={data.title} stops={stops} current={chapter.data.station} />
+    <StarTrail slug={project.slug} code={data.code} color={data.color} ink={data.ink} title={data.title} stops={stops} current={chapter.data.station} />
   </div>
 
   <article class="wrap chapter" style={`--line:${data.color}`} data-project={project.slug} data-station={chapter.data.station}>
     <header class="chapter__head">
-      <h1 class="has-pill"><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{code}</span><span>{chapter.data.title}</span></h1>
+      <h1 class="has-pill"><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>Star {chapter.data.station}</span><span>{chapter.data.title}</span></h1>
       <p class="chapter__summary">{chapter.data.summary}</p>
       <p class="chapter__meta">{chapter.data.minutes} min read</p>
       {chapter.data.evidence && evidenceText[chapter.data.evidence] && (
@@ -59,8 +57,8 @@ const evidenceText = {
       </section>
     )}
 
-    <Check items={chapter.data.check} />
-    <NextStation slug={project.slug} code={data.code} color={data.color} ink={data.ink} next={next && { station: next.data.station, title: next.data.title, slug: next.slug }} />
+    <Reflect items={chapter.data.check} />
+    <NextStar slug={project.slug} next={next && { station: next.data.station, title: next.data.title, slug: next.slug }} />
   </article>
 
   <script type="application/json" id="glossary-data" set:html={JSON.stringify(terms)} />
@@ -75,11 +73,11 @@ const evidenceText = {
 
 <style>
   .chapter { padding-block: var(--s-7) var(--s-8); }
-  .chapter__head, .prose, .sources, .chapter :global(.check), .chapter :global(.next) { max-width: var(--measure); }
+  .chapter__head, .prose, .sources, .chapter :global(.reflect), .chapter :global(.next) { max-width: var(--measure); }
   .chapter__head { display: grid; gap: var(--s-3); margin-bottom: var(--s-7); }
   .chapter__summary { font-size: var(--step-1); line-height: 1.5; color: var(--ink-soft); }
-  .chapter__meta { font-family: var(--font-sign); font-weight: 650; color: var(--ink-soft); }
-  .chapter__evidence { padding: var(--s-3) var(--s-4); border: 2px dashed var(--track); border-radius: 10px; font-size: var(--step--1); }
+  .chapter__meta { font-family: var(--font-sign); font-weight: 600; color: var(--ink-soft); }
+  .chapter__evidence { padding: var(--s-3) var(--s-4); border: 1px dashed var(--track); border-radius: 14px; font-size: var(--step--1); }
 
   .prose { display: flow-root; }
   .prose :global(> * + *) { margin-top: var(--s-4); }
@@ -89,12 +87,12 @@ const evidenceText = {
   .prose :global(ul), .prose :global(ol) { padding-left: 1.4rem; }
   .prose :global(li + li) { margin-top: var(--s-2); }
   .prose :global(li::marker) { color: var(--ink-soft); }
-  .prose :global(strong) { font-weight: 750; }
+  .prose :global(strong) { font-weight: 700; }
   .prose :global(blockquote) { margin-inline: 0; padding-left: var(--s-4); border-left: 1px solid var(--rule); color: var(--ink-soft); font-style: italic; }
   .prose :global(table) { display: block; overflow-x: auto; border-collapse: collapse; font-size: var(--step--1); }
   .prose :global(th), .prose :global(td) { text-align: left; vertical-align: top; padding: var(--s-2) var(--s-3); border-bottom: 1px solid var(--rule); }
-  .prose :global(th) { font-family: var(--font-sign); font-weight: 750; border-bottom-color: var(--ink); }
-  .prose :global(hr) { border: 0; height: var(--line-width); background: var(--line); border-radius: 3px; margin-block: var(--s-7); width: 4rem; }
+  .prose :global(th) { font-family: var(--font-sign); font-weight: 700; border-bottom-color: var(--ink-soft); }
+  .prose :global(hr) { border: 0; height: 2px; background: radial-gradient(circle, var(--flow-accent) 0 2px, transparent 3px) 0 0 / 14px 2px repeat-x; margin-block: var(--s-7); width: 5.25rem; }
 
   .sources { margin-top: var(--s-7); }
   .sources h2 { font-size: var(--step-2); margin-bottom: var(--s-3); }

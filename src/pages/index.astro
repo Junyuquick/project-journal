@@ -4,92 +4,95 @@ import Base from '../layouts/Base.astro';
 import { formatDate, inkOn, loadProjects } from '../lib/journal';
 
 const projects = await loadProjects();
+const stars = (n: number) => `${n} ${n === 1 ? 'star' : 'stars'}`;
 const span = (p: (typeof projects)[number]) =>
-  p.data.kind === 'guide' ? `Guide, ${formatDate(p.data.startedAt)}` : `Project, ${formatDate(p.data.startedAt)} to ${formatDate(p.data.endedAt)}`;
+  p.data.kind === 'guide' ? `Guide, ${formatDate(p.data.startedAt)}, ${stars(p.chapters.length)}` : `Project, ${formatDate(p.data.startedAt)} to ${formatDate(p.data.endedAt)}, ${stars(p.chapters.length)}`;
 ---
 <Base title="Project Journal" description="How each of my coding projects was built, and guides to the methods behind them, explained from the ground up.">
   <section class="wrap hero">
     <h1>A journal of things built, <em>explained slowly.</em></h1>
     <p class="hero__lede">Real projects and guides, taught from the ground up so you can redo the work yourself.</p>
     <p class="hero__cta">
-      <a class="go" href="#journals">Pick a journal</a>
-      <a class="go go--quiet" href={url('/glossary')}>Open glossary</a>
+      <a class="go" href="#journals">Pick a lantern</a>
+      <a class="go go--quiet" href={url('/glossary')}>Open the firefly jar</a>
     </p>
   </section>
 
   <section class="wrap shelf" id="journals" aria-label="Journals">
-    {projects.map((p) => (
-      <article class="cover" style={`--c:${p.data.color};--on:${inkOn(p.data.ink)}`}>
-        <p class="cover__code" aria-hidden="true">{p.data.code}</p>
-        <div class="cover__info">
+    {projects.map((p, i) => (
+      <article class="lantern" style={`--c:${p.data.color};--on:${inkOn(p.data.ink)};--i:${i}`}>
+        <p class="lantern__lamp" aria-hidden="true"><span>{p.data.code}</span></p>
+        <div class="lantern__info">
           <h2><a href={url(`/projects/${p.slug}`)}>{p.data.title}</a></h2>
-          <p class="cover__summary">{p.data.summary}</p>
-          <p class="cover__facts">{span(p)}, {p.chapters.length} {p.chapters.length === 1 ? 'station' : 'stations'}</p>
+          <p class="lantern__summary">{p.data.summary}</p>
+          <p class="lantern__facts">{span(p)}</p>
           {p.chapters.length > 0 && (
-            <p class="cover__go"><a class="go go--cover" href={url(`/projects/${p.slug}/${p.chapters[0].slug}`)} data-continue={p.slug} data-code={p.data.code} data-line={url(`/projects/${p.slug}`)} data-chapters={JSON.stringify(p.chapters.map((c) => c.slug))}>Start at {p.data.code}01</a></p>
+            <p class="lantern__go"><a class="go" href={url(`/projects/${p.slug}/${p.chapters[0].slug}`)} data-continue={p.slug} data-line={url(`/projects/${p.slug}`)} data-chapters={JSON.stringify(p.chapters.map((c) => c.slug))}>Start at star 1</a></p>
           )}
         </div>
       </article>
     ))}
-    <div class="cover cover--next">
-      <p class="cover__code" aria-hidden="true">+</p>
-      <div class="cover__info">
-        <h2>Your next project</h2>
-        <p class="cover__summary">Add a folder of Markdown under <code>src/content/projects/</code> and it appears here.</p>
+    <div class="lantern lantern--next">
+      <p class="lantern__lamp" aria-hidden="true"><span>+</span></p>
+      <div class="lantern__info">
+        <h2>Your next lantern</h2>
+        <p class="lantern__summary">Add a folder of Markdown under <code>src/content/projects/</code> and it floats up here.</p>
       </div>
     </div>
   </section>
+  <div class="pond" aria-hidden="true"><i></i><i></i><i></i></div>
 </Base>
 
 <script>
   import { readPosition } from '../scripts/position';
   for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-continue]')) {
-    const station = readPosition(link.dataset.continue!);
+    const star = readPosition(link.dataset.continue!);
     const slugs: string[] = JSON.parse(link.dataset.chapters!);
-    if (!station || !slugs[station - 1]) continue;
-    link.href = `${link.dataset.line}/${slugs[station - 1]}`;
-    link.textContent = `Continue at ${link.dataset.code}${String(station).padStart(2, '0')}`;
+    if (!star || !slugs[star - 1]) continue;
+    link.href = `${link.dataset.line}/${slugs[star - 1]}`;
+    link.textContent = `Continue at star ${star}`;
   }
 </script>
 
 <style>
-  .hero { padding-block: clamp(3rem, 9vh, 7rem) var(--s-7); max-width: none; }
-  .hero > * { animation: rise 0.9s var(--ease-out) both; }
+  .hero { padding-block: clamp(3rem, 9vh, 6rem) var(--s-7); max-width: none; }
+  .hero > * { animation: rise 1s var(--ease-out) both; }
   .hero > :nth-child(2) { animation-delay: 0.1s; }
   .hero > :nth-child(3) { animation-delay: 0.2s; }
-  h1 { font-size: clamp(2.7rem, 1rem + 7.4vw, 6.8rem); font-weight: 800; line-height: 0.96; letter-spacing: -0.05em; max-width: 14ch; }
-  h1 em { font-style: italic; font-weight: 500; display: inline-block; padding-bottom: 0.08em; }
+  h1 { font-size: clamp(2.5rem, 1rem + 6vw, 5.5rem); font-weight: 600; line-height: 1.04; letter-spacing: -0.03em; max-width: 14ch; }
+  h1 em { font-style: normal; font-weight: 500; color: var(--flow-accent); }
   .hero__lede { margin-top: var(--s-5); font-size: var(--step-1); color: var(--ink-soft); max-width: 36ch; line-height: 1.5; }
-  .hero__cta, .cover__go { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
-  .go { display: inline-flex; align-items: center; min-height: 54px; padding: 0 var(--s-6); border-radius: var(--radius-pill); background: var(--ink); color: var(--ground); font-family: var(--font-sign); font-weight: 600; text-decoration: none; white-space: nowrap; transition: transform 0.16s var(--ease-out), background-color 0.2s; }
+  .hero__cta, .lantern__go { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
+  .go { display: inline-flex; align-items: center; min-height: 52px; padding: 0 var(--s-6); border-radius: var(--radius-pill); background: var(--flow-accent); color: var(--on-accent); font-family: var(--font-sign); font-weight: 700; text-decoration: none; white-space: nowrap; transition: transform 0.16s var(--ease-out), box-shadow 0.25s; }
   .go:active { transform: scale(0.97); }
-  .go--quiet { background: none; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); }
-  @media (hover: hover) and (pointer: fine) { .go:hover { text-decoration: none; background: var(--flow-accent); color: #fff; } .go--quiet:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink); } }
+  .go--quiet { background: var(--glass); color: var(--ink); box-shadow: inset 0 0 0 1px var(--glass-edge); }
+  @media (hover: hover) and (pointer: fine) { .go:hover { text-decoration: none; box-shadow: 0 0 28px 2px rgb(var(--sky-glow) / 0.5); } .go--quiet:hover { box-shadow: inset 0 0 0 1px var(--ink-soft); } }
 
-  /* One full-width band per journal, stacked, so every summary is readable without hovering. */
-  .shelf { display: grid; gap: 12px; padding-bottom: var(--s-8); }
-  .cover { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(8rem, 22rem) 1fr; align-items: end; gap: var(--s-5) var(--s-7); min-height: 17rem; padding: var(--s-6); border-radius: 18px; background: var(--c); color: var(--on); animation: rise 0.9s var(--ease-out) both; transition: transform 0.3s var(--ease-out); }
-  .cover:nth-child(2) { animation-delay: 0.1s; } .cover:nth-child(3) { animation-delay: 0.2s; }
-  .cover::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.5; mix-blend-mode: multiply; background: repeating-linear-gradient(135deg, transparent 0 14px, rgb(0 0 0 / 0.05) 14px 15px); }
-  @media (hover: hover) and (pointer: fine) { .cover:not(.cover--next):hover { transform: translateY(-4px); } }
-  .cover__code { position: relative; font-family: var(--font-sign); font-weight: 800; font-size: clamp(5rem, 3rem + 9vw, 11rem); line-height: 0.8; letter-spacing: -0.07em; align-self: start; }
-  .cover__info { position: relative; display: grid; gap: var(--s-3); max-width: 46rem; }
-  .cover h2 { font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.75rem); font-weight: 800; letter-spacing: -0.035em; }
-  .cover h2 a { text-decoration: none; }
-  .cover h2 a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
-  .cover__summary { font-size: var(--step-0); max-width: 52ch; }
-  .cover__facts { font-family: var(--font-sign); font-weight: 600; }
-  .cover__go { margin-top: var(--s-2); position: relative; z-index: 1; }
-  .go--cover { background: var(--on); color: var(--c); }
-  .cover:focus-within, .cover :focus-visible { outline-color: var(--on); }
-  .cover--next { background: none; border: 2px dashed var(--track); color: var(--ink-soft); min-height: 13rem; }
-  .cover--next::before { display: none; }
-  .cover--next .cover__code { color: var(--track); }
+  /* The pond: each journal is a lantern that floats a little, a pane of glass with its lamp above */
+  .shelf { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr)); gap: var(--s-6) var(--s-5); padding-bottom: var(--s-8); align-items: start; }
+  .lantern { position: relative; display: grid; gap: var(--s-5); justify-items: start; padding: var(--s-6); border-radius: var(--radius-glass); background: var(--glass); border: 1px solid var(--glass-edge); box-shadow: var(--shadow); animation: rise 1s var(--ease-out) both, bob 9s ease-in-out calc(var(--i, 0) * -2.5s) infinite; }
+  .lantern:nth-child(even) { margin-top: var(--s-6); }
+  .lantern:nth-child(2) { animation-delay: 0.1s, 0s; } .lantern:nth-child(3) { animation-delay: 0.2s, 0s; }
+  .lantern__lamp { margin: 0; }
+  .lantern__lamp span { display: grid; place-items: center; width: 4.5rem; height: 5.25rem; border-radius: 44% 44% 48% 48%; background: radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--c) 35%, #fff), var(--c) 62%); color: var(--on); font-family: var(--font-sign); font-weight: 700; font-size: 1.5rem; box-shadow: 0 0 40px 10px color-mix(in srgb, var(--c) 45%, transparent); }
+  .lantern__info { display: grid; gap: var(--s-3); max-width: 46rem; }
+  .lantern h2 { font-size: clamp(1.5rem, 1.1rem + 1.3vw, 2.1rem); font-weight: 600; }
+  .lantern h2 a { text-decoration: none; }
+  .lantern h2 a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+  .lantern__summary { color: var(--ink-soft); }
+  .lantern__facts { font-family: var(--font-sign); font-weight: 600; font-size: var(--step--1); }
+  .lantern__go { margin-top: var(--s-2); }
+  .lantern--next { background: none; border: 1px dashed var(--glass-edge); box-shadow: none; animation: rise 1s var(--ease-out) both; }
+  .lantern--next .lantern__lamp span { background: none; box-shadow: none; border: 1px dashed var(--track); color: var(--track); }
+
+  /* The water under the lanterns: three slow ripples */
+  .pond { position: relative; height: 12rem; margin-top: -6rem; overflow: hidden; pointer-events: none; }
+  .pond i { position: absolute; left: 50%; bottom: -3rem; width: 70vw; height: 14rem; margin-left: -35vw; border-radius: 50%; border: 1px solid var(--glass-edge); animation: ripple 12s ease-out infinite; }
+  .pond i:nth-child(2) { animation-delay: -4s; } .pond i:nth-child(3) { animation-delay: -8s; }
 
   @keyframes rise { from { opacity: 0; transform: translateY(22px); filter: blur(5px); } }
-  @media (max-width: 52rem) {
-    .cover { grid-template-columns: 1fr; min-height: 0; padding: var(--s-5); }
-    .cover__code { font-size: 5rem; }
-  }
-  @media (prefers-reduced-motion: reduce) { .hero > *, .cover { animation: none; } }
+  @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+  @keyframes ripple { from { transform: scale(0.3); opacity: 0.9; } to { transform: scale(1.15); opacity: 0; } }
+  @media (max-width: 52rem) { .lantern:nth-child(even) { margin-top: 0; } .lantern { padding: var(--s-5); } }
+  @media (prefers-reduced-motion: reduce) { .hero > *, .lantern, .pond i { animation: none; } }
 </style>

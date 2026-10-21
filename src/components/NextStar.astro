@@ -1,0 +1,27 @@
+---
+import { url } from '../lib/url';
+interface Props { slug: string; next?: { station: number; title: string; slug: string } }
+const { slug, next } = Astro.props;
+---
+<a class="next" href={next ? url(`/projects/${slug}/${next.slug}`) : url(`/projects/${slug}`)}>
+  <span class="next__say">{next ? 'Next star' : 'All stars lit'}</span>
+  <span class="next__title">{next ? next.title : 'Back to the constellation'}</span>
+</a>
+
+<style>
+  .next {
+    display: grid;
+    gap: var(--s-1);
+    margin-top: var(--s-7);
+    padding: var(--s-5);
+    text-decoration: none;
+    background: var(--glass);
+    border: 1px solid var(--glass-edge);
+    border-radius: var(--radius-glass);
+    transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
+  }
+  .next__say { font-family: var(--font-sign); font-weight: 600; color: var(--ink-soft); }
+  .next__title { font-family: var(--font-sign); font-weight: 600; font-size: var(--step-2); line-height: 1.2; }
+  .next:active { transform: scale(0.99); }
+  @media (hover: hover) and (pointer: fine) { .next:hover { transform: translateY(-3px); box-shadow: 0 0 36px -6px rgb(var(--sky-glow) / 0.45); } }
+</style>

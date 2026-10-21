@@ -1,23 +1,26 @@
-/* Contour: a cool paper ground with drifting ink lines; fixed contributor colours; one display face, one reading face. */
+/* Moon Pond: a still night by default, a pale dawn when the reader switches. Four fixed glow colours say who did what. */
 :root {
-  /* Contributor lines (fixed across every project) */
-  --line-claude: #005ec4; /* Downtown Line blue */
-  --line-you: #009645; /* East-West Line green */
-  --line-others: #9900aa; /* North-East Line purple */
-  /* Badge grounds carry white text, so the green is deepened to keep 4.5:1 */
-  --badge-claude: #005ec4;
-  --badge-you: #007a3a;
-  --badge-others: #8a0099;
-  /* Contributor names set as text: the East-West green is too light for small text on the map grey */
+  /* Who did the work (fixed across every project): periwinkle, amber, rose, mint */
+  --line-claude: #9dbcff;
+  --line-you: #ffc77a;
+  --line-together: #ff9ec7;
+  --line-others: #8fe3c0;
+  /* Grounds that carry dark text in the night, white text in the dawn */
+  --badge-claude: var(--line-claude);
+  --badge-you: var(--line-you);
+  --badge-together: var(--line-together);
+  --badge-others: var(--line-others);
+  --badge-ink: #1b1740;
   --text-claude: var(--line-claude);
-  --text-you: #007a3a;
+  --text-you: var(--line-you);
+  --text-together: var(--line-together);
   --text-others: var(--line-others);
 
-  --line-width: 6px;
-  --station-r: 7px;
+  --line-width: 2px;
+  --star-r: 7px;
 
-  --font-sign: 'Outfit Variable', 'Outfit', system-ui, sans-serif;
-  --font-read: 'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible Next', system-ui, sans-serif;
+  --font-sign: 'Quicksand Variable', 'Quicksand', system-ui, sans-serif;
+  --font-read: 'Nunito Variable', 'Nunito', system-ui, sans-serif;
   --font-code: 'Overpass Mono Variable', 'Overpass Mono', ui-monospace, monospace;
 
   --step--1: 0.875rem;
@@ -40,55 +43,77 @@
   --page: 72rem;
   --gutter: clamp(1rem, 4vw, 3rem);
   --radius-pill: 999px;
+  --radius-glass: 20px;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
-  color-scheme: light;
-  --ground: #eef1f4;
-  --ground-raised: #ffffff;
-  --ink: #0e1420;
-  --ink-soft: #4d5663;
-  --rule: #cfd5dc;
-  --track: #bcc3cc; /* unlit / reconstructed track */
-  --station-fill: #ffffff;
-  --code-ground: #e1e6ec;
-  --selection: #cfe0f7;
-  --flow-accent: #2b4fd0; /* the occasional blue streamline in the background */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --ground: #0f1216;
-    --ground-raised: #191c20;
-    --ink: #eef0f2;
-    --ink-soft: #a7adb6;
-    --rule: #2c3036;
-    --track: #3c424a;
-    --station-fill: #0f1216;
-    --code-ground: #1d2126;
-    --selection: #1d3d66;
-    --flow-accent: #6f93ff;
-    --line-claude: #3b8cf0;
-    --line-you: #1fb866;
-    --line-others: #c04fd1;
-    --text-you: var(--line-you);
-  }
-}
-
-:root[data-theme='dark'] {
+  /* Night (default) */
   color-scheme: dark;
-  --ground: #0f1216;
-  --ground-raised: #191c20;
-  --ink: #eef0f2;
-  --ink-soft: #a7adb6;
-  --rule: #2c3036;
-  --track: #3c424a;
-  --station-fill: #0f1216;
-  --code-ground: #1d2126;
-  --selection: #1d3d66;
-  --flow-accent: #6f93ff;
-  --line-claude: #3b8cf0;
-  --line-you: #1fb866;
-  --line-others: #c04fd1;
-  --text-you: var(--line-you);
+  --sky-top: #1a1740;
+  --sky-mid: #2a2766;
+  --sky-low: #35387c;
+  --ground: #262360; /* the sky's middle, for bars that sit over scrolling text */
+  --ground-raised: #2e2b72;
+  --glass: rgb(255 255 255 / 0.07);
+  --glass-edge: rgb(255 255 255 / 0.15);
+  --ink: #ece9ff;
+  --ink-soft: #bcb7e6;
+  --rule: rgb(255 255 255 / 0.16);
+  --track: #7d78c4; /* a star not yet reached */
+  --station-fill: #262360;
+  --code-ground: rgb(10 8 40 / 0.5);
+  --code-block: #1c1a48; /* syntax-highlighted blocks keep their light text, so they stay dark in both skies */
+  --selection: #5a54b4;
+  --flow-accent: #ffd98a; /* a lit star, the one warm light in the sky */
+  --on-accent: #3a2410;
+  --shadow: 0 18px 40px -22px rgb(6 4 30 / 0.7);
+  /* For the canvas sky: space-separated RGB */
+  --sky-star: 255 255 255;
+  --sky-glow: 255 217 138;
+  --moth-a: 214 196 255;
+  --moth-b: 255 190 214;
+  --moth-c: 170 214 255;
+  --moon-a: #fffbe8;
+  --moon-b: #f3e6b8;
+  --moon-halo: 255 240 190;
+  --aurora-a: rgb(120 100 255 / 0.28);
+  --aurora-b: rgb(255 150 200 / 0.16);
+}
+
+/* Dawn: the same pond in morning light */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --sky-top: #e9e1fa;
+  --sky-mid: #f7e6ef;
+  --sky-low: #fdeee0;
+  --ground: #f3e9f5;
+  --ground-raised: #ffffff;
+  --glass: rgb(255 255 255 / 0.55);
+  --glass-edge: rgb(80 60 140 / 0.16);
+  --ink: #2a2552;
+  --ink-soft: #5b5685;
+  --rule: rgb(42 37 82 / 0.16);
+  --track: #a39cd2;
+  --station-fill: #ffffff;
+  --code-ground: rgb(42 37 82 / 0.07);
+  --code-block: #2b2552;
+  --selection: #d9d0f7;
+  --flow-accent: #a85f08; /* deep amber: 4.5:1 as text on the pale sky, with white on it */
+  --on-accent: #ffffff;
+  --shadow: 0 18px 40px -24px rgb(70 50 130 / 0.45);
+  --sky-star: 120 100 190;
+  --sky-glow: 232 160 70;
+  --moth-a: 150 120 230;
+  --moth-b: 230 120 160;
+  --moth-c: 100 150 225;
+  --moon-a: #fff6dd;
+  --moon-b: #ffd9a8;
+  --moon-halo: 255 190 130;
+  --aurora-a: rgb(190 160 255 / 0.35);
+  --aurora-b: rgb(255 190 170 / 0.3);
+  /* Pale glows would vanish on pale ground: deepen them, and badges carry white text */
+  --line-claude: #3f56c4;
+  --line-you: #a8560b;
+  --line-together: #b53a77;
+  --line-others: #17785a;
+  --badge-ink: #ffffff;
 }

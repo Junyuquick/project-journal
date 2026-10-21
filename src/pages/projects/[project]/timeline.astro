@@ -1,7 +1,7 @@
 ---
 import { url } from '../../../lib/url';
 import Base from '../../../layouts/Base.astro';
-import { eventsByDay, lanesFor, sourceLink, stationCode, type Lane } from '../../../lib/content';
+import { eventsByDay, lanesFor, sourceLink, stationCode } from '../../../lib/content';
 import { inkOn, loadProjects, type Project } from '../../../lib/journal';
 
 export async function getStaticPaths() {
@@ -17,31 +17,29 @@ const days = eventsByDay(events);
 const chapterFor = (s?: string) => chapters.find((c) => c.slug === s);
 const timeFmt = new Intl.DateTimeFormat('en-SG', { timeZone: 'Asia/Singapore', hour: '2-digit', minute: '2-digit', hour12: false });
 const dayFmt = new Intl.DateTimeFormat('en-SG', { timeZone: 'Asia/Singapore', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-const laneIndex = (l: string) => lanes.indexOf(l as Lane);
 const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.who === f).length]));
 ---
-<Base title={`Timeline: ${data.title}`} description={`Who did what, and when, while building ${data.title}.`}>
-  <div class="wrap tl" style={`--lanes:${lanes.length}`}>
+<Base title={`Moonlog: ${data.title}`} description={`Who did what, and when, while building ${data.title}.`} calm>
+  <div class="wrap tl">
     <header class="tl__head">
-      <h1 class="has-pill"><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code}</span><span>Who did what</span></h1>
-      <p class="tl__lede">Every step of building the <a href={url(`/projects/${slug}`)}>{data.title}</a>, in time order. Each contributor runs as a line; a station on a line is something they did. An interchange across lines is something done together.</p>
+      <h1 class="has-pill"><span class="pill" style={`background:${data.color};color:${inkOn(data.ink)}`}>{data.code}</span><span>The Moonlog</span></h1>
+      <p class="tl__lede">Who did what while building the <a href={url(`/projects/${slug}`)}>{data.title}</a>, in time order. Each person has a glow colour and a name beside it. A rose glow is something done together.</p>
 
       <div class="tl__legend">
-        <ul class="tl__keys" aria-label="How to read the lines">
-          <li><span class="key key--solid" aria-hidden="true"></span>Solid track: seen first-hand in our conversation</li>
-          <li><span class="key key--dashed" aria-hidden="true"></span>Dashed track: rebuilt from specs, plans and git commits</li>
-          <li><span class="key key--hub" aria-hidden="true"></span>Interchange: done together</li>
+        <ul class="tl__keys" aria-label="How to read the glows">
+          <li><span class="key key--solid" aria-hidden="true"></span>Bright glow: seen first-hand in our conversation</li>
+          <li><span class="key key--rebuilt" aria-hidden="true"></span>Hollow glow: rebuilt from specs, plans and git commits</li>
+          <li><span class="key key--together" aria-hidden="true"></span>Rose glow: done together</li>
         </ul>
       </div>
-
     </header>
 
-    {events.length === 0 && <p class="tl__empty">No timeline yet for this project.</p>}
-    <p class="tl__empty" data-all-off hidden>Every line is switched off. Turn a line back on to see its stations.</p>
+    {events.length === 0 && <p class="tl__empty">No Moonlog yet for this project.</p>}
+    <p class="tl__empty" data-all-off hidden>Everyone is switched off. Turn someone back on to see their moments.</p>
 
     <div class="tl__body">
     <div class="tl__rail" data-rail hidden>
-      <p class="tl__rail-label" id="filters-label">Show or hide lines</p>
+      <p class="tl__rail-label" id="filters-label">Show or hide people</p>
       <div class="tl__filters" role="group" aria-labelledby="filters-label">
         {filters.map((f) => (
           <button type="button" class:list={['badge', 'filter', `badge--${f}`]} data-filter={f} aria-pressed="true">
@@ -59,17 +57,9 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
             {d.events.map((e) => {
               const ch = chapterFor(e.chapter);
               const src = sourceLink(e.source, data.repo);
-              const span = e.who === 'together' ? (e.with ?? []).map(laneIndex).filter((i) => i >= 0) : [laneIndex(e.who)];
               return (
                 <li class:list={['ev', `ev--${e.who}`, { 'ev--rebuilt': e.evidence === 'reconstructed' }]} data-who={e.who}>
-                  <div class="ev__track" aria-hidden="true">
-                    {lanes.map((l) => <span class={`lane lane--${l}`}></span>)}
-                    {e.who === 'together' ? (
-                      <span class="hub" style={`--from:${Math.min(...span)};--to:${Math.max(...span)}`}></span>
-                    ) : (
-                      <span class={`stop stop--${e.who}`} style={`--at:${span[0]}`}></span>
-                    )}
-                  </div>
+                  <span class="ev__dot" aria-hidden="true"></span>
                   <p class="ev__when">
                     {e.approx && <span class="ev__about">about</span>}
                     <time datetime={e.at} title={e.approx ? 'Approximate: inferred from the records around it' : undefined}>{timeFmt.format(new Date(e.at))}</time>
@@ -107,7 +97,6 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
     const on = new Set(buttons.filter((b) => b.getAttribute('aria-pressed') === 'true').map((b) => b.dataset.filter));
     for (const ev of list?.querySelectorAll<HTMLElement>('.ev') ?? []) ev.hidden = !on.has(ev.dataset.who);
     for (const day of list?.querySelectorAll<HTMLElement>('.day') ?? []) day.hidden = !day.querySelector('.ev:not([hidden])');
-    for (const b of buttons) list?.classList.toggle(`off-${b.dataset.filter}`, !on.has(b.dataset.filter));
     if (allOff) allOff.hidden = on.size > 0;
   };
   for (const b of buttons) {
@@ -119,91 +108,79 @@ const counts = Object.fromEntries(filters.map((f) => [f, events.filter((e) => e.
 </script>
 
 <style>
-  .tl { padding-block: var(--s-7) var(--s-8); --lane: 1.75rem; }
+  .tl { padding-block: var(--s-7) var(--s-8); }
   .tl__head { display: grid; gap: var(--s-4); max-width: 64ch; margin-bottom: var(--s-6); }
   .tl__lede { font-size: var(--step-1); line-height: 1.5; color: var(--ink-soft); }
   .tl__keys { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); font-size: var(--step--1); }
   .tl__keys li { display: flex; align-items: center; gap: var(--s-3); }
-  .key { flex: none; width: 2.25rem; height: var(--line-width); background: var(--ink); border-radius: 3px; }
-  .key--dashed { background: repeating-linear-gradient(90deg, var(--ink) 0 8px, transparent 8px 14px); }
-  .key--hub { height: 1.1rem; width: 2.25rem; background: var(--station-fill); border: 3px solid var(--ink); border-radius: var(--radius-pill); }
-  /* Filters stay in reach: a sticky bar on phones, a sticky rail beside the timeline on wide screens */
+  .key { flex: none; width: 0.9rem; height: 0.9rem; margin-inline: 0.55rem; border-radius: 50%; }
+  .key--solid { background: var(--flow-accent); box-shadow: 0 0 12px 2px rgb(var(--sky-glow) / 0.6); }
+  .key--rebuilt { border: 2px solid var(--flow-accent); }
+  .key--together { background: var(--line-together); box-shadow: 0 0 12px 2px color-mix(in srgb, var(--line-together) 60%, transparent); }
+  /* Filters stay in reach: a sticky bar on phones, a sticky rail beside the log on wide screens */
   .tl__body { display: grid; grid-template-columns: minmax(0, 1fr); }
   .tl__rail[hidden] { display: none; }
-  .tl__rail { position: sticky; top: 0; z-index: 3; background: var(--ground); padding-block: var(--s-3); border-bottom: 1px solid var(--rule); }
-  .tl__rail-label { font-family: var(--font-sign); font-weight: 750; font-size: var(--step--1); color: var(--ink-soft); margin-bottom: var(--s-2); }
+  .tl__rail { position: sticky; top: 0; z-index: 3; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); padding-block: var(--s-3); border-bottom: 1px solid var(--rule); }
+  .tl__rail-label { font-family: var(--font-sign); font-weight: 700; font-size: var(--step--1); color: var(--ink-soft); margin-bottom: var(--s-2); }
   .tl__filters { display: flex; flex-wrap: wrap; gap: var(--s-2); }
   .day h2 { top: var(--rail-h, 0); }
   @media (max-width: 63.99rem) {
     .tl { --rail-h: 4.35rem; }
-    /* one row of filters; it scrolls sideways inside itself if a project has many lines */
-    .tl__filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
-    .tl__filters { gap: var(--s-1); }
-    .filter { flex: none; font-size: var(--step--1); padding-inline: 0.65em; gap: 0.35em; }
+    /* one row of filters; it scrolls sideways inside itself if a project has many people */
+    .tl__filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; gap: var(--s-1); }
+    .filter { flex: none; font-size: var(--step--1); padding-inline: 0.8em; gap: 0.35em; }
     .filter__tick { width: 0.7rem; height: 0.7rem; }
     .filter__n { display: none; }
     .tl__rail-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   }
   @media (min-width: 64rem) {
     .tl__body { grid-template-columns: minmax(0, 1fr) 15rem; gap: var(--s-7); align-items: start; }
-    .tl__rail { grid-column: 2; grid-row: 1; top: var(--s-5); border: 0; padding: 0; }
+    .tl__rail { grid-column: 2; grid-row: 1; top: var(--s-5); border: 0; padding: 0; background: none; backdrop-filter: none; }
     .tl__filters { flex-direction: column; align-items: stretch; }
     .tl__days { grid-column: 1; grid-row: 1; }
   }
-  .filter { border: 0; cursor: pointer; min-height: 44px; font-size: var(--step-0); padding-inline: 0.9em; transition: opacity 0.2s, transform 0.15s var(--ease-out); }
+  .filter { border: 0; cursor: pointer; min-height: 44px; font-size: var(--step-0); padding-inline: 1em; transition: opacity 0.2s, transform 0.15s var(--ease-out), box-shadow 0.25s; }
   .filter:active { transform: scale(0.97); }
-  .badge--together { --badge: var(--station-fill); color: var(--ink); box-shadow: inset 0 0 0 3px var(--ink); }
+  @media (hover: hover) and (pointer: fine) { .filter:hover { box-shadow: 0 0 20px 0 color-mix(in srgb, var(--badge) 60%, transparent); } }
   .filter__tick { width: 0.85rem; height: 0.85rem; border-radius: 50%; border: 2px solid currentColor; background: currentColor; }
-  .filter[aria-pressed='false'] { opacity: 0.45; }
+  .filter[aria-pressed='false'] { opacity: 0.5; }
   .filter[aria-pressed='false'] .filter__tick { background: transparent; }
   .filter__n { font-weight: 600; opacity: 0.85; }
-  .tl__empty { padding: var(--s-5); border: 2px dashed var(--track); border-radius: 10px; max-width: 64ch; }
+  .tl__empty { padding: var(--s-5); border: 1px dashed var(--track); border-radius: 16px; max-width: 64ch; }
 
   .day + .day { margin-top: var(--s-6); }
-  .day h2 { font-size: var(--step-1); padding-block: var(--s-3); position: sticky; background: var(--ground); z-index: 2; border-bottom: 1px solid var(--rule); }
+  .day h2 { font-size: var(--step-1); padding-block: var(--s-3); position: sticky; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); z-index: 2; border-bottom: 1px solid var(--rule); }
   .events { list-style: none; margin: 0; padding: 0; }
-  .ev { display: grid; grid-template-columns: calc(var(--lanes) * var(--lane)) 4.5rem minmax(0, 1fr); gap: var(--s-4); }
-  /* Timetable column: the time and who, level with the station marker */
-  .ev__when { display: flex; flex-direction: column; padding-top: 1.05rem; font-family: var(--font-sign); font-weight: 750; line-height: 1.25; font-size: var(--step--1); }
-  .ev__about { font-weight: 650; color: var(--ink-soft); font-size: 0.85em; }
+  /* One river: a dotted thread down the left, a glow where each moment happened */
+  .ev { position: relative; display: grid; grid-template-columns: 1.5rem 5rem minmax(0, 1fr); gap: var(--s-4); }
+  .ev::before { content: ''; position: absolute; left: calc(0.75rem - 1px); top: 0; bottom: 0; border-left: 2px dotted var(--track); }
+  .ev__dot { position: relative; z-index: 1; width: 0.95rem; height: 0.95rem; margin: 1.2rem 0 0 0.275rem; border-radius: 50%; background: var(--dot); box-shadow: 0 0 14px 3px color-mix(in srgb, var(--dot) 55%, transparent); }
+  .ev--claude { --dot: var(--line-claude); }
+  .ev--you { --dot: var(--line-you); }
+  .ev--together { --dot: var(--line-together); }
+  .ev--others { --dot: var(--line-others); }
+  .ev--rebuilt .ev__dot { background: var(--ground); border: 2px solid var(--dot); box-shadow: none; }
+  .ev__when { display: flex; flex-direction: column; padding-top: 1.05rem; font-family: var(--font-sign); font-weight: 700; line-height: 1.25; font-size: var(--step--1); }
+  .ev__about { font-weight: 600; color: var(--ink-soft); font-size: 0.85em; }
   .ev__when time { font-size: 1.15em; color: var(--ink); }
   .ev[hidden] { display: none; }
-
-  /* The lines: one column per contributor, continuous from row to row */
-  .ev__track { position: relative; display: grid; grid-template-columns: repeat(var(--lanes), var(--lane)); }
-  .lane { justify-self: center; width: var(--line-width); background: var(--lane-c); }
-  .lane--claude { --lane-c: var(--line-claude); }
-  .lane--you { --lane-c: var(--line-you); }
-  .lane--others { --lane-c: var(--line-others); }
-  .ev--rebuilt .lane { background: repeating-linear-gradient(180deg, var(--lane-c) 0 10px, transparent 10px 17px); }
-  .off-claude .lane--claude, .off-you .lane--you, .off-others .lane--others { opacity: 0.18; }
-
-  .stop, .hub { position: absolute; top: 1.15rem; }
-  .stop { left: calc(var(--at) * var(--lane) + var(--lane) / 2 - 0.7rem); width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--station-fill); border: 4px solid var(--stop-c); }
-  .stop--claude { --stop-c: var(--line-claude); }
-  .stop--you { --stop-c: var(--line-you); }
-  .stop--others { --stop-c: var(--line-others); }
-  .hub { left: calc(var(--from) * var(--lane) + var(--lane) / 2 - 0.8rem); width: calc((var(--to) - var(--from)) * var(--lane) + 1.6rem); height: 1.6rem; top: 1.05rem; border-radius: var(--radius-pill); background: var(--station-fill); border: 4px solid var(--ink); }
 
   .ev__body { padding-block: var(--s-4) var(--s-5); display: grid; gap: var(--s-2); max-width: 64ch; border-bottom: 1px solid var(--rule); }
   time { font-variant-numeric: tabular-nums; }
   .ev__who--claude { color: var(--text-claude); }
   .ev__who--you { color: var(--text-you); }
+  .ev__who--together { color: var(--text-together); }
   .ev__who--others { color: var(--text-others); }
   h3 { font-size: var(--step-1); }
   dl { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--s-1) var(--s-4); }
-  dt { font-family: var(--font-sign); font-weight: 750; color: var(--ink-soft); font-size: var(--step--1); padding-top: 0.15em; }
+  dt { font-family: var(--font-sign); font-weight: 700; color: var(--ink-soft); font-size: var(--step--1); padding-top: 0.15em; }
   dd { margin: 0; }
-  .ev__links { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); font-family: var(--font-sign); font-weight: 650; font-size: var(--step--1); color: var(--ink-soft); }
+  .ev__links { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); font-family: var(--font-sign); font-weight: 600; font-size: var(--step--1); color: var(--ink-soft); }
   .ev__links a { overflow-wrap: anywhere; }
 
   @media (max-width: 40rem) {
-    .tl { --lane: 1.2rem; }
-    .ev { gap: var(--s-2); grid-template-columns: calc(var(--lanes) * var(--lane)) 3.6rem minmax(0, 1fr); }
-    .ev__when { font-size: var(--step--1); }
+    .ev { gap: var(--s-2); grid-template-columns: 1.5rem 3.6rem minmax(0, 1fr); }
     dl { grid-template-columns: 1fr; }
     dd + dt { margin-top: var(--s-2); }
-    .stop { width: 1.1rem; height: 1.1rem; left: calc(var(--at) * var(--lane) + var(--lane) / 2 - 0.55rem); border-width: 3px; }
-    .hub { height: 1.3rem; left: calc(var(--from) * var(--lane) + var(--lane) / 2 - 0.65rem); width: calc((var(--to) - var(--from)) * var(--lane) + 1.3rem); border-width: 3px; }
   }
 </style>

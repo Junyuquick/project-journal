@@ -1,0 +1,33 @@
+---
+interface Props { items: { q: string; a: string }[] }
+const { items } = Astro.props;
+---
+<section class="reflect" aria-labelledby="reflect-title">
+  <h2 id="reflect-title">Reflect</h2>
+  <p class="reflect__lede">Answer each one in your head, then open it to compare.</p>
+  <ol>
+    {items.map((it) => (
+      <li>
+        <details>
+          <summary>{it.q}</summary>
+          <p>{it.a}</p>
+        </details>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .reflect { margin-top: var(--s-8); padding-top: var(--s-6); border-top: 1px solid var(--rule); }
+  h2 { font-size: var(--step-2); }
+  .reflect__lede { margin: var(--s-1) 0 var(--s-4); color: var(--ink-soft); }
+  ol { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s-3); }
+  details { background: var(--glass); border: 1px solid var(--glass-edge); border-radius: 16px; padding: 0 var(--s-4); }
+  summary { cursor: pointer; font-family: var(--font-sign); font-weight: 600; min-height: 44px; list-style: none; display: flex; gap: var(--s-3); align-items: flex-start; padding-block: var(--s-3); }
+  summary::-webkit-details-marker { display: none; }
+  /* A ripple that fills with light once the answer is open */
+  summary::before { content: ''; flex: none; width: 1.1rem; height: 1.1rem; margin-top: 0.2em; border-radius: 50%; border: 2px solid var(--track); background: transparent; transition: background-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), border-color 0.3s; }
+  details[open] summary::before { background: var(--flow-accent); border-color: var(--flow-accent); box-shadow: 0 0 0 5px rgb(var(--sky-glow) / 0.22), 0 0 16px 2px rgb(var(--sky-glow) / 0.5); }
+  @media (hover: hover) and (pointer: fine) { summary:hover::before { border-color: var(--flow-accent); } }
+  details p { padding: 0 0 var(--s-4) calc(1.1rem + var(--s-3)); color: var(--ink); }
+</style>

@@ -1,19 +1,18 @@
 ---
 ---
-<button class="theme" type="button" aria-label="Switch between light and dark" data-theme-toggle>
+<button class="theme" type="button" aria-label="Switch between night and dawn" data-theme-toggle>
   <span class="theme__dot" aria-hidden="true"></span>
-  <span data-theme-label>Theme</span>
+  <span data-theme-label>Night</span>
 </button>
 
 <script>
   const btn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
   const label = btn?.querySelector('[data-theme-label]');
-  const current = () =>
-    (document.documentElement.dataset.theme as 'light' | 'dark' | undefined) ??
-    (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  // Night is the default sky; dawn is the reader's choice.
+  const current = () => (document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
   const render = () => {
     const t = current();
-    if (label) label.textContent = t === 'dark' ? 'Dark' : 'Light';
+    if (label) label.textContent = t === 'dark' ? 'Night' : 'Dawn';
     btn?.setAttribute('aria-pressed', String(t === 'dark'));
   };
   btn?.addEventListener('click', () => {
@@ -40,11 +39,14 @@
     cursor: pointer;
   }
   .theme:hover { border-color: var(--ink-soft); }
+  /* A little moon that fills in at night and empties at dawn */
   .theme__dot {
     width: 0.85rem;
     height: 0.85rem;
     border-radius: 50%;
-    border: 2px solid var(--ink);
-    background: linear-gradient(90deg, var(--ink) 50%, var(--station-fill) 50%);
+    border: 2px solid var(--flow-accent);
+    background: var(--flow-accent);
+    transition: background-color 0.3s;
   }
+  .theme[aria-pressed='false'] .theme__dot { background: transparent; }
 </style>

@@ -16,14 +16,20 @@ const usedIn = (id: string) =>
   );
 const letters = [...new Set(terms.map((t) => indexLetter(t.data.term)))];
 ---
-<Base title="Glossary" description="Every technical term used in the journal, in plain English.">
+<Base title="Firefly jar" description="Every technical term used in the journal, in plain English." calm>
   <div class="wrap glossary">
     <header class="glossary__head">
-      <h1>Glossary</h1>
-      <p>Every technical word used in the journal, in plain English. In a chapter, tap an underlined word to see its entry without leaving the page.</p>
+      <h1>Firefly jar</h1>
+      <p>The glossary: every technical word used in the journal, in plain English. In a chapter, tap a glowing word to see its entry without leaving the page.</p>
       <nav class="glossary__index" aria-label="Jump to letter">
         {letters.map((l) => <a href={`#letter-${l === '#' ? 'num' : l}`} aria-label={l === '#' ? 'Numbers' : l}>{l === '#' ? '0-9' : l}</a>)}
       </nav>
+      <svg class="jar" viewBox="0 0 200 270" aria-hidden="true">
+        <rect x="26" y="36" width="148" height="218" rx="34" class="jar__glass" />
+        <rect x="46" y="12" width="108" height="28" rx="9" class="jar__lid" />
+        <circle class="fly fly--1" cx="76" cy="190" r="4" /><circle class="fly fly--2" cx="124" cy="140" r="4" /><circle class="fly fly--3" cx="98" cy="100" r="3.5" />
+        <circle class="fly fly--4" cx="132" cy="214" r="4" /><circle class="fly fly--5" cx="70" cy="130" r="3" />
+      </svg>
     </header>
 
     {letters.map((letter) => (
@@ -53,20 +59,33 @@ const letters = [...new Set(terms.map((t) => indexLetter(t.data.term)))];
 
 <style>
   .glossary { padding-block: var(--s-7) var(--s-8); }
-  .glossary__head { display: grid; gap: var(--s-4); max-width: 62ch; margin-bottom: var(--s-7); }
+  .glossary__head { position: relative; display: grid; gap: var(--s-4); max-width: 62ch; margin-bottom: var(--s-7); }
   .glossary__head p { font-size: var(--step-1); line-height: 1.5; color: var(--ink-soft); }
   .glossary__index { display: flex; flex-wrap: wrap; gap: var(--s-1); }
-  .glossary__index a { min-width: 44px; padding-inline: var(--s-1); min-height: 44px; display: inline-grid; place-items: center; font-family: var(--font-sign); font-weight: 750; text-decoration: none; border-radius: 50%; }
-  .glossary__index a:hover { background: var(--code-ground); }
+  .glossary__index a { min-width: 44px; padding-inline: var(--s-1); min-height: 44px; display: inline-grid; place-items: center; font-family: var(--font-sign); font-weight: 700; text-decoration: none; border-radius: 50%; }
+  .glossary__index a:hover { background: var(--glass); }
   .letter { max-width: var(--measure); scroll-margin-top: var(--s-5); }
   .letter + .letter { margin-top: var(--s-6); }
   .terms { margin: 0; }
   .term { display: grid; grid-template-columns: minmax(8rem, 13rem) 1fr; gap: var(--s-2) var(--s-5); padding-block: var(--s-5); border-top: 1px solid var(--rule); scroll-margin-top: var(--s-5); }
   .term:target { background: color-mix(in srgb, var(--selection) 55%, transparent); }
   .term__letter { font-size: var(--step-3); line-height: 1; padding-bottom: var(--s-3); }
-  dt { font-family: var(--font-sign); font-weight: 800; font-size: var(--step-1); }
+  dt { font-family: var(--font-sign); font-weight: 700; font-size: var(--step-1); text-shadow: 0 0 16px rgb(var(--sky-glow) / 0.4); }
   dd { margin: 0; display: grid; gap: var(--s-2); }
   .term__analogy { color: var(--ink-soft); font-style: italic; }
-  .term__used { font-family: var(--font-sign); font-weight: 650; font-size: var(--step--1); color: var(--ink-soft); }
+  .term__used { font-family: var(--font-sign); font-weight: 600; font-size: var(--step--1); color: var(--ink-soft); }
   @media (max-width: 40rem) { .term { grid-template-columns: 1fr; } }
+
+  /* The jar sits beside the heading on wide screens; its fireflies drift and pulse */
+  .jar { display: none; }
+  @media (min-width: 62rem) {
+    .jar { display: block; position: absolute; left: calc(100% + 6rem); top: -1rem; width: 11rem; height: auto; overflow: visible; }
+  }
+  .jar__glass { fill: var(--glass); stroke: var(--glass-edge); stroke-width: 2; }
+  .jar__lid { fill: var(--glass); stroke: var(--glass-edge); stroke-width: 2; }
+  .fly { fill: var(--flow-accent); filter: drop-shadow(0 0 7px rgb(var(--sky-glow) / 0.9)); animation: jar-float 8s ease-in-out infinite, jar-glow 3.5s ease-in-out infinite; }
+  .fly--2 { animation-delay: -2s, -1s; } .fly--3 { animation-delay: -4s, -2s; } .fly--4 { animation-delay: -5s, -0.5s; } .fly--5 { animation-delay: -1s, -3s; }
+  @keyframes jar-float { 0%, 100% { transform: translate(0, 0); } 33% { transform: translate(14px, -18px); } 66% { transform: translate(-12px, -8px); } }
+  @keyframes jar-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  @media (prefers-reduced-motion: reduce) { .fly { animation: none; } }
 </style>

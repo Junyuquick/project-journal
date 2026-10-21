@@ -1,0 +1,90 @@
+---
+import { url } from '../lib/url';
+// The trail above a chapter: every star of the journal in order, gold behind you, this one ringed.
+interface Stop { station: number; title: string; slug: string }
+interface Props { slug: string; code: string; color: string; ink: 'dark' | 'light'; title: string; stops: Stop[]; current: number }
+const { slug, code, color, ink, title, stops, current } = Astro.props;
+---
+<nav class="trail" aria-label={`${title}, all stars`} data-trail>
+  <a class="trail__name" href={url(`/projects/${slug}`)}>
+    <span class="trail__lamp" style={`--c:${color};color:${ink === 'dark' ? '#16181b' : '#fff'}`}>{code}</span>
+    <span>{title}</span>
+  </a>
+  <ol class="trail__stops">
+    {stops.map((s) => (
+      <li class:list={['trail__stop', { 'is-lit': s.station < current, 'is-current': s.station === current }]}>
+        <a href={url(`/projects/${slug}/${s.slug}`)} aria-current={s.station === current ? 'step' : undefined} title={s.title}>
+          <span class="trail__dot" aria-hidden="true"></span>
+          <span class="trail__n" aria-hidden="true">{s.station}</span>
+          <span class="visually-hidden">Star {s.station}: {s.title}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<script>
+  for (const trail of document.querySelectorAll<HTMLElement>('[data-trail]')) {
+    // Centre the current star; measure the list item, whose offsetParent is the scrolling list.
+    const here = trail.querySelector<HTMLElement>('[aria-current="step"]')?.closest('li');
+    const list = trail.querySelector<HTMLElement>('.trail__stops');
+    if (here && list) list.scrollLeft = here.offsetLeft - list.clientWidth / 2 + here.offsetWidth / 2;
+  }
+</script>
+
+<style>
+  .trail { display: flex; align-items: center; gap: var(--s-5); padding: var(--s-4) 0; border-bottom: 1px solid var(--rule); }
+  .trail__name { display: inline-flex; align-items: center; gap: var(--s-2); font-family: var(--font-sign); font-weight: 600; text-decoration: none; white-space: nowrap; }
+  .trail__lamp { padding: 0.35em 0.7em 0.3em; border-radius: 44% 44% 48% 48%; font-size: var(--step--1); font-weight: 700; background: var(--c); box-shadow: 0 0 18px 2px color-mix(in srgb, var(--c) 55%, transparent); }
+  .trail__stops {
+    position: relative;
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: var(--s-2) var(--s-2) 0;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    flex: 1;
+  }
+  .trail__stop { position: relative; flex: 1 0 2.75rem; }
+  /* a faint dotted thread joins the stars; it turns solid gold behind you */
+  .trail__stop::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: calc(0.75rem - 1px);
+    border-top: 2px dotted var(--track);
+  }
+  .trail__stop.is-lit::before, .trail__stop.is-current::before { border-top: 2px solid var(--flow-accent); }
+  .trail__stop.is-current::before { right: 50%; }
+  .trail__stop:first-child::before { left: 50%; }
+  .trail__stop:last-child::before { right: 50%; }
+  .trail__stop a {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-1);
+    min-height: 44px;
+    text-decoration: none;
+    font-family: var(--font-sign);
+    font-weight: 600;
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+  }
+  .trail__dot {
+    width: 0.8rem; height: 0.8rem;
+    margin-top: 0.35rem;
+    border-radius: 50%;
+    background: var(--track);
+    transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
+  }
+  .is-lit .trail__dot { background: var(--flow-accent); }
+  .is-current .trail__dot { background: var(--flow-accent); transform: scale(1.35); box-shadow: 0 0 0 4px var(--ground), 0 0 0 5.5px var(--flow-accent), 0 0 18px 6px rgb(var(--sky-glow) / 0.55); }
+  .is-current .trail__n { color: var(--ink); }
+  @media (hover: hover) and (pointer: fine) { .trail__stop a:hover .trail__dot { transform: scale(1.35); } }
+  @media (max-width: 40rem) {
+    .trail { flex-direction: column; align-items: stretch; gap: var(--s-2); }
+    .trail__name { align-self: flex-start; }
+  }
+</style>
